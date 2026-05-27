@@ -81,13 +81,13 @@ scorm-docs-jp/
 
 ## クレジット
 
-- **翻訳**: 株式会社エレファンキューブ (Elephancube Inc.) — media@elephancube.co.jp
+- **翻訳**: 株式会社エレファンキューブ (Elephancube Inc.) — info@elephancube.co.jp
 - **翻訳支援**: Anthropic Claude（Claude Code / Opus 4.7 を用いた人間との共同作業）
 - **原典**: Advanced Distributed Learning Initiative, 2001-2002
 
 ## フィードバック
 
-誤訳の指摘・改善提案は GitHub Issues、もしくは media@elephancube.co.jp までご連絡ください。Pull Request も歓迎します。
+誤訳の指摘・改善提案は GitHub Issues、もしくは info@elephancube.co.jp までご連絡ください。Pull Request も歓迎します。
 
 ## 関連リンク
 
