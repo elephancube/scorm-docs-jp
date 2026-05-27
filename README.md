@@ -6,14 +6,14 @@ ADL Initiative が発行する SCORM (Sharable Content Object Reference Model) �
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
+📖 **公開サイト**: <https://elephancube.github.io/scorm-docs-jp/>
+
 ## 収録バージョン
 
-| バージョン | ステータス | 場所 |
-|---|---|---|
-| **SCORM 1.2** | v1.0.0 / 公開中 | [scorm-1.2/](scorm-1.2/) |
-| SCORM 2004 | 未着手 | — |
-
-GitHub Pages を有効化している場合、各バージョンの `index.html` から個別文書へアクセスできます。
+| バージョン | ステータス | リポジトリ内 | 公開 URL |
+|---|---|---|---|
+| **SCORM 1.2** | v1.0.0 / 公開中 | [scorm-1.2/](scorm-1.2/) | <https://elephancube.github.io/scorm-docs-jp/scorm-1.2/> |
+| SCORM 2004 | 未着手 | — | — |
 
 ## リポジトリ構成
 
