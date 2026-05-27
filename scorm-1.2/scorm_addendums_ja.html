@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCORM 1.2 The SCORM Addendums（日本語訳）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ec; --bg-tint: #efeadd; --ink: #1c1e2a; --ink-soft: #444759;
+    --muted: #7a7565; --rule: #d4ccb8; --rule-soft: #e6dfcd;
+    --accent: #6b2c39; --accent-soft: #8a4452;
+    --code-bg: #1f2230; --code-text: #e8e3d3; --code-comment: #8a8676;
+    --code-string: #c9a76a; --code-keyword: #d68a7a; --code-fn: #8eb4c9;
+    --warn-bg: #fbf3df; --warn-rule: #cdb676;
+    --diff-add: #d6ead0; --diff-del: #f3d6d6;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15.5px; line-height: 1.85; font-feature-settings: "palt" 1;
+  }
+  .layout {
+    display: grid; grid-template-columns: 280px minmax(0, 1fr);
+    max-width: 1240px; margin: 0 auto;
+  }
+  .toc {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow-y: auto;
+    padding: 48px 28px 48px 36px;
+    border-right: 1px solid var(--rule);
+    font-size: 13px; line-height: 1.7;
+  }
+  .toc-mark {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .toc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 17px; line-height: 1.4; color: var(--ink);
+    margin-bottom: 28px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc > ul > li { margin-bottom: 10px; }
+  .toc a {
+    color: var(--ink-soft); text-decoration: none;
+    transition: color 0.15s; display: block; padding: 2px 0;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-right: 6px;
+  }
+
+  main { padding: 56px 64px 120px; max-width: 880px; }
+
+  .doc-header {
+    margin-bottom: 48px; padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink); position: relative;
+  }
+  .doc-header::after {
+    content: ""; position: absolute; left: 0; bottom: -6px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .doc-org {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .doc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 38px; line-height: 1.25; margin: 0 0 12px;
+    letter-spacing: -0.005em;
+  }
+  .doc-subtitle { font-size: 16px; color: var(--ink-soft); margin: 0 0 24px; }
+  .doc-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .doc-meta span strong { color: var(--ink); font-weight: 500; margin-left: 6px; }
+
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn-rule);
+    padding: 16px 22px; margin: 0 0 56px;
+    font-size: 14px; line-height: 1.75;
+  }
+  .notice .label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.15em;
+    color: #8a6d2e; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 26px; margin: 80px 0 24px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em; line-height: 1.4;
+  }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 18px; margin: 36px 0 14px; line-height: 1.45;
+  }
+  h4 {
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+    font-size: 15px; margin: 28px 0 12px;
+    padding-left: 12px; border-left: 3px solid var(--accent);
+  }
+  .section-num {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent); font-weight: 500;
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+
+  p { margin: 0 0 16px; }
+  p + p { margin-top: -2px; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em; background: var(--bg-tint);
+    color: var(--accent); padding: 1px 6px;
+    border-radius: 3px; border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+
+  pre {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 16px 20px; border-radius: 4px;
+    overflow-x: auto; margin: 14px 0;
+    font-size: 12.5px; line-height: 1.6;
+    border-left: 3px solid var(--accent);
+  }
+  pre code {
+    background: none; color: inherit;
+    border: none; padding: 0;
+    white-space: pre; font-size: inherit;
+  }
+  .tok-c { color: var(--code-comment); font-style: italic; }
+  .tok-s { color: var(--code-string); }
+  .tok-k { color: var(--code-keyword); }
+  .tok-f { color: var(--code-fn); }
+
+  ul, ol { margin: 0 0 16px; padding-left: 26px; }
+  li { margin-bottom: 4px; }
+
+  /* Addendum-specific block */
+  .addendum {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: white;
+    margin: 28px 0;
+    overflow: hidden;
+  }
+  .addendum-meta {
+    background: var(--bg-tint);
+    padding: 10px 18px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .addendum-meta strong { color: var(--accent); }
+  .addendum-body { padding: 18px 24px 22px; }
+  .addendum-body > *:first-child { margin-top: 0; }
+  .addendum-body > *:last-child { margin-bottom: 0; }
+
+  /* diff styling */
+  .diff-from, .diff-to {
+    border-radius: 4px; padding: 14px 18px;
+    margin: 12px 0; font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .diff-from {
+    background: var(--diff-del);
+    border-left: 3px solid #c46060;
+  }
+  .diff-to {
+    background: var(--diff-add);
+    border-left: 3px solid #6f8048;
+  }
+  .diff-from::before, .diff-to::before {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 6px; color: var(--ink-soft);
+  }
+  .diff-from::before { content: "FROM（旧）"; color: #8c3a3a; }
+  .diff-to::before { content: "TO（新）"; color: #4f6a2c; }
+  .diff-from p, .diff-to p { margin: 0 0 8px; }
+  .diff-from p:last-child, .diff-to p:last-child { margin-bottom: 0; }
+  ins { background: var(--diff-add); text-decoration: none; padding: 0 3px; border-radius: 2px; }
+  del { background: var(--diff-del); padding: 0 3px; border-radius: 2px; }
+
+  table.spec-table {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0; font-size: 13px;
+    background: white; border: 1px solid var(--rule);
+  }
+  table.spec-table th {
+    background: var(--ink); color: var(--bg);
+    text-align: left; padding: 9px 12px;
+    font-weight: 600; font-size: 11.5px;
+    letter-spacing: 0.04em; border: 1px solid var(--ink);
+  }
+  table.spec-table td {
+    padding: 9px 12px; border: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.6;
+  }
+  table.spec-table td p { margin: 0 0 6px; }
+  table.spec-table td p:last-child { margin-bottom: 0; }
+
+  .doc-footer {
+    margin-top: 96px; padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px; color: var(--muted); line-height: 1.8;
+  }
+  .doc-footer .brand {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--ink); font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc {
+      position: static; height: auto;
+      border-right: none; border-bottom: 1px solid var(--rule);
+      padding: 32px 24px;
+    }
+    main { padding: 40px 24px 80px; }
+    .doc-title { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <nav class="toc">
+    <div class="toc-mark">Contents</div>
+    <div class="toc-title">SCORM 1.2<br>Addendums (v2.0)</div>
+    <ul>
+      <li><a href="#sec-1-1"><span class="num">1.1</span>目的</a></li>
+      <li><a href="#sec-1-2"><span class="num">1.2</span>Addendum 1: Resource Href の multiplicity 誤り</a></li>
+      <li><a href="#sec-1-3"><span class="num">1.3</span>Addendum 2: Meta-data XML Binding の誤例</a></li>
+      <li><a href="#sec-1-4"><span class="num">1.4</span>Addendum 3: 2.2.4.4 のタイポ</a></li>
+      <li><a href="#sec-1-5"><span class="num">1.5</span>Addendum 4: RTE Data Model のエラーコード誤り</a></li>
+      <li><a href="#sec-1-6"><span class="num">1.6</span>Addendum 5: RTE のページ番号誤り</a></li>
+      <li><a href="#sec-1-7"><span class="num">1.7</span>Addendum 6: cmi.core.entry の語彙参照誤り</a></li>
+      <li><a href="#sec-1-8"><span class="num">1.8</span>Addendum 7: Educational.Language の文字数誤り</a></li>
+      <li><a href="#sec-1-9"><span class="num">1.9</span>Addendum 8: LOM Best Practice の Vocabulary Source 値</a></li>
+      <li><a href="#sec-1-10"><span class="num">1.10</span>Addendum 9: Meta-data Information Model の multiplicity</a></li>
+      <li><a href="#sec-1-11"><span class="num">1.11</span>Addendum 10: Meta-data の DateType ベストプラクティス</a></li>
+      <li><a href="#sec-1-12"><span class="num">1.12</span>Addendum 11: &lt;taxon&gt; の multiplicity 明確化</a></li>
+      <li><a href="#sec-1-13"><span class="num">1.13</span>Addendum 12: Item 要素の ADL Note 削除</a></li>
+      <li><a href="#sec-1-14"><span class="num">1.14</span>Addendum 13: Element 3.5 Language の更新</a></li>
+      <li><a href="#sec-1-15"><span class="num">1.15</span>Addendum 14: Content Packaging のエラー整理</a></li>
+      <li><a href="#sec-1-16"><span class="num">1.16</span>Addendum 15: Content Packaging 例の更新</a></li>
+      <li><a href="#sec-1-17"><span class="num">1.17</span>Addendum 16: LMS 初期化要件の明確化</a></li>
+      <li><a href="#sec-1-18"><span class="num">1.18</span>Addendum 17: RTE Data Model の更新</a></li>
+      <li style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--rule);">
+        <a href="#sec-1-19"><span class="num">1.19</span>改訂履歴</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <header class="doc-header">
+      <div class="doc-org">Advanced Distributed Learning Initiative</div>
+      <h1 class="doc-title">The SCORM Addendums</h1>
+      <p class="doc-subtitle">Sharable Content Object Reference Model (SCORM&trade;) Version 1.2 ／ Addendums Version 2.0</p>
+      <div class="doc-meta">
+        <span>Version<strong>1.2</strong></span>
+        <span>Addendum<strong>v2.0</strong></span>
+        <span>Original<strong>January 4, 2002</strong></span>
+        <span>Translation<strong>日本語訳</strong></span>
+      </div>
+    </header>
+
+    <div class="notice" style="background: #f0ebd8; border-left-color: var(--accent);">
+      <div class="label" style="color: var(--accent);">日本語訳・全文</div>
+      本ドキュメントは ADL Initiative 発行の SCORM 1.2 Addendums (Version 2.0, January 4, 2002) を日本語に翻訳したものである。SCORM Version 1.2 公開後に発見された誤りを訂正する 17 件の addendum を収録する。各 addendum は本体 3 巻（Overview / Content Aggregation Model / Run-Time Environment）の特定箇所を上書きする訂正書であり、SCORM 1.2 を実装する際は<strong>必ず本書の訂正を反映させた状態で</strong>本体仕様を参照する必要がある。本訳ではタグ名・要素名・データモデル要素・エラーコード・XML スキーマなどの規格用語は原文のまま英語表記とする。
+    </div>
+
+    <!-- 1.1 -->
+    <section id="sec-1-1">
+      <h2><span class="section-num">SECTION 1.1</span>目的</h2>
+
+      <p>ADL 技術チームは、SCORM Version 1.2 で発見されたいくつかの誤りを訂正するために、本 addendum を公開する。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th style="width: 90px;">Addendum</th><th>タイトル</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Section 2.3.4「The SCORM Content Packaging Information Model」における Resource Href 属性の multiplicity 誤り</td></tr>
+          <tr><td>2</td><td>Section 2.2.3「The SCORM Meta-data XML Binding」における誤例</td></tr>
+          <tr><td>3</td><td>Section 2.2.4.4「The SCORM Meta-data Application Profile Requirements」のタイポ</td></tr>
+          <tr><td>4</td><td>Section 3.4.4「The SCORM Run-Time Environment Data Model」におけるエラーコード誤り</td></tr>
+          <tr><td>5</td><td>The SCORM Run-Time Environment のページ番号誤り</td></tr>
+          <tr><td>6</td><td><code>cmi.core.entry</code> 要素の語彙参照誤り</td></tr>
+          <tr><td>7</td><td><code>Educational.Language</code> Meta-data 要素の文字数誤り</td></tr>
+          <tr><td>8</td><td>LOM Best Practice の Vocabulary Source 値</td></tr>
+          <tr><td>9</td><td>SCORM Meta-data Information Model における要素の multiplicity</td></tr>
+          <tr><td>10</td><td>Meta-data の DateType に関するベストプラクティス</td></tr>
+          <tr><td>11</td><td><code>&lt;taxon&gt;</code> 要素の multiplicity の明確化</td></tr>
+          <tr><td>12</td><td>Element 3.2.4 Item の ADL Note の削除</td></tr>
+          <tr><td>13</td><td>SCORM Meta-data Information Model の Element 3.5 Language の更新</td></tr>
+          <tr><td>14</td><td>Content Packaging のエラー整理</td></tr>
+          <tr><td>15</td><td>Content Packaging 例の更新</td></tr>
+          <tr><td>16</td><td>LMS 初期化要件の明確化</td></tr>
+          <tr><td>17</td><td>SCORM Run-Time Environment Data Model の更新</td></tr>
+        </tbody>
+      </table>
+
+      <p>追加の訂正が判明し次第、本書は更新される。誤りを発見した場合は ADLNet の Help &amp; Info Center を通じて ADL 技術チームへ報告すること。</p>
+    </section>
+
+    <!-- 1.2 Addendum 1 -->
+    <section id="sec-1-2">
+      <h2><span class="section-num">SECTION 1.2</span>Addendum 1: Content Packaging Information Model における Resource Href 属性の multiplicity 誤り</h2>
+
+      <p>本 addendum は、Section 2.3.4「The SCORM Content Packaging Information Model」および Section 2.3.5「The SCORM Content Packaging XML Binding」で発見された誤りを訂正する。両セクションで定義されている Resource Href サブ要素の multiplicity を訂正する。</p>
+
+      <h3>1.2.1 必要な更新</h3>
+
+      <p><strong>SCORM Content Packaging Information Model の変更：</strong> 次の表は Section 2.3.4 における訂正である。</p>
+
+      <table class="spec-table">
+        <thead><tr><th style="width: 50px;">Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>4.1.3</td>
+            <td>Href</td>
+            <td>本リソースの「entry point」への参照。<br><em>ADL Note: この値はリソースが起動される際に launch location として使用される。</em></td>
+            <td><del>1 and only 1</del> <ins>0 or 1</ins></td>
+            <td>String（最小許容最大値: 2000 文字）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>SCORM Content Packaging XML Binding の変更：</strong> XML Binding は SCORM Content Packaging Information Model の変更を反映するため更新される。<code>&lt;resource&gt;</code> 要素の <code>href</code> 属性を <strong>optional</strong> に変更する（SCORM Version 1.2 Content Packaging XML Binding では <strong>required</strong> とされていた）。</p>
+
+      <div class="addendum">
+        <div class="addendum-meta">2.3.5.4.1 <strong>&lt;resource&gt;</strong> Element</div>
+        <div class="addendum-body">
+          <p>Description: 特定のコンテンツファイルを記述する。</p>
+          <p>Data Type: コンテナ要素であり、他の要素のみを含む。</p>
+          <p>Multiplicity: <code>&lt;resources&gt;</code> 要素の中で 0 回以上出現してよい。</p>
+          <p>Attributes:</p>
+          <ul>
+            <li><code>identifier</code> (required) — 著者またはオーサリングツールが提供する Manifest 内で一意な識別子。</li>
+            <li><code>type</code> (required) — リソース種別を示す文字列。本仕様では <code>"webcontent"</code> のみを定義。</li>
+            <li><code>adlcp:scormtype</code> (required) — SCORM リソースの種別を定義（IMS Content Packaging Information Model に対する ADL 拡張）。Data Type: <code>"sco"</code> または <code>"asset"</code> の制限語彙。</li>
+            <li><code>href</code> (<del>required</del> <ins>optional</ins>) — リソースの「entry point」への参照。完全修飾された外部 URI も許容される。</li>
+            <li><code>xml:base</code> (optional) — コンテンツファイルの相対パスオフセットを提供。利用法は W3C の XML Base Working Draft で定義される。Data Type: String。</li>
+          </ul>
+          <p>XML Schema Definition (XSD) への変更は不要である。IMS Global Learning Consortium の Content Packaging Specification Version 1.1.2 XSD、ADL の SCORM Version 1.2 Content Packaging XML XSD のいずれも修正不要。</p>
+        </div>
+      </div>
+
+      <h3>1.2.2 変更の根拠</h3>
+
+      <p><code>&lt;resource&gt;</code> が起動可能リソースとしてではなく、Asset 群をパッケージ化する目的で宣言される場合、<code>href</code> 属性は不要となる。<code>&lt;resource&gt;</code> が起動不可能であれば、entry point を宣言する必要はない。<code>href</code> を持たない <code>&lt;resource&gt;</code> は、Manifest のコンテンツ構造（<code>&lt;organization&gt;</code>）セクション内の <code>&lt;item&gt;</code> から参照されるべきではない。</p>
+
+      <p>これにより次のシナリオが可能となる。</p>
+
+<pre><code>&lt;resource identifier=&quot;R_01&quot; type=&quot;webcontent&quot;
+          adlcp:scormtype=&quot;asset&quot;&gt;<span class="tok-c">&lt;!-- href なし --&gt;</span>
+   &lt;file href=&quot;img1.jpg&quot;/&gt;
+   &lt;file href=&quot;img2.jpg&quot;/&gt;
+&lt;/resource&gt;
+&lt;resource identifier=&quot;R_02&quot; type=&quot;webcontent&quot;
+          adlcp:scormtype=&quot;asset&quot;&gt;<span class="tok-c">&lt;!-- href なし --&gt;</span>
+   &lt;dependency identifierref=&quot;R_01&quot; /&gt;
+   &lt;file href=&quot;file.htm&quot;/&gt;
+   &lt;file href=&quot;img4.gif&quot;/&gt;
+&lt;/resource&gt;
+&lt;resource identifier=&quot;R_03&quot; type=&quot;webcontent&quot;
+          adlcp:scormtype=&quot;sco&quot; href=&quot;xyz.htm&quot;&gt;
+   &lt;dependency identifierref=&quot;R_02&quot; /&gt;
+&lt;/resource&gt;
+&lt;resource identifier=&quot;R_04&quot; type=&quot;webcontent&quot;
+          adlcp:scormtype=&quot;asset&quot; href=&quot;abc.htm&quot;&gt;
+   &lt;dependency identifierref=&quot;R_02&quot; /&gt;
+&lt;/resource&gt;</code></pre>
+    </section>
+
+    <!-- 1.3 Addendum 2 -->
+    <section id="sec-1-3">
+      <h2><span class="section-num">SECTION 1.3</span>Addendum 2: SCORM Meta-data XML Binding における誤例</h2>
+
+      <p>本 addendum は、Section 2.2.3「The SCORM Meta-data XML Binding」で発見された誤りを訂正する。複数の XML Binding と例で <code>&lt;vocabulary&gt;</code> 要素の使用が示されているが、IMS Learning Resource Meta-data Specifications には <code>&lt;vocabulary&gt;</code> 要素は存在しない。影響する要素は次のとおり。</p>
+
+      <ul style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7;">
+        <li>2.2.3.1.1.8 &lt;structure&gt; 要素</li>
+        <li>2.2.3.1.1.9 &lt;aggregationlevel&gt; 要素</li>
+        <li>2.2.3.1.2.2 &lt;status&gt; 要素</li>
+        <li>2.2.3.1.2.3.1 &lt;role&gt; 要素</li>
+        <li>2.2.3.1.3.3.1 &lt;role&gt; 要素</li>
+        <li>2.2.3.1.4.4.1 &lt;type&gt; 要素</li>
+        <li>2.2.3.1.4.4.2 &lt;name&gt; 要素</li>
+        <li>2.2.3.1.5.1 &lt;interactivitytype&gt; 要素</li>
+        <li>2.2.3.1.5.2 &lt;learningresourcetype&gt; 要素</li>
+        <li>2.2.3.1.5.3 &lt;interactivitylevel&gt; 要素</li>
+        <li>2.2.3.1.5.4 &lt;semanticdensity&gt; 要素</li>
+        <li>2.2.3.1.5.5 &lt;intendedenduserrole&gt; 要素</li>
+        <li>2.2.3.1.5.6 &lt;context&gt; 要素</li>
+        <li>2.2.3.1.5.8 &lt;difficulty&gt; 要素</li>
+        <li>2.2.3.1.6.1 &lt;cost&gt; 要素</li>
+        <li>2.2.3.1.6.2 &lt;copyrightandotherrestrictions&gt; 要素</li>
+        <li>2.2.3.1.7.1 &lt;kind&gt; 要素</li>
+        <li>2.2.3.1.9.1 &lt;purpose&gt; 要素</li>
+      </ul>
+
+      <p>上記要素は SCORM Version 1.2 で定義されているような <code>&lt;vocabulary&gt;</code> 要素を含むべきではない。<code>&lt;vocabulary&gt;</code> 要素を <code>&lt;source&gt;</code> および <code>&lt;value&gt;</code> の 2 要素に置き換える。</p>
+
+      <h3>1.3.1 必要な更新</h3>
+
+      <div class="addendum">
+        <div class="addendum-meta">2.2.3.1.1.8 <strong>&lt;structure&gt;</strong> Element</div>
+        <div class="addendum-body">
+          <p>Description: この learning resource の基礎となる組織構造を記述する。本要素に定義されている語彙は制限語彙である。</p>
+          <p>Multiplicity: <code>&lt;general&gt;</code> 要素内に 0 回または 1 回出現する。</p>
+          <p>Attributes: なし</p>
+          <p>Elements:</p>
+          <ul>
+            <li><del><code>&lt;vocabulary&gt;</code></del></li>
+            <li><ins><code>&lt;source&gt;</code></ins></li>
+            <li><ins><code>&lt;value&gt;</code></ins></li>
+          </ul>
+          <p>LOM Defined Vocabularies（<code>&lt;source&gt;</code> 要素は <code>"LOMv1.0"</code> に設定）<br>制限語彙：<code>"Collection"</code>、<code>"Mixed"</code>、<code>"Linear"</code>、<code>"Hierarchical"</code>、<code>"Networked"</code>、<code>"Branched"</code>、<code>"Parceled"</code>、<code>"Atomic"</code></p>
+          <p><strong>例</strong>（<code>&lt;vocabulary&gt;</code> 要素を除去するよう更新）：</p>
+<pre><code>&lt;general&gt;
+   &lt;structure&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Collection&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/structure&gt;
+&lt;/general&gt;</code></pre>
+        </div>
+      </div>
+
+      <p>本変更は Section 2.2.3「The SCORM Meta-data XML Binding」全体に伝播させる必要がある。Data Type が <code>VocabularyType</code> であるすべての要素に影響する。Section 2.2.2「The SCORM Meta-data Information Model」および Meta-data 制御文書（IMS Learning Resource Meta-data Specification Version 1.2.1 XSD: <code>imsmd_rootv1p2p1.xsd</code>）には変更不要である。</p>
+
+      <h3>1.3.2 変更の根拠</h3>
+
+      <p>本変更は IMS Learning Resource Meta-data Specifications の解釈の誤りを修正するために必要である。IMS Learning Resource Meta-data XML Binding Specification には <code>&lt;vocabulary&gt;</code> という要素は存在しない。</p>
+    </section>
+
+    <!-- 1.4 Addendum 3 -->
+    <section id="sec-1-4">
+      <h2><span class="section-num">SECTION 1.4</span>Addendum 3: Section 2.2.4.4「The SCORM Meta-data Application Profile Requirements」のタイポ</h2>
+
+      <p>本 addendum は、Section 2.2.4.4「The SCORM Meta-data Application Profiles Requirements」で発見された誤りを訂正する。無効な Meta-data インスタンスを生じさせかねないタイポを修正する。</p>
+
+      <h3>1.4.1 必要な更新</h3>
+
+      <p>表 2.2.4.4a「SCORM Meta-data Application Profile Requirements」の要素 6.2 <code>copyrightandotherrestrictions</code> エントリに、Name のスペル誤りがある。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th>Name</th><th>Content Aggregation</th><th>SCO</th><th>Asset</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>6.0 rights</td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td>6.1 cost</td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><del>6.2 copyrightsandotherrestrictions</del> <ins>6.2 copyrightandotherrestrictions</ins></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td>6.3 description</td><td>O</td><td>O</td><td>O</td></tr>
+        </tbody>
+      </table>
+
+      <p><code>copyrights</code> の末尾の <code>"s"</code> を削除して <code>&lt;copyrightandotherrestrictions&gt;</code> とする必要がある。</p>
+
+      <h3>1.4.2 変更の根拠</h3>
+
+      <p>混乱の原因となるタイポの修正である。本書のより前のセクション（Section 2.2.3「The SCORM Meta-data XML Binding」）では、要素名・例のいずれにも <code>"s"</code> は付いていない。</p>
+    </section>
+
+    <!-- 1.5 Addendum 4 -->
+    <section id="sec-1-5">
+      <h2><span class="section-num">SECTION 1.5</span>Addendum 4: SCORM Run-Time Environment Data Model におけるエラーコード誤り</h2>
+
+      <p>本 addendum は、Section 3.4.4「The SCORM Run-Time Environment Data Model」で発見された誤りを訂正する。Data Model の解釈を誤らせるタイポを修正する。</p>
+
+      <h3>1.5.1 必要な更新</h3>
+
+      <p>複数の要素について、LMS が報告すべきエラーコードに誤りがある。<code>LMSSetValue()</code> API 関数が呼び出された際に、データ要素を設定する値のデータ型が正しくない場合、LMS はエラーコードを <code>405 - Incorrect Data Type</code> に設定する。影響する要素は次のとおり。</p>
+
+      <ul style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+        <li>cmi.core.session_time</li>
+        <li>cmi.interactions.n.id</li>
+        <li>cmi.interactions.n.objectives.n.id</li>
+        <li>cmi.interactions.n.time</li>
+        <li>cmi.interactions.n.type</li>
+        <li>cmi.interactions.n.correct_responses.n.pattern</li>
+        <li>cmi.interactions.n.weighting</li>
+        <li>cmi.interactions.n.student_response</li>
+        <li>cmi.interactions.n.result</li>
+        <li>cmi.interactions.n.latency</li>
+      </ul>
+
+      <p>これらの要素ではエラーコードが <code>205</code> と記載されていた。<strong><code>205</code> は誤りであり、そのようなエラーコードは存在しない。</strong> 次は Section 3.4.4 からの抜粋であり、必要な更新を示す。</p>
+
+      <div class="addendum">
+        <div class="addendum-meta"><strong>cmi.interactions.n.id</strong></div>
+        <div class="addendum-body">
+          <p>Supported API calls: <code>LMSSetValue()</code><br>
+          LMS Mandatory: No<br>
+          Data Type: <code>CMIIdentifier</code><br>
+          SCO Accessibility: Write Only</p>
+          <p>Definition: インタラクションの一意識別子。</p>
+          <p>Usage: 一意のインタラクション ID を設定するために使用。SCO 固有。</p>
+          <p>Format: 英数文字列。内部スペース不可。</p>
+          <p><strong>LMS Behavior:</strong></p>
+          <ul>
+            <li>Initialization: SCO によって制御される。</li>
+            <li><code>LMSGetValue()</code>: 次に従ってエラーコードを設定し、空文字列 (<code>""</code>) を返す。
+              <ul>
+                <li><strong>Error Code:</strong>
+                  <ul>
+                    <li><code>401 - Not implemented error</code>：要素がサポートされない場合、空文字列を返してエラーコードを設定する。</li>
+                    <li><code>404 - Element is write only</code>：SCO が本要素に対して <code>LMSGetValue()</code> を呼び出した場合、LMS はエラーコードを <code>404</code> に設定し空文字列を返す。</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><code>LMSSetValue()</code>: 指定値でデータ要素を設定する。値は本要素のデータ型と一致する必要がある。
+              <ul>
+                <li>Example API call: <code>LMSSetValue("cmi.interactions.0.id","I_001")</code></li>
+                <li>Example Set Values: <code>"I_001"</code>、<code>"i1"</code></li>
+                <li><strong>Error Code:</strong>
+                  <ul>
+                    <li><del><code>205</code></del> <ins><code>405 – Incorrect Data Type</code></ins>：<code>LMSSetValue()</code> が呼び出され、要素の設定値が正しいデータ型でない場合。</li>
+                    <li><code>401 - Not implemented error</code>：要素がサポートされない場合。</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>1.5.2 変更の根拠</h3>
+
+      <p>混乱を招きうるタイポの修正である。<code>205</code> エラーコードは Section 3.3.3 API Error Code Usage のエラーコード集合には存在しない。</p>
+    </section>
+
+    <!-- 1.6 Addendum 5 -->
+    <section id="sec-1-6">
+      <h2><span class="section-num">SECTION 1.6</span>Addendum 5: SCORM Run-Time Environment のページ番号誤り</h2>
+
+      <p>本 addendum は、The SCORM Run-Time Environment で発見された 2 件のページ番号誤りを訂正する。</p>
+
+      <h3>1.6.1 必要な更新</h3>
+
+      <p>SCORM Run-Time Environment にはページ番号の誤りが 2 箇所ある。</p>
+      <ul>
+        <li>Section 3.5「Run-Time Environment Behavior」の直後のページが <code>3-1</code> となっているが、正しくは <code>3-61</code> である。</li>
+        <li>Appendix C の冒頭ページが <code>C-5</code> となっているが、正しくは <code>C-1</code> である。</li>
+      </ul>
+
+      <h3>1.6.2 変更の根拠</h3>
+
+      <p>混乱を招きうるページ番号の不整合を修正する。</p>
+    </section>
+
+    <!-- 1.7 Addendum 6 -->
+    <section id="sec-1-7">
+      <h2><span class="section-num">SECTION 1.7</span>Addendum 6: <code>cmi.core.entry</code> 要素の語彙参照誤り</h2>
+
+      <p>本 addendum は、無効な語彙への参照を訂正する。Section 3.4.4「The SCORM Run-Time Environment Data Model」の <code>cmi.core.entry</code> セクションに、<code>cmi.core.exit</code> が値 <code>"resume"</code> を持つという参照があるが、<code>cmi.core.exit</code> の有効語彙値リストに <code>"resume"</code> は含まれない。本参照は <code>"suspend"</code> に変更されるべきである。</p>
+
+      <h3>1.7.1 必要な更新</h3>
+
+      <p>SCORM Run-Time Environment Data Model 表の <code>cmi.core.entry</code> セクションで、<code>"resume"</code> を <code>"suspend"</code> に変更する。誤参照は LMS Behavior サブ見出しの Additional Behaviors セクションに位置する。</p>
+
+      <div class="addendum">
+        <div class="addendum-meta"><strong>cmi.core.entry</strong></div>
+        <div class="addendum-body">
+          <p>Supported API calls: <code>LMSGetValue()</code><br>
+          LMS Mandatory: Yes<br>
+          Data Type: <code>CMIVocabulary (Entry)</code> — <code>"ab-initio"</code>、<code>"resume"</code>、<code>""</code>（空文字列）<br>
+          SCO Accessibility: Read Only</p>
+          <p>Definition: 学習者が以前 SCO に入ったことがあるかどうかを示す。</p>
+          <p>Usage: 学習者が初めて SCO に入った時、LMS は <code>cmi.core.entry</code> を <code>"ab-initio"</code> に設定する。学習者が suspend された SCO に再度入る場合、LMS は entry フラグを <code>"resume"</code> に設定する。</p>
+          <p>Format: 定義語彙フレーズ。3 つの可能な語彙値：</p>
+          <ul>
+            <li><code>"ab-initio"</code>：学習者が初めて SCO に入ることを示す。学習者が pre-test を完了することで SCO 内のすべての objective を pass している可能性があるため、<code>lesson_status</code> が <code>"not attempted"</code> であることは信頼できる指標ではない。すなわち、SCO は学習者が一度も見ていないまま pass されうる。</li>
+            <li><code>"resume"</code>：学習者が以前 SCO にいたことを示す。suspend された SCO を再開している。</li>
+            <li><code>""</code>：初回 (<code>"ab-initio"</code>) でも suspend 状態からの継続 (<code>"resume"</code>) でもない SCO への entry を表現する空文字列。たとえば SCO がすでに完了し、後で review 目的で読み込まれた場合に使用する。</li>
+          </ul>
+          <p><strong>LMS Behavior:</strong></p>
+          <ul>
+            <li>Initialization: SCO の初回起動時、LMS はデータモデル値を <code>"ab-initio"</code> に初期化する。
+              <ul>
+                <li>Additional Behavior: <code>LMSFinish()</code> 受信時または利用者が離脱した時、LMS は <code>cmi.core.entry</code> を <code>""</code> または <code>"resume"</code> のいずれかに設定する。これは LMS が SCO の設定した <code>cmi.core.exit</code> 値を見て決定する。SCO が <code>cmi.core.exit</code> を <code>"suspend"</code> に設定した場合、次回 SCO 起動時に LMS は <code>cmi.core.entry</code> を <code>"resume"</code> に設定する。SCO が <code>cmi.core.exit</code> を <del><code>"resume"</code></del> <ins><code>"suspend"</code></ins> 以外の値に設定したか、設定しなかった場合、LMS は <code>cmi.core.entry</code> を <code>""</code> に設定する。</li>
+              </ul>
+            </li>
+            <li><code>LMSGetValue()</code>: データモデルに格納された値を返す。<code>cmi.core.entry</code> の定義語彙のいずれかでなければならない。
+              <ul>
+                <li>Example Return Values: <code>"ab-initio"</code>、<code>"resume"</code></li>
+                <li>Error Code: <code>401 - Not implemented error</code>（ただし本要素は LMS Mandatory のため LMS はサポートしなければならない）</li>
+              </ul>
+            </li>
+            <li><code>LMSSetValue()</code>: 次のとおりエラーコードを設定する。
+              <ul>
+                <li>Error Code:
+                  <ul>
+                    <li><code>403 - Element is read only</code>：本要素に対して <code>LMSSetValue()</code> が呼び出された場合、LMS はエラーコードを <del><code>204</code></del> <ins><code>403</code></ins> に設定する。</li>
+                    <li><code>401 - Not implemented error</code></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>SCO Usage Example:</strong></p>
+<pre><code><span class="tok-k">var</span> entryStatus = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.entry"</span>);
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>) {
+    <span class="tok-k">if</span> (entryStatus == <span class="tok-s">"resume"</span>) {
+       <span class="tok-c">// 学習者は SCO を再開中</span>
+    } <span class="tok-k">else</span> {
+       <span class="tok-c">// 学習者が初めて SCO に入った</span>
+    }
+} <span class="tok-k">else</span> {
+   <span class="tok-c">// エラー条件、適切に処理する</span>
+}</code></pre>
+        </div>
+      </div>
+
+      <h3>1.7.2 変更の根拠</h3>
+
+      <p><code>cmi.core.exit</code> 要素には <code>"resume"</code> という有効語彙値は存在しない。混乱の原因となっていた誤値の修正である。</p>
+    </section>
+
+    <!-- 1.8 Addendum 7 -->
+    <section id="sec-1-8">
+      <h2><span class="section-num">SECTION 1.8</span>Addendum 7: <code>Educational.Language</code> Meta-data 要素の文字数誤り</h2>
+
+      <p>本 addendum は、Section 2.2.2「The SCORM Meta-data Information Model」の <code>Educational.Language</code> 要素（番号 5.11）の無効な文字長への参照を訂正する。言語の不正な表現を引き起こしうる誤りを修正する。</p>
+
+      <h3>1.8.1 必要な更新</h3>
+
+      <p>IEEE LTSC LOM 情報モデルでは、要素番号 5.11 <code>Educational.Language</code> の文字長は <strong>100</strong>（最小許容最大値）と示されている。これは IMS Learning Resource Meta-data Specification Version 1.2.1 にも反映されている。SCORM Content Aggregation Model の Section 2.2.2 では文字長の最小許容最大値が <strong>10</strong> と示されているが、これは <strong>100</strong> に更新されるべきである。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>5.11</td>
+            <td>Language</td>
+            <td>本リソースの想定利用者が使用する人間言語。<code>"None"</code> も許容値。<br>ISO 639<sup>23</sup> および ISO 3166<sup>24</sup> の標準に従って表現する。</td>
+            <td>0 or More <del>(最小許容最大値: 10)</del></td>
+            <td>String（最小許容最大値: <del>10</del> <ins>100</ins> 文字）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.8.2 変更の根拠</h3>
+
+      <p>本値は IEEE LTSC LOM および IMS Learning Resource Meta-data Specification Version 1.2.1 と整合していなかった。混乱の原因となりうる誤りの修正である。</p>
+    </section>
+
+    <!-- 1.9 Addendum 8 -->
+    <section id="sec-1-9">
+      <h2><span class="section-num">SECTION 1.9</span>Addendum 8: LOM Best Practice の Vocabulary Source 値</h2>
+
+      <p>本 addendum は、Data Type が <code>VocabularyType</code> でかつ Best Practice 扱いの要素について、<code>&lt;source&gt;</code> 要素にどの値を使用すべきかを明確化する。Data Type が <code>VocabularyType</code> で語彙項目が Best Practice 扱いの要素は次のとおり。</p>
+
+      <ul>
+        <li><code>Lifecycle.Contribute.Role</code> (2.3.1)</li>
+        <li><code>Metametadata.Contribute.Role</code> (3.3.1)</li>
+        <li><code>Technical.Requirement.Type</code> (4.4.1)</li>
+        <li><code>Technical.Requirement.Name</code> (4.4.2)</li>
+        <li><code>Educational.Learning Resource Type</code> (5.2)</li>
+        <li><code>Educational.Context</code> (5.6)</li>
+        <li><code>Relation.Kind</code> (7.1)</li>
+        <li><code>Classification.Purpose</code> (9.1)</li>
+      </ul>
+
+      <p>SCORM は、制限語彙の <code>VocabularyType</code> 要素について <code>&lt;source&gt;</code> を <code>"LOMv1.0"</code> に設定すべきと述べている。しかし上記のような Best Practice 語彙の <code>VocabularyType</code> 要素については、<code>&lt;source&gt;</code> 値が示されていなかった。</p>
+
+      <h3>1.9.1 必要な更新</h3>
+
+      <p>上記要素について、SCORM Meta-data XML Binding（Section 2.2.3）の対応セクションを更新する必要がある。XML Binding には次のように示すべきである：利用者が提供される語彙を採用する場合、meta-data レコードは <code>&lt;source&gt;</code> を <code>"LOMv1.0"</code> と示す。利用者が独自の語彙（best practice リストにないもの）を採用する場合、meta-data レコードは <code>&lt;source&gt;</code> を <code>"LOMv1.0"</code> 以外の値で示す。<code>&lt;source&gt;</code> に使用する値は、その語彙を定義した組織が定める。本オプションは learning resource のインデキサーに柔軟性を提供する一方、意味的相互運用性が犠牲となる。利用者定義値は広範なコミュニティで一貫して使用されない。</p>
+
+      <h3>1.9.2 変更の根拠</h3>
+
+      <p>SCORM Meta-data XML Binding で識別される Best Practice 語彙の利用法を明確化するための変更である。</p>
+    </section>
+
+    <!-- 1.10 Addendum 9 -->
+    <section id="sec-1-10">
+      <h2><span class="section-num">SECTION 1.10</span>Addendum 9: SCORM Meta-data Information Model における要素の multiplicity</h2>
+
+      <p>本 addendum は、Section 2.2.2「The SCORM Meta-data Information Model」および Section 2.2.3「The SCORM Meta-data XML Binding」で発見された複数の誤りを明確化する。次の Meta-data 要素および対応 XML Binding の multiplicity を明確化する。</p>
+
+      <ul>
+        <li><code>General.Catalog Entry.Catalog</code> (1.3.1)</li>
+        <li><code>General.Catalog Entry.Entry</code> (1.3.2)</li>
+        <li><code>Life Cycle.Contribute.Role</code> (2.3.1)</li>
+        <li><code>Meta-Metadata.Catalog Entry.Catalog</code> (3.2.1)</li>
+        <li><code>Meta-Metadata.Catalog Entry.Entry</code> (3.2.2)</li>
+        <li><code>Meta-Metadata.Contribute.Role</code> (3.3.1)</li>
+        <li><code>Relation.Resource.Catalog Entry.Catalog</code> (7.2.3.1)</li>
+        <li><code>Relation.Resource.Catalog Entry.Entry</code> (7.2.3.2)</li>
+      </ul>
+
+      <p>SCORM Meta-data Information Model および XML Binding は、これらの要素を optional（0 or 1）と記している。要素自体は optional であるが、<strong>親要素が使用される場合、上記要素は mandatory になる</strong>。</p>
+
+      <h3>1.10.1 必要な更新</h3>
+
+      <p><strong>Section 2.2.2「The SCORM Meta-data Information Model」</strong>：上記要素に対して ADL Note を追加するよう情報モデルを更新する。ADL Note は Explanation 列に配置する。たとえば「<code>Catalog Entry</code> 要素が使用される場合、<code>Catalog</code> 要素は 1 回かつ 1 回のみ存在しなければならない (1 and only 1)」と示す。各情報要素を当該要素に応じた類似文言で更新する。</p>
+
+      <p><strong>Section 2.2.3「The SCORM Meta-data XML Binding」</strong>：上記要素について Multiplicity セクションに情報を追加する。たとえば「<code>&lt;catalogentry&gt;</code> 要素が使用される場合、<code>&lt;catalog&gt;</code> 要素は 1 回かつ 1 回のみ存在しなければならない」と示す。</p>
+
+      <h3>1.10.2 変更の根拠</h3>
+
+      <p>IMS Learning Resource Meta-data 仕様を反映する更新である。</p>
+    </section>
+
+    <!-- 1.11 Addendum 10 -->
+    <section id="sec-1-11">
+      <h2><span class="section-num">SECTION 1.11</span>Addendum 10: Meta-data の DateType に関するベストプラクティス</h2>
+
+      <p>本 addendum は、meta-data レコード内で使用される日付・時刻のベストプラクティスを追加する。ISO 8601 が定める広範なフォーマットバリエーションすべてとの相互運用性を維持することは困難であるため、SCORM（および Conformance Test Suite）は次のベストプラクティスを推奨する：すべての <code>"datetime"</code> 要素は「International Standard Date notation」(<code>yyyy-mm-dd</code>) または「International Standard for the Time of Day」(<code>hh:mm:ss</code>) の形式とする。</p>
+
+      <h3>1.11.1 必要な更新</h3>
+
+      <p>Section 2.2.2「The SCORM Meta-data Information Model」の Data Type Information Model に次のベストプラクティスを追加する。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Datetime</td>
+            <td>ISO 8601 標準で表現される日付。<br><strong>Best Practice:</strong> すべての Datetime 要素は「International Standard Date notation」(<code>yyyy-mm-dd</code>) または「International Standard for the Time of Day」(<code>hh:mm:ss</code>) の形式とする。</td>
+            <td>single value</td>
+            <td>String（最小許容最大値: 200 文字）</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Description</td>
+            <td>日付の説明。</td>
+            <td>single value</td>
+            <td>LangString（最小許容最大値: 1000 文字）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.11.2 変更の根拠</h3>
+
+      <p>ISO 8601 のフォーマットバリエーションとの相互運用性維持の困難さからベストプラクティスを追加する。本情報は SCORM 本体には欠けていたが、Conformance Requirements および Conformance Test Suite では言及されていた。</p>
+    </section>
+
+    <!-- 1.12 Addendum 11 -->
+    <section id="sec-1-12">
+      <h2><span class="section-num">SECTION 1.12</span>Addendum 11: <code>&lt;taxon&gt;</code> 要素の multiplicity の明確化</h2>
+
+      <p>本 addendum は、SCORM Meta-data Information Model および SCORM Meta-data XML Binding に記された multiplicity を明確化する。<code>&lt;taxon&gt;</code> パス要素の現行の最小許容最大値は <strong>15</strong> である。これはシステムが対応を要求される <code>&lt;taxon&gt;</code> 要素数の最小許容最大値を意味する。<code>&lt;taxon&gt;</code> 要素は IMS Learning Resource Meta-data Specification で <code>&lt;taxonpath&gt;</code> 要素内に再帰的にネストされるよう変更された。SCORM Version 1.2 でも対応されているが、この再帰ネストの multiplicity に混乱が生じている。</p>
+
+      <h3>1.12.1 必要な更新</h3>
+
+      <p>最小許容最大値 <strong>15</strong> は<strong>再帰的にネストされた</strong> <code>&lt;taxon&gt;</code> 要素の数であり、<code>&lt;taxonpath&gt;</code> 内の <code>&lt;taxon&gt;</code> 要素数ではない。例：</p>
+
+      <table class="spec-table">
+        <thead><tr><th>正しい解釈</th><th>誤った解釈</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><pre style="margin: 0; background: white; color: var(--ink); border: none;"><code>&lt;taxonpath&gt;
+   &lt;taxon&gt;
+      &lt;taxon&gt;
+         &lt;taxon&gt;
+&lt;/taxonpath&gt;</code></pre></td>
+            <td><pre style="margin: 0; background: white; color: var(--ink); border: none;"><code>&lt;taxonpath&gt;
+   &lt;taxon&gt;
+   &lt;taxon&gt;
+   &lt;taxon&gt;
+&lt;/taxonpath&gt;</code></pre></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><code>&lt;taxon&gt;</code> 要素の再帰的ネストが <code>&lt;taxonpath&gt;</code> として扱われる。複数の <code>&lt;taxonpath&gt;</code> が必要な場合、meta-data レコードは <code>&lt;taxonpath&gt;</code> 要素と必要な <code>&lt;taxon&gt;</code> 要素の再帰ネストを繰り返すべきである。</p>
+
+      <h3>1.12.2 変更の根拠</h3>
+
+      <p><code>&lt;taxon&gt;</code> 要素の最小許容最大値の意味を明確化するため。</p>
+    </section>
+
+    <!-- 1.13 Addendum 12 -->
+    <section id="sec-1-13">
+      <h2><span class="section-num">SECTION 1.13</span>Addendum 12: Element 3.2.4 Item の ADL Note の削除</h2>
+
+      <p>本 addendum は、Section 2.3.4「The SCORM Content Packaging Information Model」で発見された誤った Note の整理のために追加される。Note は content aggregation を表す Item（block、chapter、module など）の <code>identifierref</code> に関するもので、これらのシナリオでは <code>identifierref</code> を空文字列 (<code>""</code>) に設定すべきだと記述している。これは誤りである。container <code>&lt;item&gt;</code> が <code>identifierref</code> 経由でリソースを参照することを許可するユースケースが複数報告されている。SCORM はこの制限を解除するために更新される。</p>
+
+      <h3>1.13.1 必要な更新</h3>
+
+      <p>content aggregation を表す Item 要素（block、module、lesson など）について、<code>identifierref</code> 属性を空文字列 (<code>""</code>) にする必要があるとした Note を削除する。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>3.2.4</td>
+            <td>Item</td>
+            <td>
+              <p>organization 構造内のノードを記述する。</p>
+              <p><em>ADL Note: 本要素は SCORM Version 1.1 CSF で定義された <code>&lt;block&gt;</code> および <code>&lt;sco&gt;</code> 要素を表すために使用する。<del><code>&lt;block&gt;</code> 要素を表す item については <code>identifierref</code> 属性を空文字列 (<code>""</code>) にする必要がある。<code>&lt;block&gt;</code> 要素は他の <code>&lt;block&gt;</code> 要素および <code>&lt;sco&gt;</code> 要素のコンテナにすぎず、実際のコンテンツを含まないため、リソースを参照する必要がない。</del> <code>&lt;sco&gt;</code> 要素を表す item の <code>identifierref</code> 属性は SCO を定義するリソースを参照しなければならない。本要素の <code>parameters</code> 属性は SCORM Version 1.1 CSF の <code>&lt;parameterString&gt;</code> 要素を置き換える。</em></p>
+            </td>
+            <td>0 or More</td>
+            <td>Container</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.13.2 変更の根拠</h3>
+
+      <p>本機能を許可するユースケースが複数報告されている。IMS Content Packaging Specification には本機能を否定する記述はない。</p>
+    </section>
+
+    <!-- 1.14 Addendum 13 -->
+    <section id="sec-1-14">
+      <h2><span class="section-num">SECTION 1.14</span>Addendum 13: SCORM Meta-data Information Model の Element 3.5 Language の更新</h2>
+
+      <p>本 addendum は、SCORM Meta-data Information Model の <code>Language</code> 要素のフォーマットを明確化する。</p>
+
+      <h3>1.14.1 必要な更新</h3>
+
+      <p>本要素のフォーマットは ISO 639/3166 標準に従って表現する。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>3.5</td>
+            <td>Language</td>
+            <td>本 meta-data インスタンスの言語。本 meta-data インスタンス内のすべての <code>langstring</code> 値のデフォルト言語となる。記述対象コンテンツの言語と異なってよい。<code>"None"</code> も許容値。<br><ins>ISO 639 および ISO 3166 標準に従って表現する。</ins></td>
+            <td>0 or 1</td>
+            <td>String（最小許容最大値: 100 文字）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.14.2 変更の根拠</h3>
+
+      <p>本情報は SCORM Meta-data Information Model に欠けていた。</p>
+    </section>
+
+    <!-- 1.15 Addendum 14 -->
+    <section id="sec-1-15">
+      <h2><span class="section-num">SECTION 1.15</span>Addendum 14: Content Packaging のエラー整理</h2>
+
+      <p>本 addendum は、Section 2.3.4「The SCORM Content Packaging Information Model」および Section 2.3.5「The SCORM Content Packaging XML Binding」で発見された複数の誤りを整理する。</p>
+
+      <h3>1.15.1 必要な更新</h3>
+
+      <h4>Section 2.3.4 The SCORM Content Packaging Information Model</h4>
+
+      <p><strong>1. Version 項目の更新</strong>：multiplicity 列が誤り。正しくは 0 or 1。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td>1.2</td><td>Version</td><td>Manifest のバージョンを識別する。</td><td><del>1 and only 1</del> <ins>0 or 1</ins></td><td>String（最小許容最大値: 20 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>2. Href 項目の更新</strong>：multiplicity 列が誤り。正しくは 1 and only 1。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td>4.1.6.1</td><td>Href</td><td>本ファイルの位置への参照。</td><td><del>0 or 1</del> <ins>1 and only 1</ins></td><td>String（最小許容最大値: 2000 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>3. Type 項目の明確化</strong>：Manifest が <code>&lt;adlcp:prerequisite&gt;</code> 要素を含む場合、<code>type</code> 属性は必須であり <code>"aicc_script"</code> に設定すべきと明記（例：<code>&lt;adlcp:prerequisite type="aicc_script"&gt;</code>）。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>3.2.4.8.1</td>
+            <td>Type</td>
+            <td>
+              <p>prerequisites の表現に使用するスクリプト言語を定義する。</p>
+              <p><em>ADL Note: IMS Content Packaging Information Model に対する ADL 拡張。Type は optional だが、Prerequisites 要素が使用される場合、Type は必須となる。語彙：<code>"aicc_script"</code></em></p>
+            </td>
+            <td>0 or 1</td>
+            <td>Vocabulary (Restricted)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>4. Max Time Allowed 項目の更新</strong>：Data Type 列を Timespan の長さを反映するよう更新。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>3.2.4.9</td>
+            <td>Max Time Allowed</td>
+            <td>
+              <p>item が表す SCO の現行 attempt で学習者に許可される時間量を定義する。</p>
+              <p><em>ADL Note: IMS Content Packaging Information Model に対する ADL 拡張。本要素は親 item が SCO を表す場合（Block ではない）にのみ存在を許される。本要素は SCORM Version 1.1 CSF の <code>&lt;timeLimit&gt;</code> 要素のサブ要素であった。<code>&lt;timeLimit&gt;</code> コンテナ要素は削除された。</em></p>
+            </td>
+            <td>0 or 1</td>
+            <td><ins>Timespan（最大 13 文字）</ins></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>5. Identifier Ref 項目の更新</strong>：Data Type 列を更新。Data Type は String とする。</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td>4.1.7.1</td><td>Identifier Ref</td><td>リソースへの参照。</td><td>1 and only 1</td><td><del>IDRef</del> <ins>String</ins>（最小許容最大値: 2000 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Section 2.3.5「The SCORM Content Packaging XML Binding」</h4>
+
+      <ol>
+        <li><strong><code>&lt;schemaversion&gt;</code> の文字長</strong>（Section 2.3.5.2.2）：SCORM Content Packaging Information Model と一致しない。Data Type を「String（最小許容最大値: <del>100</del> <ins>20</ins> 文字）」に更新する。</li>
+        <li><strong><code>&lt;title&gt;</code> の文字長</strong>（Section 2.3.5.3.1.1）：<code>&lt;organization&gt;</code> のサブ要素として、SCORM Content Packaging Information Model と一致しない。Data Type を「String（最小許容最大値: <del>100</del> <ins>200</ins> 文字）」に更新する。</li>
+        <li><strong><code>&lt;organizations&gt;</code> 要素の <code>default</code> 属性</strong>（Section 2.3.5.1.2）：multiplicity が SCORM Content Packaging Information Model と一致しない。<code>default</code> を <del>required</del> <ins>optional</ins> に更新する（Data Type は <code>IDRef</code>）。</li>
+        <li><strong><code>&lt;dependency&gt;</code> 要素の <code>identifierref</code> 属性</strong>（Section 2.3.5.4.4）：Data Type が IMS Content Packaging Specifications と一致しない。Data Type を <del>IDRef</del> <ins>String</ins> に更新する。</li>
+      </ol>
+
+      <h3>1.15.2 変更の根拠</h3>
+
+      <p>IMS Content Packaging Specification、SCORM Content Packaging Information Model、SCORM Content Packaging XML Binding の間の不整合を整理する変更である。</p>
+    </section>
+
+    <!-- 1.16 Addendum 15 -->
+    <section id="sec-1-16">
+      <h2><span class="section-num">SECTION 1.16</span>Addendum 15: Content Packaging 例の更新</h2>
+
+      <p>本 addendum は、SCORM Content Aggregation Model の例を更新する。本例は誤った XML Schema Definition を参照していた。</p>
+
+      <h3>1.16.1 必要な更新</h3>
+
+      <p>Content Aggregation Model の Section 2.3.5.1「<code>&lt;manifest&gt;</code> Elements」の XML 例を、Addendum 15 で扱われた変更を反映するように更新する。</p>
+
+      <div class="diff-from">
+<pre style="background: transparent; color: var(--ink); border: none; padding: 0; margin: 0;"><code>&lt;manifest identifier="Manifest" version="1.1"
+      xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+      xmlns:adlcp="http://www.adlnet.org/xsd/adl_cp_rootv1p1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation=
+                  "http://www.imsproject.org/xsd/imscp_rootv1p1p2
+                   imscp_rootv1p1p2.xsd
+                   http://www.imsproject.org/xsd/imsmd_rootv1p2
+                   ims_md_rootv1p1.xsd
+                   http://www.adlnet.org/xsd/adl_cp_rootv1p1
+                   adl_cp_rootv1p1.xsd"&gt;
+&lt;!-- imsmanifest contents --&gt;
+&lt;/manifest&gt;</code></pre>
+      </div>
+
+      <div class="diff-to">
+<pre style="background: transparent; color: var(--ink); border: none; padding: 0; margin: 0;"><code>&lt;manifest identifier="Manifest" version="1.1"
+      xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+      xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation=
+                  "http://www.imsproject.org/xsd/imscp_rootv1p1p2
+                   imscp_rootv1p1p2.xsd
+                   http://www.imsglobal.org/xsd/imsmd_rootv1p2p1
+                   imsmd_rootv1p2p1.xsd
+                   http://www.adlnet.org/xsd/adlcp_rootv1p2
+                   adlcp_rootv1p2.xsd"&gt;
+&lt;!-- imsmanifest contents --&gt;
+&lt;/manifest&gt;</code></pre>
+      </div>
+
+      <h3>1.16.2 変更の根拠</h3>
+
+      <p>Section 2.3.5.1 の XML 例を訂正する更新である。SCORM 1.2 開発と組み合わせて使用する最新スキーマを反映する。詳細は Addendum 15 を参照。</p>
+    </section>
+
+    <!-- 1.17 Addendum 16 -->
+    <section id="sec-1-17">
+      <h2><span class="section-num">SECTION 1.17</span>Addendum 16: LMS 初期化要件の明確化</h2>
+
+      <p>本 addendum は、SCORM Version 1.2 で記述された LMS 初期化要件を明確化する。IMS Manifest への ADL 名前空間要素（<code>adlcp:masteryscore</code>、<code>adlcp:timelimitaction</code>、<code>adlcp:maxtimeallowed</code>）の追加に伴い、対応する SCORM Run-Time Environment Data Model 要素の初期化処理について SCORM Version 1.2 で明確に扱われていないシナリオがある。</p>
+
+      <h3>1.17.1 必要な更新</h3>
+
+      <p>次の明確化を行う。</p>
+
+      <h4><code>adlcp:masteryscore</code></h4>
+
+      <p>SCORM Data Model によれば <code>cmi.student_data.mastery_score</code> は IMS Manifest を用いて初期化されるべきである。Manifest が要素を提供しない場合、LMS は何に初期化するか。</p>
+      <ul>
+        <li><strong>LMS が本要素を実装しない場合</strong>（<code>cmi.student_data.mastery_score</code> は optional のため）：問題なし。LMS は本値を初期化せず、SCO からアクセス（Get または Set）された場合はエラーコード <code>401 - Not implemented error</code> を設定すべきである。</li>
+        <li><strong>LMS が本要素を実装し、値が提供されない場合</strong>：LMS は <code>cmi.student_data.mastery_score</code> を空文字列 (<code>""</code>) に初期化しなければならない。</li>
+      </ul>
+
+      <h4><code>adlcp:timelimitaction</code></h4>
+
+      <p>SCORM Data Model によれば <code>cmi.student_data.time_limit_action</code> は IMS Manifest を用いて初期化されるべきである。Manifest が要素を提供しない場合：</p>
+      <ul>
+        <li><strong>LMS が本要素を実装しない場合</strong>：問題なし。LMS は本値を初期化せず、SCO からアクセスされた場合はエラーコード <code>401 - Not implemented error</code> を設定する。</li>
+        <li><strong>LMS が本要素を実装し、値が提供されない場合</strong>：LMS は <code>cmi.student_data.time_limit_action</code> を <code>"continue,no message"</code> に初期化しなければならない。</li>
+      </ul>
+
+      <h4><code>adlcp:maxtimeallowed</code></h4>
+
+      <p>SCORM Data Model によれば <code>cmi.student_data.max_time_allowed</code> は IMS Manifest を用いて初期化されるべきである。Manifest が要素を提供しない場合：</p>
+      <ul>
+        <li><strong>LMS が本要素を実装しない場合</strong>：問題なし。LMS は本値を初期化せず、SCO からアクセスされた場合はエラーコード <code>401 - Not implemented error</code> を設定する。</li>
+        <li><strong>LMS が本要素を実装し、値が提供されない場合</strong>：LMS は <code>cmi.student_data.max_time_allowed</code> を空文字列 (<code>""</code>) に初期化しなければならない。</li>
+      </ul>
+
+      <h3>1.17.2 変更の根拠</h3>
+
+      <p>既存の混乱を解消するための明確化である。</p>
+    </section>
+
+    <!-- 1.18 Addendum 17 -->
+    <section id="sec-1-18">
+      <h2><span class="section-num">SECTION 1.18</span>Addendum 17: SCORM Run-Time Environment Data Model の更新</h2>
+
+      <p>本 addendum は、SCORM Version 1.2 の SCORM Run-Time Environment Data Model を更新する。Addendum 16 と連動する変更である。Addendum 16 で議論された変更を許可するため、SCORM Run-Time Environment Data Model にも対応する変更を加える。</p>
+
+      <h3>1.18.1 必要な更新</h3>
+
+      <div class="addendum">
+        <div class="addendum-meta"><strong>cmi.student_data.mastery_score</strong></div>
+        <div class="addendum-body">
+          <p>Supported API calls: <code>LMSGetValue()</code><br>
+          LMS Mandatory: No<br>
+          Data Type: <code>CMIDecimal</code> または <ins><code>CMIBlank</code></ins><br>
+          SCO Accessibility: Read Only</p>
+          <p>Definition: SCO の外部で決定される pass score。SCO の score が mastery score 以上のとき、学習者はコンテンツを pass した（mastered）とみなされる。SCO がこの pass score を知らない場合もある（LMS で決定されるため）。</p>
+          <p>Usage: LMS が <code>mastery_score</code> をサポートするには、SCO から渡された score に基づいて <code>lesson_status</code> を変更できる必要がある。SCO に <code>mastery_score</code> を渡すだけでは、本機能の完全なサポートとはならない。</p>
+          <p>Format: 10 進数。</p>
+          <p><strong>LMS Behavior:</strong></p>
+          <ul>
+            <li><ins>Initialization: LMS の責務 — 値は manifest（<code>adlcp:masteryscore</code>）の item 要素から取得する。manifest に <code>&lt;adlcp:masteryscore&gt;</code> が含まれず、LMS が本要素を実装する場合、LMS は本要素を空文字列 (<code>""</code>) に初期化すべきである。</ins></li>
+            <li><code>LMSGetValue()</code>: LMS が格納する現在値を返す。
+              <ul>
+                <li>Example Return Values: <code>"75"</code>、<code>"100"</code>、<code>"5"</code></li>
+                <li>Error Code: <code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+            <li><code>LMSSetValue()</code>:
+              <ul>
+                <li>Error Code: <code>403 - Element is read only</code>、<code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>SCO Usage Example:</strong></p>
+<pre><code><span class="tok-k">var</span> masteryScoreValue = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.student_data.mastery_score"</span>);</code></pre>
+        </div>
+      </div>
+
+      <div class="addendum">
+        <div class="addendum-meta"><strong>cmi.student_data.max_time_allowed</strong></div>
+        <div class="addendum-body">
+          <p>Supported API calls: <code>LMSGetValue()</code><br>
+          LMS Mandatory: No<br>
+          Data Type: <code>CMITimespan</code> または <ins><code>CMIBlank</code></ins><br>
+          SCO Accessibility: Read Only</p>
+          <p>Definition: SCO の現行 attempt で学習者に許可される時間量。制限超過時の SCO の応答については <code>time_limit_action</code> を参照。</p>
+          <p>Usage: SCO に対して、許容される最大滞在時間を提示するために使用する。</p>
+          <p>Format: 時、分、秒をコロンで区切る：<code>HHHH:MM:SS.SS</code>。時は最小 2 桁、最大 4 桁。分は厳密に 2 桁。秒は 2 桁＋オプションの小数点と 1〜2 桁（例：<code>34.45</code>）。</p>
+          <p><strong>LMS Behavior:</strong></p>
+          <ul>
+            <li><ins>Initialization: LMS の責務 — 値は manifest（<code>adlcp:maxtimeallowed</code>）の item 要素から取得する。manifest に <code>&lt;adlcp:maxtimeallowed&gt;</code> が含まれず、LMS が本要素を実装する場合、LMS は本要素を空文字列 (<code>""</code>) に初期化すべきである。</ins></li>
+            <li><code>LMSGetValue()</code>: LMS が格納する現在値を返す。
+              <ul>
+                <li>Example Return Values: <code>"00:14:30"</code>、<code>"02:03:00"</code>、<code>"01:09:00"</code></li>
+                <li>Error Code: <code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+            <li><code>LMSSetValue()</code>:
+              <ul>
+                <li>Error Code: <code>403 - Element is read only</code>、<code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>SCO Usage Example:</strong></p>
+<pre><code><span class="tok-k">var</span> maxTimeAllowedValue = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.student_data.max_time_allowed"</span>);</code></pre>
+        </div>
+      </div>
+
+      <div class="addendum">
+        <div class="addendum-meta"><strong>cmi.student_data.time_limit_action</strong></div>
+        <div class="addendum-body">
+          <p>Supported API calls: <code>LMSGetValue()</code><br>
+          LMS Mandatory: No<br>
+          Data Type: <code>CMIVocabulary (Time Limit Action)</code> — <code>"exit,message"</code>、<code>"exit,no message"</code>、<code>"continue,message"</code>、<code>"continue,no message"</code><br>
+          SCO Accessibility: Read Only</p>
+          <p>Definition: <code>max_time_allowed</code> が超過された際に SCO が何を行うかを伝える。本要素は 2 つの引数を持つ：</p>
+          <ul>
+            <li>SCO が行うべき動作 — <code>exit</code> または <code>continue</code></li>
+            <li>学習者が見るべき内容 — <code>message</code> または <code>no message</code></li>
+          </ul>
+          <p>Usage: SCO 内で許容される最大時間を超過した際の動作を SCO に示す。</p>
+          <p>Format: 定義語彙フレーズ。4 つの可能な値：<code>"exit,message"</code>、<code>"exit,no message"</code>、<code>"continue,message"</code>、<code>"continue,no message"</code>。</p>
+          <p><strong>LMS Behavior:</strong></p>
+          <ul>
+            <li><ins>Initialization: LMS の責務 — 値は manifest（<code>adlcp:timelimitaction</code>）の item 要素から取得する。manifest に値が含まれず、LMS が本値をサポートする場合、LMS は本値を <code>"continue,no message"</code> に初期化しなければならない。</ins></li>
+            <li><code>LMSGetValue()</code>: LMS が格納する現在値を返す。
+              <ul>
+                <li>Example Return Values: <code>"exit,message"</code>、<code>"continue,no message"</code></li>
+                <li>Error Code: <code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+            <li><code>LMSSetValue()</code>:
+              <ul>
+                <li>Error Code: <code>403 - Element is read only</code>、<code>401 - Not implemented error</code></li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>SCO Usage Example:</strong></p>
+<pre><code><span class="tok-k">var</span> timeLimitActionValue = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.student_data.time_limit_action"</span>);</code></pre>
+        </div>
+      </div>
+
+      <h3>1.18.2 変更の根拠</h3>
+
+      <p>Addendum 16 と連動する変更。Manifest に対応エントリが存在しない場合に、LMS が data model 要素の初期化を適切に処理できるようにするための変更である。</p>
+    </section>
+
+    <!-- 1.19 Revision History -->
+    <section id="sec-1-19">
+      <h2><span class="section-num">SECTION 1.19</span>改訂履歴</h2>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th style="width: 130px;">リリース日</th><th>変更内容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2001 年 11 月 9 日</td>
+            <td>
+              <p>次の addendum を追加：</p>
+              <ol>
+                <li>Href Information Model 項目の multiplicity 誤り</li>
+                <li>SCORM Meta-data XML Binding の誤例</li>
+                <li>Section 2.2.4.4「The SCORM Meta-data Application Profile Requirements」のタイポ</li>
+                <li>SCORM Run-Time Environment Data Model におけるエラーコード誤り</li>
+                <li>SCORM Run-Time Environment のページ番号誤り</li>
+                <li><code>cmi.core.entry</code> 要素の語彙参照誤り</li>
+                <li><code>Educational.Language</code> Meta-data 要素の文字数誤り</li>
+              </ol>
+            </td>
+          </tr>
+          <tr>
+            <td>2002 年 1 月 4 日</td>
+            <td>
+              <p>次の addendum を追加：</p>
+              <ol start="8">
+                <li>LOM Best Practice の Vocabulary Source 値</li>
+                <li>SCORM Meta-data Information Model における要素の multiplicity</li>
+                <li>Meta-data の DateType に関するベストプラクティス</li>
+                <li><code>&lt;taxon&gt;</code> 要素の multiplicity の明確化</li>
+                <li>Element 3.2.4 Item の ADL Note の削除</li>
+                <li>SCORM Meta-data Information Model の Element 3.5 Language の更新</li>
+                <li>Content Packaging のエラー整理</li>
+                <li>Content Packaging 例の更新</li>
+                <li>LMS 初期化要件の明確化</li>
+                <li>SCORM Run-Time Environment Data Model の更新</li>
+              </ol>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="doc-footer">
+      <p>
+        <span class="brand">SCORM 1.2 The SCORM Addendums</span> ／ 日本語訳<br>
+        Original document © 2001-2002 Advanced Distributed Learning Initiative — All Rights Reserved.<br>
+        翻訳: 株式会社エレファンキューブ ／ 翻訳支援: Anthropic Claude<br>
+        Translation © 2026 Elephancube Inc. — Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br>
+        本翻訳は規格仕様書を技術者向けに参照しやすくする目的で作成された非公式の日本語訳である。実装にあたっては必ず Original を参照すること。
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

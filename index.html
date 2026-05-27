@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scorm-docs-jp — SCORM 仕様書 日本語訳（非公式）</title>
+<meta name="description" content="SCORM (Sharable Content Object Reference Model) 仕様書の非公式日本語訳。LMS 開発者・SCORM コンテンツ作成者向け。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ec;
+    --bg-tint: #efeadd;
+    --ink: #1c1e2a;
+    --ink-soft: #444759;
+    --muted: #7a7565;
+    --rule: #d4ccb8;
+    --rule-soft: #e6dfcd;
+    --accent: #6b2c39;
+    --accent-soft: #8a4452;
+    --warn-bg: #fbf3df;
+    --warn-rule: #cdb676;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+
+  header.top {
+    border-bottom: 2px solid var(--rule);
+    padding-bottom: 36px;
+    margin-bottom: 56px;
+  }
+  header.top .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  header.top h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1.4;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  header.top h1 .en {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  header.top p.lead {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 16px;
+  }
+
+  h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 56px 0 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+  }
+
+  .version-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .version-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 26px 28px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .version-card.available {
+    cursor: pointer;
+  }
+  .version-card.available:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .version-card.upcoming {
+    background: var(--bg-tint);
+    border-style: dashed;
+    opacity: 0.7;
+  }
+  .version-card a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  .version-card .header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .version-card h3 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 22px;
+    margin: 0;
+    color: var(--accent);
+  }
+  .version-card.upcoming h3 { color: var(--muted); }
+  .version-card .status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--accent);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .version-card.upcoming .status {
+    background: transparent;
+    border: 1px solid var(--muted);
+    color: var(--muted);
+  }
+  .version-card .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .version-card p.summary {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+
+  ul.plain {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.plain li {
+    padding: 4px 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+  ul.plain li::before {
+    content: "—";
+    margin-right: 10px;
+    color: var(--accent);
+  }
+  ul.plain a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-soft); }
+  ul.plain a:hover { border-bottom-color: var(--accent); }
+
+  .disclaimer {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-rule);
+    padding: 20px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+  .disclaimer strong { color: var(--ink); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    background: var(--bg-tint);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  footer.site {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 2px solid var(--rule);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  footer.site a { color: var(--accent-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">scorm-docs-jp · Unofficial Japanese Translation</div>
+    <h1>
+      SCORM 仕様書 日本語訳
+      <span class="en">Sharable Content Object Reference Model — Japanese Edition</span>
+    </h1>
+    <p class="lead">ADL Initiative が発行する SCORM 仕様書の非公式日本語訳プロジェクトです。LMS 開発者および SCORM コンテンツ作成者向けに、技術仕様書としての参照性を最優先にして翻訳しています。</p>
+  </header>
+
+  <h2>収録バージョン</h2>
+
+  <ul class="version-list">
+    <li class="version-card available">
+      <a href="scorm-1.2/index.html">
+        <div class="header-row">
+          <h3>SCORM 1.2</h3>
+          <span class="status">v1.0.0</span>
+        </div>
+        <p class="meta">Overview / CAM / Run-Time Environment / Addendums の 4 冊</p>
+        <p class="summary">ADL Initiative が 2001 年 10 月に発行した SCORM 1.2 仕様書一式の日本語訳。2002 年 1 月公開の Addendums (17 件のエラータ) も含む。CAM/RTE 内に Addendums への相互参照リンクを埋め込み、修正箇所から直接該当章へジャンプできる。</p>
+      </a>
+    </li>
+
+    <li class="version-card upcoming">
+      <div class="header-row">
+        <h3>SCORM 2004</h3>
+        <span class="status">未着手</span>
+      </div>
+      <p class="meta">CAM / RTE / SN (Sequencing and Navigation)</p>
+      <p class="summary">SCORM 2004（複数 Edition あり）の日本語訳は今後の予定。需要があれば着手します。</p>
+    </li>
+  </ul>
+
+  <h2>本プロジェクトについて</h2>
+  <ul class="plain">
+    <li><a href="README.md">README</a> — プロジェクト概要・翻訳方針・利用例</li>
+    <li><a href="LICENSE">LICENSE</a> — 翻訳成果物のライセンス (CC BY 4.0)</li>
+    <li><a href="NOTICE">NOTICE</a> — ADL 原典クレジット・SCORM 商標・免責</li>
+    <li><a href="CHANGELOG.md">CHANGELOG</a> — リポジトリの変更履歴</li>
+  </ul>
+
+  <h2>免責 / 無保証</h2>
+  <div class="disclaimer">
+    <strong>本翻訳は「現状のまま (AS IS)」提供される非公式の日本語訳であり、いかなる保証も付帯しません。</strong>誤訳・解釈相違・最新版との不一致を含む可能性があります。LMS や SCORM コンテンツの実装にあたっては、必ず ADL が発行する原典 PDF を参照してください。本翻訳と原典に矛盾がある場合、原典の記述が優先します。<br><br>
+    「SCORM」は ADL の商標です。本翻訳は ADL によって承認・支援されたものではありません。
+  </div>
+
+  <footer class="site">
+    <p>
+      翻訳: 株式会社エレファンキューブ (<a href="mailto:media@elephancube.co.jp">media@elephancube.co.jp</a>) ／ 翻訳支援: Anthropic Claude<br>
+      Translation © 2026 Elephancube Inc. — Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br>
+      Original specification © 2001-2002 Advanced Distributed Learning Initiative — All Rights Reserved.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

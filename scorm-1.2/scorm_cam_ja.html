@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCORM 1.2 The SCORM Content Aggregation Model（日本語訳）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ec; --bg-tint: #efeadd; --ink: #1c1e2a; --ink-soft: #444759;
+    --muted: #7a7565; --rule: #d4ccb8; --rule-soft: #e6dfcd;
+    --accent: #6b2c39; --accent-soft: #8a4452;
+    --code-bg: #1f2230; --code-text: #e8e3d3; --code-comment: #8a8676;
+    --code-string: #c9a76a; --code-keyword: #d68a7a; --code-fn: #8eb4c9;
+    --warn-bg: #fbf3df; --warn-rule: #cdb676;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15.5px; line-height: 1.85; font-feature-settings: "palt" 1;
+  }
+  .layout {
+    display: grid; grid-template-columns: 280px minmax(0, 1fr);
+    max-width: 1240px; margin: 0 auto;
+  }
+  .toc {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow-y: auto;
+    padding: 48px 28px 48px 36px;
+    border-right: 1px solid var(--rule);
+    font-size: 13px; line-height: 1.6;
+  }
+  .toc-mark {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .toc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 17px; line-height: 1.4; color: var(--ink);
+    margin-bottom: 28px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc > ul > li { margin-bottom: 10px; }
+  .toc ul ul {
+    margin-top: 4px; padding-left: 14px;
+    border-left: 1px solid var(--rule-soft);
+  }
+  .toc ul ul li { margin-bottom: 3px; }
+  .toc a {
+    color: var(--ink-soft); text-decoration: none;
+    transition: color 0.15s; display: block; padding: 2px 0;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-right: 6px;
+  }
+
+  main { padding: 56px 64px 120px; max-width: 880px; }
+
+  .doc-header {
+    margin-bottom: 56px; padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink); position: relative;
+  }
+  .doc-header::after {
+    content: ""; position: absolute; left: 0; bottom: -6px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .doc-org {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .doc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 38px; line-height: 1.25; margin: 0 0 12px;
+    letter-spacing: -0.005em;
+  }
+  .doc-subtitle { font-size: 16px; color: var(--ink-soft); margin: 0 0 24px; }
+  .doc-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .doc-meta span strong { color: var(--ink); font-weight: 500; margin-left: 6px; }
+
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn-rule);
+    padding: 16px 22px; margin: 0 0 56px;
+    font-size: 14px; line-height: 1.75;
+  }
+  .notice .label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.15em;
+    color: #8a6d2e; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 28px; margin: 80px 0 24px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em; line-height: 1.35;
+  }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 21px; margin: 52px 0 18px; line-height: 1.4;
+  }
+  h4 {
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+    font-size: 16px; margin: 36px 0 14px;
+    padding-left: 12px; border-left: 3px solid var(--accent);
+  }
+  h5 {
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+    font-size: 14px; margin: 24px 0 10px;
+    color: var(--ink-soft);
+  }
+  .section-num {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent); font-weight: 500;
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+
+  p { margin: 0 0 18px; }
+  p + p { margin-top: -2px; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em; background: var(--bg-tint);
+    color: var(--accent); padding: 1px 6px;
+    border-radius: 3px; border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+
+  pre {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 18px 22px; border-radius: 4px;
+    overflow-x: auto; margin: 18px 0;
+    font-size: 12.5px; line-height: 1.6;
+    border-left: 3px solid var(--accent);
+  }
+  pre code {
+    background: none; color: inherit;
+    border: none; padding: 0;
+    white-space: pre; font-size: inherit;
+  }
+  .tok-c { color: var(--code-comment); font-style: italic; }
+  .tok-s { color: var(--code-string); }
+  .tok-k { color: var(--code-keyword); }
+  .tok-f { color: var(--code-fn); }
+
+  ul, ol { margin: 0 0 18px; padding-left: 26px; }
+  li { margin-bottom: 6px; }
+
+  .figure {
+    margin: 32px 0; padding: 24px;
+    background: white; border: 1px solid var(--rule);
+    border-radius: 4px; text-align: center;
+  }
+  .figure-caption {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px; color: var(--ink-soft);
+    margin-top: 14px; font-style: italic;
+  }
+  .figure-svg { margin: 0 auto; max-width: 100%; }
+  .figure-svg svg { width: 100%; height: auto; display: block; }
+
+  table.spec-table {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0; font-size: 13px;
+    background: white; border: 1px solid var(--rule);
+  }
+  table.spec-table th {
+    background: var(--ink); color: var(--bg);
+    text-align: left; padding: 9px 12px;
+    font-weight: 600; font-size: 11.5px;
+    letter-spacing: 0.04em; border: 1px solid var(--ink);
+  }
+  table.spec-table td {
+    padding: 9px 12px; border: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.6;
+  }
+  table.spec-table td p { margin: 0 0 6px; }
+  table.spec-table td p:last-child { margin-bottom: 0; }
+  table.spec-table.acronym td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); font-weight: 500;
+    width: 110px; white-space: nowrap;
+  }
+  table.spec-table .nr {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); font-weight: 500;
+    white-space: nowrap; font-size: 12px;
+  }
+  table.spec-table .name {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700; font-size: 12.5px;
+  }
+  table.spec-table .multi {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  table.spec-table .dtype {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--ink-soft);
+  }
+
+  /* element block (used for XML binding definitions) */
+  .el-block {
+    margin: 24px 0;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+  }
+  .el-header {
+    padding: 12px 18px;
+    background: #2a2c3a;
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14.5px; font-weight: 500;
+  }
+  .el-body { padding: 16px 22px 20px; font-size: 14px; }
+  .el-body > *:first-child { margin-top: 0; }
+  .el-body > *:last-child { margin-bottom: 0; }
+  .el-body dl { margin: 8px 0; }
+  .el-body dt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-top: 10px;
+  }
+  .el-body dd {
+    margin: 4px 0 0 0;
+    padding-left: 12px;
+  }
+
+  /* note inline */
+  .adl-note {
+    background: #fcf3e1;
+    border-left: 3px solid #cdb676;
+    padding: 8px 14px;
+    margin: 8px 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .adl-note::before {
+    content: "ADL Note";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #8a6d2e; display: block; margin-bottom: 4px;
+  }
+
+  .doc-footer {
+    margin-top: 96px; padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px; color: var(--muted); line-height: 1.8;
+  }
+  .doc-footer .brand {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--ink); font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc {
+      position: static; height: auto;
+      border-right: none; border-bottom: 1px solid var(--rule);
+      padding: 32px 24px;
+    }
+    main { padding: 40px 24px 80px; }
+    .doc-title { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <nav class="toc">
+    <div class="toc-mark">Contents</div>
+    <div class="toc-title">SCORM 1.2<br>Content Aggregation Model</div>
+    <ul>
+      <li>
+        <a href="#sec-2-1"><span class="num">2.1</span>Content Aggregation Model</a>
+        <ul>
+          <li><a href="#sec-2-1-1"><span class="num">2.1.1</span>Content Model 構成要素</a></li>
+          <li><a href="#sec-2-1-2"><span class="num">2.1.2</span>Meta-data 構成要素</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-2-2"><span class="num">2.2</span>Meta-data</a>
+        <ul>
+          <li><a href="#sec-2-2-1"><span class="num">2.2.1</span>概要</a></li>
+          <li><a href="#sec-2-2-2"><span class="num">2.2.2</span>Information Model</a></li>
+          <li><a href="#sec-2-2-3"><span class="num">2.2.3</span>XML Binding</a></li>
+          <li><a href="#sec-2-2-4"><span class="num">2.2.4</span>Application Profiles</a></li>
+          <li><a href="#sec-2-2-5"><span class="num">2.2.5</span>Best Practice</a></li>
+          <li><a href="#sec-2-2-6"><span class="num">2.2.6</span>XML 例</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-2-3"><span class="num">2.3</span>Content Packaging</a>
+        <ul>
+          <li><a href="#sec-2-3-1"><span class="num">2.3.1</span>概要</a></li>
+          <li><a href="#sec-2-3-2"><span class="num">2.3.2</span>Content Structure</a></li>
+          <li><a href="#sec-2-3-3"><span class="num">2.3.3</span>IMS Package Description</a></li>
+          <li><a href="#sec-2-3-4"><span class="num">2.3.4</span>Content Packaging Information Model</a></li>
+          <li><a href="#sec-2-3-5"><span class="num">2.3.5</span>Content Packaging XML Binding</a></li>
+          <li><a href="#sec-2-3-6"><span class="num">2.3.6</span>Application Profiles</a></li>
+        </ul>
+      </li>
+      <li style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--rule);">
+        <a href="#sec-appendix-a"><span class="num">A</span>略語一覧</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-b"><span class="num">B</span>参考文献</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-c"><span class="num">C</span>改訂履歴</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <header class="doc-header">
+      <div class="doc-org">Advanced Distributed Learning Initiative</div>
+      <h1 class="doc-title">The SCORM Content Aggregation Model</h1>
+      <p class="doc-subtitle">Sharable Content Object Reference Model (SCORM&trade;) Version 1.2</p>
+      <div class="doc-meta">
+        <span>Version<strong>1.2</strong></span>
+        <span>Original<strong>October 1, 2001</strong></span>
+        <span>Translation<strong>日本語訳</strong></span>
+      </div>
+    </header>
+
+    <div class="notice" style="background: #f0ebd8; border-left-color: var(--accent);">
+      <div class="label" style="color: var(--accent);">日本語訳・全文</div>
+      本ドキュメントは ADL Initiative 発行の SCORM 1.2「The SCORM Content Aggregation Model」(October 1, 2001) を日本語に翻訳したものである。SCORM の Content Model（Asset／SCO／Content Aggregation）、Meta-data（IEEE LOM / IMS Learning Resource Meta-data に基づく学習リソース記述）、Content Packaging（IMS Content Packaging に基づく XML マニフェスト形式）の 3 領域を定義する第 2 巻にあたる。<br>
+      規格用語（IMS／IEEE／ADL の要素名・属性名・データモデル要素・スキーマ識別子）は原文どおり英語表記を維持する。実装にあたっては必ず本書および「The SCORM Addendums」<a href="scorm_addendums_ja.html">（addendums 訳）</a>を参照すること。
+    </div>
+
+    <!-- ═══════════ 2.1 ═══════════ -->
+    <section id="sec-2-1">
+      <h2><span class="section-num">SECTION 2.1</span>The SCORM Content Aggregation Model</h2>
+
+      <p>SCORM Content Aggregation Model は、教育設計者・実装者が、所望の学習体験を提供する目的で学習リソースを集約するための、教育論的に中立な手段を表現する。<strong>learning resource</strong>（学習リソース）とは学習体験で用いられる情報のあらゆる表現である。学習体験は、電子的または非電子的な学習リソースに支えられた activity（活動）から構成される。</p>
+
+      <p>学習体験を作成・配信するプロセスの一つの活動は、単純な Asset の作成・発見・集約（aggregation）を経て、より複雑な学習リソースを構築し、それらを事前定義された配信順序に編成することである。SCORM Content Aggregation Model はこの構成要素を支援し、次の 3 つから成る。</p>
+
+      <ul>
+        <li><strong>Content Model</strong>：学習体験を構成するコンテンツ要素を定義する命名法。</li>
+        <li><strong>Meta-data</strong>：Content Model 構成要素の特定インスタンスを記述する仕組み。</li>
+        <li><strong>Content Packaging</strong>：学習体験の意図する動作（Content Structure）と、異なる環境間で学習リソースを移動させるためのパッケージ化（Content Packaging）の方法を定義する。</li>
+      </ul>
+
+      <p>本節は Content Aggregation Model の主要構成要素の概観と、各種要素の用語定義を提供する。</p>
+
+      <h3 id="sec-2-1-1">2.1.1 SCORM Content Model 構成要素</h3>
+
+      <p>SCORM Content Model は、再利用可能な学習リソースから学習体験を構築するために用いる SCORM 構成要素を記述する。Content Model はまた、これらの低レベル sharable・再利用可能な学習リソースを集約して、より高レベルの教育単位を構成する方法も定義する。Content Model 構成要素はすべて学習リソースの特殊化と見なされる。SCORM Content Model は次の構成要素から成る：<strong>Asset</strong>、<strong>Sharable Content Object (SCO)</strong>、<strong>Content Aggregation</strong>。ADL は将来の SCORM バージョンで学習リソースのさらなる特殊化を導入することを構想している。</p>
+
+      <h4 id="sec-2-1-1-1">2.1.1.1 Asset</h4>
+
+      <p>最も基本的な学習コンテンツは、Web クライアントに配信できる Asset から構成される。Asset はメディア、テキスト、画像、音声、Web ページ、評価オブジェクト、その他のデータ片の電子的表現である。Asset は Asset Meta-data（後述定義）で記述でき、これによりオンラインリポジトリ内での検索・発見が可能となり、再利用機会が拡大する。Asset と Asset Meta-data を結びつける仕組みは、Section 2.3 で導入する Content Package である。図 2.1.1.1a は Asset の例を示す。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="236" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="32" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Asset の例</text>
+          <g font-size="11" fill="#1c1e2a">
+            <rect x="40" y="60" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="95" y="90" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="95" y="110" text-anchor="middle" font-size="10">XML Doc</text>
+
+            <rect x="170" y="60" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="225" y="90" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="225" y="110" text-anchor="middle" font-size="10">JavaScript Functions</text>
+
+            <rect x="300" y="60" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="355" y="90" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="355" y="110" text-anchor="middle" font-size="10">Whole Web Page</text>
+
+            <rect x="430" y="60" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="485" y="90" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="485" y="110" text-anchor="middle" font-size="10">Flash Object</text>
+
+            <rect x="560" y="60" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="615" y="90" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="615" y="110" text-anchor="middle" font-size="10">JPEG</text>
+
+            <rect x="100" y="150" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="155" y="180" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="155" y="200" text-anchor="middle" font-size="10">WAV</text>
+
+            <rect x="230" y="150" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="285" y="180" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="285" y="200" text-anchor="middle" font-size="10">HTML Fragment</text>
+
+            <rect x="360" y="150" width="110" height="70" fill="#f0ebd8" stroke="#6b2c39" stroke-width="1.5"/>
+            <text x="415" y="180" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="415" y="200" text-anchor="middle" font-size="10">GIF</text>
+          </g>
+        </svg></div>
+        <div class="figure-caption">図 2.1.1.1a: Asset の例</div>
+      </div>
+
+      <h4 id="sec-2-1-1-2">2.1.1.2 Sharable Content Object (SCO)</h4>
+
+      <p>Sharable Content Object (SCO) は、SCORM Run-Time Environment を利用して LMS と通信する起動可能 Asset を含む、1 個以上の Asset の集合体を表す。SCO は SCORM Run-Time Environment を用いて LMS が追跡できる学習リソースの最小粒度を表す。図 2.1.1.2a は複数の Asset から構成される SCO の例を示す。</p>
+
+      <p>再利用可能であるためには、SCO 単体は学習文脈から独立していなければならない。たとえば、SCO は異なる学習目標を達成するために異なる学習体験で再利用しうる。さらに、1 個以上の SCO を集約して、より高位の学習目標を達成する高レベルの教育・訓練単位を形成することもできる。</p>
+
+      <p>SCO は、複数の学習目標にわたる再利用が現実的となるように、主観的に小さな単位とすることが意図される。SCORM は SCO の正確なサイズに特定の制約を課さない。コンテンツ設計・オーサリング段階で SCO のサイズを決定するときは、run-time に LMS によって追跡されることが望ましいコンテンツの最小論理サイズに思いを巡らせるべきである。学習成果の達成に必要な情報量と、コンテンツ開発者が望む再利用レベルに基づいて、コンテンツ開発者が SCO のサイズを決定することが意図されている。</p>
+
+      <p>SCO は SCO Meta-data（後述定義）で記述でき、これによりオンラインリポジトリ内での検索・発見が可能となり、再利用機会が拡大する。SCO と SCO Meta-data を結びつける仕組みは、Section 2.3 で導入する Content Package である。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="316" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">SCO（複数の Asset から構成）</text>
+
+          <rect x="60" y="60" width="640" height="240" fill="none" stroke="#6b2c39" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="380" y="84" text-anchor="middle" font-size="14" font-weight="700" fill="#6b2c39">SCO（SCORM Run-Time Environment と通信する起動可能リソース）</text>
+
+          <g font-size="11" fill="#1c1e2a">
+            <rect x="90" y="110" width="100" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="140" y="135" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="140" y="155" text-anchor="middle" font-size="10">JPEG</text>
+
+            <rect x="210" y="110" width="100" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="260" y="135" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="260" y="155" text-anchor="middle" font-size="10">XML Doc</text>
+
+            <rect x="330" y="110" width="100" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="380" y="135" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="380" y="155" text-anchor="middle" font-size="10">WAV</text>
+
+            <rect x="450" y="110" width="100" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="500" y="135" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="500" y="155" text-anchor="middle" font-size="10">Flash Object</text>
+
+            <rect x="570" y="110" width="100" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="620" y="135" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="620" y="155" text-anchor="middle" font-size="10">JavaScript</text>
+
+            <rect x="200" y="200" width="180" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="290" y="225" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="290" y="245" text-anchor="middle" font-size="10">GIF</text>
+
+            <rect x="400" y="200" width="180" height="60" fill="#f0ebd8" stroke="#1c1e2a"/>
+            <text x="490" y="225" text-anchor="middle" font-weight="700">Asset</text>
+            <text x="490" y="245" text-anchor="middle" font-size="10">HTML Fragment（起動エントリポイント）</text>
+          </g>
+        </svg></div>
+        <div class="figure-caption">図 2.1.1.2a: 複数の Asset から構成される SCO</div>
+      </div>
+
+      <p>SCO は SCORM Run-Time Environment に準拠することが要求される。これは、LMS の API Adapter を発見する手段を持つこと、および最小限の API 呼び出し（<code>LMSInitialize("")</code> および <code>LMSFinish("")</code>）を含むことを意味する。他の API 呼び出しの実装は任意であり、コンテンツの性質に応じる。</p>
+
+      <p>SCORM Run-Time Environment への参加はまた、SCO は LMS によってのみ起動されうることを意味する。SCO 自体が他の SCO を起動することはできない。</p>
+
+      <p>SCO が SCORM Run-Time Environment に参加する要件により、次の利点が得られる。</p>
+      <ul>
+        <li>SCORM Run-Time Environment をサポートする LMS は、生成元に関わらず SCO を起動して追跡できる。</li>
+        <li>SCORM Run-Time Environment をサポートする LMS は、任意の SCO の開始と終了を追跡し把握できる。</li>
+        <li>SCORM Run-Time Environment をサポートする LMS は、任意の SCO を同じ方法で起動できる。</li>
+      </ul>
+      <p>詳細は SCORM Run-Time Environment の巻を参照。</p>
+
+      <h4 id="sec-2-1-1-3">2.1.1.3 Content Aggregation</h4>
+
+      <p>Content Aggregation は、学習リソースを一貫した教育単位（コース、章、モジュールなど）に集約し、構造を適用し、学習タクソノミーを関連付けるために用いる地図（content structure）である。content structure は学習リソースのタクソノミー的表現を定義する。Content Aggregation は Content Aggregation Meta-data（後述定義）を参照でき、これによりオンラインリポジトリ内での検索・発見が可能となり、再利用機会が拡大する。</p>
+
+      <p>Content Aggregation と Content Aggregation Meta-data を結びつける仕組みは、Section 2.3 で導入する Content Package である。図 2.1.1.3a は Content Aggregation の例を示す。</p>
+
+      <p>Content Aggregation は、学習リソースを利用者に提示する順序を定義する仕組みを提供する content structure を定義する。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="356" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Content Aggregation（content structure）</text>
+
+          <!-- Tree -->
+          <rect x="320" y="60" width="120" height="40" fill="#6b2c39" stroke="#1c1e2a"/>
+          <text x="380" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#fdfcf7">Aggregation</text>
+
+          <line x1="380" y1="100" x2="180" y2="140" stroke="#1c1e2a"/>
+          <line x1="380" y1="100" x2="380" y2="140" stroke="#1c1e2a"/>
+          <line x1="380" y1="100" x2="580" y2="140" stroke="#1c1e2a"/>
+
+          <rect x="120" y="140" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="180" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">Aggregation</text>
+
+          <rect x="320" y="140" width="120" height="36" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="380" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#1c1e2a">Learning Resource</text>
+
+          <rect x="520" y="140" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="580" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">Aggregation</text>
+
+          <line x1="180" y1="176" x2="100" y2="220" stroke="#1c1e2a"/>
+          <line x1="180" y1="176" x2="240" y2="220" stroke="#1c1e2a"/>
+          <line x1="580" y1="176" x2="500" y2="220" stroke="#1c1e2a"/>
+          <line x1="580" y1="176" x2="660" y2="220" stroke="#1c1e2a"/>
+
+          <rect x="50" y="220" width="100" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="100" y="241" text-anchor="middle" font-size="10" font-weight="700">Learning Resource</text>
+          <rect x="190" y="220" width="100" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="241" text-anchor="middle" font-size="10" font-weight="700">Learning Resource</text>
+          <rect x="450" y="220" width="100" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="500" y="241" text-anchor="middle" font-size="10" font-weight="700">Learning Resource</text>
+          <rect x="610" y="220" width="100" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="660" y="241" text-anchor="middle" font-size="10" font-weight="700">Learning Resource</text>
+
+          <!-- Asset/SCO leaves -->
+          <rect x="60" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="80" y="296" text-anchor="middle" font-size="9">SCO</text>
+          <rect x="110" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="130" y="296" text-anchor="middle" font-size="9">Asset</text>
+
+          <rect x="200" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="220" y="296" text-anchor="middle" font-size="9">SCO</text>
+          <rect x="250" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="270" y="296" text-anchor="middle" font-size="9">Asset</text>
+
+          <rect x="340" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="360" y="296" text-anchor="middle" font-size="9">Asset</text>
+
+          <rect x="460" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="480" y="296" text-anchor="middle" font-size="9">SCO</text>
+          <rect x="510" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="530" y="296" text-anchor="middle" font-size="9">Asset</text>
+
+          <rect x="620" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="640" y="296" text-anchor="middle" font-size="9">Asset</text>
+          <rect x="670" y="280" width="40" height="22" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="690" y="296" text-anchor="middle" font-size="9">Asset</text>
+
+          <line x1="100" y1="252" x2="80" y2="280" stroke="#1c1e2a"/>
+          <line x1="100" y1="252" x2="130" y2="280" stroke="#1c1e2a"/>
+          <line x1="240" y1="252" x2="220" y2="280" stroke="#1c1e2a"/>
+          <line x1="240" y1="252" x2="270" y2="280" stroke="#1c1e2a"/>
+          <line x1="380" y1="176" x2="360" y2="280" stroke="#1c1e2a"/>
+          <line x1="500" y1="252" x2="480" y2="280" stroke="#1c1e2a"/>
+          <line x1="500" y1="252" x2="530" y2="280" stroke="#1c1e2a"/>
+          <line x1="660" y1="252" x2="640" y2="280" stroke="#1c1e2a"/>
+          <line x1="660" y1="252" x2="690" y2="280" stroke="#1c1e2a"/>
+
+          <text x="380" y="335" text-anchor="middle" font-size="10" font-style="italic" fill="#444759">SCORM 1.2 のリソース特殊化：Asset と SCO（再利用可能な学習リソース）</text>
+        </svg></div>
+        <div class="figure-caption">図 2.1.1.3a: Content Aggregation</div>
+      </div>
+
+      <p>本バージョンの SCORM では、学習リソース間のナビゲーションとシーケンシングは、各学習リソースまたは Content Aggregation の prerequisites を用いて content structure に定義される。LMS は content structure に記述された意図された順序を解釈し、run-time に学習リソースの実際のシーケンシングを制御する責務を負う。</p>
+
+      <p>これは、スタンドアロン CBT オーサリングツールでコースウェアが開発されてきた従来の方式からの大きな転換である。これまで、こうしたツールは独自データフォーマット内に、学習者が次に閲覧するコース部分を支配するナビゲーション情報のすべてを埋め込んでいた。ほぼすべての場合、オーサリングツール・システムは独自で時に固有のコースシーケンシング手法を定義・実装していた。そのため、異なるオーサリング環境間でのコンテンツ共有は困難・不可能であり、異なるシーケンシング要件をもつ別の文脈でのコンテンツ再利用も同様に困難であった。</p>
+
+      <p>意図的にブラウザベースとされる SCORM では、学習リソースのシーケンシングは content structure に定義され、学習リソースの外部にある。run-time に学習リソースを適切に定義された順序で起動する責務は LMS にある。これは概念的に重要である。学習リソースに、コース固有の文脈情報が埋め込まれていれば、学習リソースの再利用は事実上不可能だからである。特に、ある学習リソース (SCO) が特定条件下で別の学習リソース (SCO) への「ハードワイヤード」分岐を含んでいた場合、第二の学習リソース (SCO) が適用不能・利用不能なコースでは利用できない。学習リソース (SCO) の再利用性は、それが独立しており、特定の集約に紐づかないことに依存する。</p>
+
+      <p>ただし SCORM は、一部の学習リソースが特定の学習タスクを達成するための内部ロジックを含みうることを認識する。そのような学習リソースは利用者のインタラクションに応じて自身の内部で分岐しうる。これらの分岐はすべて自己完結的で、スタンドアロンな学習リソースに関連し（したがって再利用可能）、通常は LMS から見えない。<strong>重要なのは、内部分岐が他の Content Aggregation で存在するか不明な外部学習リソースを参照してはならない</strong>ことである。これは、どの学習リソースを使い、それらをどう集約するかを決定する際にコンテンツ開発者が留意すべき重要領域である。</p>
+
+      <h3 id="sec-2-1-2">2.1.2 SCORM Meta-data 構成要素</h3>
+
+      <p>Meta-data は、SCORM Content Model 各構成要素に対する IEEE LTSC Learning Object Metadata<sup>21</sup> 要素のマッピングと推奨利用法を表す。本マッピングの詳細は Section 2.2 で示す。一般に、Asset、SCO、Content Aggregation に適用するメタデータについて、システム内およびシステム間での検索・発見を促進し、共有・再利用をさらに進めるための一貫した記述を行うガイダンスが提供される。</p>
+
+      <p>Content Aggregation Model 構成要素へのメタデータ適用に関するポリシーは、再利用を可能にしたい組織の要件に基づき、各組織内で定義されるべきである。SCORM は Content Model 構成要素へのメタデータタグ付けの範囲に関する要件を課さず、共有・再利用を可能にしたい組織に対する実用的・標準準拠なガイダンスの提供を目指す。</p>
+
+      <h4 id="sec-2-1-2-1">2.1.2.1 Content Aggregation Meta-data</h4>
+
+      <p>content aggregation を記述するメタデータの定義。Content Aggregation Meta-data の適用目的は、たとえば content repository 内で content aggregation をアクセス可能（発見可能）にし、content package が表す集約コンテンツ全体について自律単位として記述情報を提供することである。</p>
+
+      <h4 id="sec-2-1-2-2">2.1.2.2 Sharable Content Object (SCO) Meta-data</h4>
+
+      <p>SCO に適用できるメタデータの定義であり、SCO に表現されるコンテンツについて記述情報を提供する。本メタデータは、たとえば content repository 内でのコンテンツの再利用と発見可能性を促進するために用いる。</p>
+
+      <h4 id="sec-2-1-2-3">2.1.2.3 Asset Meta-data</h4>
+
+      <p>「raw media」Asset に適用できるメタデータの定義であり、コースウェアコンテンツ内での利用または潜在的利用とは独立に Asset の記述情報を提供する。本メタデータは、たとえば content repository 内で、主にコンテンツ作成時の Asset 再利用と発見可能性を促進するために用いる。</p>
+    </section>
+
+    <!-- ═══════════ 2.2 ═══════════ -->
+    <section id="sec-2-2">
+      <h2><span class="section-num">SECTION 2.2</span>Meta-data</h2>
+
+      <p>本節は、学習リソースに対するメタデータ適用の具体的なガイダンスを提供する。本節で定義される SCORM メタデータアプリケーションプロファイルは、IEEE LTSC Learning Object Meta-data (LOM) standard<sup>21</sup> および IMS Learning Resource Meta-data XML Binding Specification<sup>22</sup> を直接参照する。IEEE 仕様は約 64 のメタデータ要素を提供する — 日常利用には多すぎる数である。本節では、SCORM の文脈において、Asset、SCO、学習リソース集約のタグ付けに必須となるデータ要素を定義する。SCORM は IEEE および IMS 仕様に完全準拠しつつ、SCORM 準拠環境でのメタデータ利用に関する追加的な具体的ガイダンスを提供する。</p>
+
+      <p>SCORM Meta-data 節は次の 5 つのサブ節から構成される。</p>
+      <ul>
+        <li><strong>2.2.1 概要</strong>：learning object メタデータの発展経緯。</li>
+        <li><strong>2.2.2 Information Model</strong>：メタデータ要素を定義する。各要素の意図する利用法を定義するメタデータタグの「辞書」。Information Model は IEEE LOM 仕様と同一であり、特定のエンコーディング方法を定義しない。</li>
+        <li><strong>2.2.3 SCORM Meta-data XML Binding</strong>：IMS Learning Resource Meta-data XML 仕様に直接基づく。Section 2.2.2 で定義される「辞書」要素を XML でエンコード（バインディング）する方法を定義する。SCORM の他の箇所同様、Information Model とバインディングを分離する努力がなされている（同一データ定義を別エンコーディングで利用しうるという前提）。XML は可能なエンコーディングの一つであり、他のエンコーディングが将来登場しうるが、Information Model は維持される。</li>
+        <li><strong>2.2.4 SCORM Meta-data Application Profiles</strong>：SCORM 環境におけるメタデータ実装の具体的ガイダンス。SCORM 必須要素と、SCORM 準拠のためのエンコーディング方法を定義する。</li>
+        <li><strong>2.2.5 SCORM Meta-data Best Practices</strong>：ADL 技術チームが学習コンテンツへのメタデータ適用の一貫性向上のために得た経験を反映する。</li>
+      </ul>
+
+      <h3 id="sec-2-2-1">2.2.1 概要</h3>
+
+      <p>メタデータ（データに関するデータ）の目的は、学習リソースを共通の方法で記述できるようにする命名法を提供することである。メタデータはカタログに収集することも、それが記述する学習リソースとともに直接パッケージングすることもできる。メタデータで記述された学習リソースは、利用・再利用のために体系的に検索・取得できる。</p>
+
+      <h4 id="sec-2-2-1-1">2.2.1.1 SCORM Meta-data の歴史</h4>
+
+      <p>学習リソースのメタデータは、過去数年にわたって複数の国家・国際組織で策定が進められてきた。ADL は、学習リソース固有のメタデータを定義する団体として、IEEE LTSC<sup>2</sup>、IMS Global Learning Consortium, Inc.<sup>3</sup>、ARIADNE<sup>12</sup> に注目してきた。これらのグループは協働で作業し、本書が参照するコア仕様群を策定してきた。</p>
+
+      <p>SCORM は、IEEE LTSC LOM Specification<sup>21</sup>（IMS と ARIADNE の共同作業の成果）を基礎とする IMS Learning Resource Meta-data Information Model<sup>22</sup> を参照する。これらは学習リソース記述のための標準メタデータ要素定義の集合を提供する。SCORM は IMS Learning Resource Meta-data Information Model<sup>22</sup> と同一のメタデータ要素集合を採用する。SCORM はまた、IMS Information Model の XML 表現を提供する IMS Learning Resource Meta-data XML Binding Specification<sup>22</sup> も参照する。</p>
+
+      <p>SCORM は IMS のメタデータ要素定義を 3 つの Content Model 構成要素（Asset／SCO／Content Aggregation）に適用する。これら 3 つの構成要素が SCORM Content Aggregation Model のメタデータ部分を定義する。IMS および IEEE の標準化された定義を SCORM Content Aggregation Model にマッピングすることで、汎用仕様と固有 content model の間の欠けたリンクが補完される。</p>
+
+      <h3 id="sec-2-2-2">2.2.2 SCORM Meta-data Information Model</h3>
+
+      <p>SCORM Meta-data Information Model は、SCORM 準拠メタデータレコードを構築するために定義されたデータ要素を記述する。SCORM 準拠メタデータレコードには、Section 2.2.3.4「XML Extension Mechanism」に記述された追加データ要素を含めうる。SCORM Meta-data Information Model は IMS Learning Resource Meta-data Information Model<sup>22</sup> に基づき、9 つのカテゴリに分割される。</p>
+
+      <ol>
+        <li><strong>General</strong>：リソース全体を記述する一般情報をグループ化する。</li>
+        <li><strong>Lifecycle</strong>：本リソースの履歴・現状、進化過程で本リソースに影響を与えた者に関する特徴をグループ化する。</li>
+        <li><strong>Meta-metadata</strong>：メタデータレコード自体に関する情報（記述されるリソースではない）をグループ化する。</li>
+        <li><strong>Technical</strong>：リソースの技術要件と特性をグループ化する。</li>
+        <li><strong>Educational</strong>：リソースの教育的・教科教育的特性をグループ化する。</li>
+        <li><strong>Rights</strong>：リソースの知的財産権と利用条件をグループ化する。</li>
+        <li><strong>Relation</strong>：本リソースと他の対象リソース間の関係を定義する特徴をグループ化する。</li>
+        <li><strong>Annotation</strong>：リソースの教育利用に関するコメントと、それを作成した時点・主体に関する情報を提供する。</li>
+        <li><strong>Classification</strong>：リソースが特定の分類体系内のどこに位置するかを記述する。</li>
+      </ol>
+
+      <p>各要素は次の情報で記述される：<strong>Nr</strong>（階層番号体系）、<strong>Name</strong>（要素名）、<strong>Explanation</strong>（要素の詳細説明）、<strong>Multiplicity</strong>（直接の親要素内に許される本要素のインスタンス数）、<strong>Data Type</strong>（テキスト・数値・日付などの値型と、サイズ・フォーマット制約。情報モデル全体で 3 つの汎用型が用いられる：LangString Type、Date Type、Vocabulary Type）。</p>
+
+      <p>Identifier 要素は multiplicity 値が <code>RESERVED</code> である。これは、グローバル一意識別子の表現に用いる正確な仕様についてまだ合意が得られていないため、現時点で利用から除外されていることを意味する。</p>
+
+      <p>一部要素には multiplicity やデータ型の列で「smallest permitted maximum（最小許容最大値）」という用語が用いられる。これは、メタデータを処理するアプリケーションが少なくともその数のエントリをサポートしなければならないことを意味する。すなわち、アプリケーションは独自に上限を課してもよいが、その上限は最小許容最大値を下回ってはならない。</p>
+
+      <p>Vocabulary Type のデータ型を持つ要素については、語彙が <strong>Restricted</strong>（制限）か <strong>Best Practice</strong>（推奨）かが追加情報として提供される。Restricted は、メタデータ要素が列挙された語彙エントリに制限されることを示す。Best Practice は、SCORM がベストプラクティスとして列挙された語彙エントリの利用を推奨することを示す。</p>
+
+      <h4 id="sec-2-2-2-1">SCORM Meta-data Information Model 全要素</h4>
+
+      <h5>1. General — 一般情報</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="name">General</td><td>リソース全体を記述する一般情報をグループ化する。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">1.1</td><td class="name">Identifier</td><td>リソースを識別するグローバル一意ラベル。グローバル一意識別子の生成・配布に統一的方法が無いため、予約され使用しない。</td><td class="multi">RESERVED</td><td class="dtype">String</td></tr>
+          <tr><td class="nr">1.2</td><td class="name">Title</td><td>本リソースに付された名称。</td><td class="multi">1 and only 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">1.3</td><td class="name">Catalog Entry</td><td>本リソースに割り当てられたカタログ（識別体系）エントリ。1.1 Identifier の代替として利用可。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">1.3.1</td><td class="name">Catalog</td><td>カタログ名。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">1.3.2</td><td class="name">Entry</td><td>カタログ内の実エントリ値。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">1.4</td><td class="name">Language</td><td>想定利用者に対し本リソース内で使用される主要人間言語。<code>"None"</code> も許容。ISO 639/3166 標準で表現。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">String（最小許容最大値: 100 文字）</td></tr>
+          <tr><td class="nr">1.5</td><td class="name">Description</td><td>本リソースの内容のテキスト記述。</td><td class="multi">1 or More（最小許容最大値: 10）</td><td class="dtype">LangString（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">1.6</td><td class="name">Keyword</td><td>本リソースを記述するキーワード／フレーズ。他要素で記述可能な特徴に用いるべきでない。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">1.7</td><td class="name">Coverage</td><td>本リソースに適用される時間・文化・地理・地域の範囲。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">1.8</td><td class="name">Structure</td><td>本リソースの基礎構造。<br><strong>IEEE LOM 語彙</strong>：<code>Collection</code>、<code>Mixed</code>、<code>Linear</code>、<code>Hierarchical</code>、<code>Networked</code>、<code>Branched</code>、<code>Parceled</code>、<code>Atomic</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">1.9</td><td class="name">Aggregation Level</td><td>本リソースの機能粒度。<br><strong>IEEE LOM 語彙</strong>：<code>1</code>（最小集約：raw メディアデータ片）、<code>2</code>（atom の集合：埋込画像付き HTML や lesson）、<code>3</code>（Level 1 の集合：HTML の Web、unit）、<code>4</code>（最大粒度：course）</td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+        </tbody>
+      </table>
+
+      <h5>2. Lifecycle — 履歴と寄与</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">2</td><td class="name">Lifecycle</td><td>本リソースの履歴・現状、進化過程で影響を与えた者を記述する。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">2.1</td><td class="name">Version</td><td>本リソースの版。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 50 文字）</td></tr>
+          <tr><td class="nr">2.2</td><td class="name">Status</td><td>本リソースの状態。<br><strong>IEEE LOM 語彙</strong>：<code>Draft</code>、<code>Final</code>、<code>Revised</code>、<code>Unavailable</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">2.3</td><td class="name">Contribute</td><td>本リソースの状態に進化過程で影響を与えた者（作成・編集・出版を含む）。3.3 Meta-metadata.Contribute とは異なる。</td><td class="multi">0 or More（最小許容最大値: 30）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">2.3.1</td><td class="name">Role</td><td>寄与の種別。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Author</code>、<code>Publisher</code>、<code>Unknown</code>、<code>Initiator</code>、<code>Terminator</code>、<code>Validator</code>、<code>Editor</code>、<code>Graphical Designer</code>、<code>Technical Implementer</code>、<code>Content Provider</code>、<code>Technical Validator</code>、<code>Educational Validator</code>、<code>Script Writer</code>、<code>Instructional Designer</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">2.3.2</td><td class="name">Entity</td><td>本リソースに寄与した人物・組織の識別と情報。Author なら個人、Publisher なら組織、それ以外なら寄与者。vCard<sup>25</sup> 要素。</td><td class="multi">0 or More（最小許容最大値: 40）</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">2.3.3</td><td class="name">Date</td><td>寄与の日付。ISO 8601 標準に従う <code>datetime</code> 要素と <code>description</code> 要素を持つ DateType としてバインドする。</td><td class="multi">0 or 1</td><td class="dtype">DateType</td></tr>
+        </tbody>
+      </table>
+
+      <h5>3. Meta-metadata — メタデータ自体に関する情報</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">3</td><td class="name">Meta-metadata</td><td>本メタデータレコード自体に関する情報。誰が・どのように・いつ作成し、何を参照したかなどを記述する。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.1</td><td class="name">Identifier</td><td>本メタデータレコードを識別するグローバル一意ラベル。予約され使用しない。</td><td class="multi">RESERVED</td><td class="dtype">String</td></tr>
+          <tr><td class="nr">3.2</td><td class="name">Catalog Entry</td><td>本メタデータインスタンスに付与されたカタログエントリ。3.1 の代替として利用可。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.2.1</td><td class="name">Catalog</td><td>カタログ名。通常システムが生成。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">3.2.2</td><td class="name">Entry</td><td>カタログ内のエントリ実値。通常システムが生成。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">3.3</td><td class="name">Contribute</td><td>本メタデータインスタンスの状態に影響を与えた者（creator、validator を含む）。2.3 Lifecycle.Contribute とは異なる。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.3.1</td><td class="name">Role</td><td>寄与の種別。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Creator</code>、<code>Validator</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">3.3.2</td><td class="name">Entity</td><td>本メタデータインスタンスに寄与した人物・組織。vCard<sup>25</sup> 要素。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">3.3.3</td><td class="name">Date</td><td>寄与の日付。</td><td class="multi">0 or 1</td><td class="dtype">DateType</td></tr>
+          <tr><td class="nr">3.4</td><td class="name">Metadata Scheme</td><td>本メタデータインスタンスの作成に用いた権威仕様の名称・バージョン。複数値の場合、複数のスキームに準拠する。</td><td class="multi">1 or More（最小許容最大値: 10）</td><td class="dtype">String（最小許容最大値: 30 文字）</td></tr>
+          <tr><td class="nr">3.5</td><td class="name">Language</td><td>本メタデータインスタンスの言語。本インスタンス内のすべての <code>langstring</code> 値のデフォルト言語。記述対象コンテンツとは異なってよい。<code>"None"</code> も許容。<span class="adl-note" style="display:block; margin-top:6px;">ISO 639/3166 標準に従う（<a href="scorm_addendums_ja.html#sec-1-14">Addendum 13 参照</a>）。</span></td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 100 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h5>4. Technical — 技術要件・特性</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">4</td><td class="name">Technical</td><td>本リソースの技術要件と特性。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1</td><td class="name">Format</td><td>本リソースの技術データ型。アクセスに必要なソフトウェアの識別に用いる。MIME 型または <code>"non-digital"</code> に制限される。</td><td class="multi">1 or More（最小許容最大値: 40）</td><td class="dtype">String（最小許容最大値: 500 文字）</td></tr>
+          <tr><td class="nr">4.2</td><td class="name">Size</td><td>デジタルリソースのサイズ（バイト単位、数字 0–9 のみ）。圧縮版ではなく実サイズ。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 30 文字）</td></tr>
+          <tr><td class="nr">4.3</td><td class="name">Location</td><td>本リソースへのアクセス文字列。URL／URI／ロケーションへ解決するメソッド。<code>type</code> 属性は <code>URI</code> または <code>TEXT</code>。</td><td class="multi">1 or More（最小許容最大値: 10）</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">4.4</td><td class="name">Requirement</td><td>本リソース利用に必要な技術能力。複数要件はすべて必要（論理積）。</td><td class="multi">0 or More（最小許容最大値: 40）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.4.1</td><td class="name">Type</td><td>必要技術の種別。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Operating System</code>、<code>Browser</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">4.4.2</td><td class="name">Name</td><td>必要技術の名称。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<br>OS：<code>PC-DOS</code>、<code>MS-Windows</code>、<code>MacOS</code>、<code>Unix</code>、<code>Multi-OS</code>、<code>Other</code>、<code>None</code><br>Browser：<code>Any</code>、<code>Netscape Communicator</code>、<code>Microsoft Internet Explorer</code>、<code>Opera</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">4.4.3</td><td class="name">Minimum Version</td><td>必要技術の最低バージョン。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 30 文字）</td></tr>
+          <tr><td class="nr">4.4.4</td><td class="name">Maximum Version</td><td>本リソースの利用が確認される最大バージョン。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 30 文字）</td></tr>
+          <tr><td class="nr">4.5</td><td class="name">Installation Remarks</td><td>本リソースのインストール方法の説明。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">4.6</td><td class="name">Other Platform Requirements</td><td>その他のソフトウェア・ハードウェア要件。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">4.7</td><td class="name">Duration</td><td>意図された速度で再生したときの連続リソースの時間長。音声・動画・アニメーションで有用。</td><td class="multi">0 or 1</td><td class="dtype">DateType</td></tr>
+        </tbody>
+      </table>
+
+      <h5>5. Educational — 教育的特性</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">5</td><td class="name">Educational</td><td>本リソースの主要な教育・教科教育的特性。教師・管理者・著者・学習者が対象読者。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">5.1</td><td class="name">Interactivity Type</td><td>本リソースと利用者の間の情報フロー。<br><strong>IEEE LOM 語彙</strong>：<code>Active</code>（学習者からリソースへ：シミュレーション・問題集等）、<code>Expositive</code>（リソースから学習者へ：エッセイ・動画等）、<code>Mixed</code>、<code>Undefined</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">5.2</td><td class="name">Learning Resource Type</td><td>リソース固有種別。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Exercise</code>、<code>Simulation</code>、<code>Questionnaire</code>、<code>Diagram</code>、<code>Figure</code>、<code>Graph</code>、<code>Index</code>、<code>Slide</code>、<code>Table</code>、<code>Narrative Text</code>、<code>Exam</code>、<code>Experiment</code>、<code>Problem Statement</code>、<code>Self Assesment</code></td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">5.3</td><td class="name">Interactivity Level</td><td>エンドユーザーとリソース間の対話レベル。<br><strong>IEEE LOM 語彙</strong>：<code>very low</code>、<code>low</code>、<code>medium</code>、<code>high</code>、<code>very high</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">5.4</td><td class="name">Semantic Density</td><td>サイズ・継続時間に対する有用性の主観的尺度。<br><strong>IEEE LOM 語彙</strong>：<code>very low</code>、<code>low</code>、<code>medium</code>、<code>high</code>、<code>very high</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">5.5</td><td class="name">Intended End User Role</td><td>本リソースが設計対象とする主要利用者。<br><strong>IEEE LOM 語彙</strong>：<code>Teacher</code>、<code>Author</code>、<code>Learner</code>、<code>Manager</code></td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">5.6</td><td class="name">Context</td><td>本リソースの想定利用環境。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Primary Education</code>、<code>Secondary Education</code>、<code>Higher Education</code>、<code>University First Cycle</code>、<code>University Second Cycle</code>、<code>University Postgrade</code>、<code>Technical School First Cycle</code>、<code>Technical School Second Cycle</code>、<code>Professional Formation</code>、<code>Continuous Formation</code>、<code>Vocational Training</code></td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">5.7</td><td class="name">Typical Age Range</td><td>本リソースの想定年齢範囲。</td><td class="multi">0 or More（最小許容最大値: 5）</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">5.8</td><td class="name">Difficulty</td><td>想定対象群にとっての難易度。<br><strong>IEEE LOM 語彙</strong>：<code>very easy</code>、<code>easy</code>、<code>medium</code>、<code>difficult</code>、<code>very difficult</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">5.9</td><td class="name">Typical Learning Time</td><td>想定対象が本リソースを利用するのに通常要する時間。</td><td class="multi">0 or 1</td><td class="dtype">DateType</td></tr>
+          <tr><td class="nr">5.10</td><td class="name">Description</td><td>本リソースの教育利用に関するコメント。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">5.11</td><td class="name">Language</td><td>本リソースの想定利用者が用いる人間言語。<code>"None"</code> も許容。ISO 639/3166 標準に従う。<span class="adl-note" style="display:block; margin-top:6px;">最小許容最大値は <strong>100</strong> 文字（<a href="scorm_addendums_ja.html#sec-1-8">Addendum 7 参照</a>）。</span></td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">String（最小許容最大値: 100 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h5>6. Rights — 権利・利用条件</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">6</td><td class="name">Rights</td><td>本リソースの知的財産権と利用条件。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">6.1</td><td class="name">Cost</td><td>本リソースの利用に費用がかかるか。<br><strong>IEEE LOM 語彙</strong>：<code>yes</code>、<code>no</code></td><td class="multi">1 and only 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">6.2</td><td class="name">Copyright and Other Restrictions</td><td>著作権その他の制限。<br><strong>IEEE LOM 語彙</strong>：<code>yes</code>、<code>no</code></td><td class="multi">1 and only 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">6.3</td><td class="name">Description</td><td>本リソースの利用条件のコメント。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h5>7. Relation — 他リソースとの関係</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">7</td><td class="name">Relation</td><td>本リソースと他のターゲットリソースとの関係。複数関係は repeat。</td><td class="multi">0 or More（最小許容最大値: 100）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">7.1</td><td class="name">Kind</td><td>本リソースとターゲットリソースの関係種別。<br><strong>IEEE LOM 語彙（Best Practice、Dublin Core 由来）</strong>：<code>IsPartOf</code>、<code>HasPart</code>、<code>IsVersionOf</code>、<code>HasVersion</code>、<code>IsFormatOf</code>、<code>HasFormat</code>、<code>References</code>、<code>IsReferencedBy</code>、<code>IsBasedOn</code>、<code>IsBasisFor</code>、<code>Requires</code>、<code>IsRequiredBy</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">7.2</td><td class="name">Resource</td><td>関連リソース。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">7.2.1</td><td class="name">Identifier</td><td>関連リソースのグローバル一意ラベル。予約。</td><td class="multi">RESERVED</td><td class="dtype">String</td></tr>
+          <tr><td class="nr">7.2.2</td><td class="name">Description</td><td>関連リソースの記述。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">7.2.3</td><td class="name">Catalog Entry</td><td>関連リソースのカタログエントリ。</td><td class="multi">0 or More（最小許容最大値: 10）</td><td class="dtype">Container</td></tr>
+        </tbody>
+      </table>
+
+      <h5>8. Annotation — 注釈</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">8</td><td class="name">Annotation</td><td>本リソースの教育利用に関するコメントと作成情報。</td><td class="multi">0 or More（最小許容最大値: 30）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">8.1</td><td class="name">Person</td><td>注釈作成者。vCard 要素。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">8.2</td><td class="name">Date</td><td>注釈作成日。</td><td class="multi">0 or 1</td><td class="dtype">DateType</td></tr>
+          <tr><td class="nr">8.3</td><td class="name">Description</td><td>注釈本文。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 2000 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h5>9. Classification — 分類</h5>
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">9</td><td class="name">Classification</td><td>分類体系における本リソースの位置を記述する。</td><td class="multi">0 or More（最小許容最大値: 40）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">9.1</td><td class="name">Purpose</td><td>分類目的。<br><strong>IEEE LOM 語彙（Best Practice）</strong>：<code>Discipline</code>、<code>Idea</code>、<code>Prerequisite</code>、<code>Educational Objective</code>、<code>Accessibility Restrictions</code>、<code>Educational Level</code>、<code>Skill Level</code>、<code>Security Level</code>、<code>Competency</code></td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Best Practice)</td></tr>
+          <tr><td class="nr">9.2</td><td class="name">Taxon Path</td><td>分類体系内のタクソノミーパス。</td><td class="multi">0 or More（最小許容最大値: 15）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">9.2.1</td><td class="name">Source</td><td>タクソノミー体系の名称。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">9.2.2</td><td class="name">Taxon</td><td>分類体系内の単一ノード。再帰的にネスト可（最小許容最大値の解釈は <a href="scorm_addendums_ja.html#sec-1-12">Addendum 11 参照</a>）。</td><td class="multi">0 or More（最小許容最大値: 15）</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">9.2.2.1</td><td class="name">ID</td><td>本タクソノミーノードの識別子（数字または英数字シーケンス）。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 100 文字）</td></tr>
+          <tr><td class="nr">9.2.2.2</td><td class="name">Entry</td><td>本ノードのテキストラベル。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 500 文字）</td></tr>
+          <tr><td class="nr">9.3</td><td class="name">Description</td><td>分類目的に関する記述。</td><td class="multi">0 or 1</td><td class="dtype">LangString（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">9.4</td><td class="name">Keyword</td><td>分類目的に関するキーワード。</td><td class="multi">0 or More（最小許容最大値: 40）</td><td class="dtype">LangString（最小許容最大値: 500 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h4>共通データ型の Information Model</h4>
+
+      <h5>LangString Type</h5>
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="name">Lang</td><td>当該文字列の言語コード（ISO 639/3166）。</td><td class="multi">0 or 1</td><td class="dtype">String</td></tr>
+          <tr><td class="nr">2</td><td class="name">String</td><td>本データ型の値文字列。</td><td class="multi">1 or More</td><td class="dtype">String</td></tr>
+        </tbody>
+      </table>
+
+      <h5>Date Type</h5>
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="name">Datetime</td><td>ISO 8601 標準で表現される日付。<br><strong>Best Practice</strong>（<a href="scorm_addendums_ja.html#sec-1-11">Addendum 10</a>）：<code>yyyy-mm-dd</code> または <code>hh:mm:ss</code> 形式。</td><td class="multi">single value</td><td class="dtype">String（最小許容最大値: 200 文字）</td></tr>
+          <tr><td class="nr">2</td><td class="name">Description</td><td>日付の説明。</td><td class="multi">single value</td><td class="dtype">LangString（最小許容最大値: 1000 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <h5>Vocabulary Type</h5>
+      <table class="spec-table">
+        <thead><tr><th>Nr</th><th>Name</th><th>説明</th><th>Multiplicity</th><th>Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="name">Source</td><td>語彙の出典（URI または識別ラベル）。</td><td class="multi">1 and only 1</td><td class="dtype">LangString</td></tr>
+          <tr><td class="nr">2</td><td class="name">Value</td><td>語彙の実値。</td><td class="multi">1 and only 1</td><td class="dtype">LangString</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="sec-2-2-3">2.2.3 SCORM Meta-data XML Binding</h3>
+
+      <p>SCORM Meta-data XML Binding は、Section 2.2.2 で定義された Information Model を XML 文書としてエンコードする方法を定義する。本バインディングは IMS Learning Resource Meta-data XML Binding Specification<sup>22</sup> に直接基づく。SCORM 準拠メタデータレコードは、IMS が提供する XSD（<code>imsmd_rootv1p2p1.xsd</code>）に対して valid な XML 文書でなければならない。</p>
+
+      <h4>2.2.3.1 <code>&lt;lom&gt;</code> Element（ルート）</h4>
+
+      <p>すべての SCORM メタデータレコードは <code>&lt;lom&gt;</code>（Learning Object Metadata）要素をルートとする。<code>&lt;lom&gt;</code> 要素は以下のサブ要素を含む（各カテゴリに対応）。</p>
+
+      <ul>
+        <li><code>&lt;general&gt;</code>（1 and only 1）</li>
+        <li><code>&lt;lifecycle&gt;</code>（0 or 1）</li>
+        <li><code>&lt;metametadata&gt;</code>（1 and only 1）</li>
+        <li><code>&lt;technical&gt;</code>（1 and only 1）</li>
+        <li><code>&lt;educational&gt;</code>（0 or 1）</li>
+        <li><code>&lt;rights&gt;</code>（1 and only 1）</li>
+        <li><code>&lt;relation&gt;</code>（0 or More）</li>
+        <li><code>&lt;annotation&gt;</code>（0 or More）</li>
+        <li><code>&lt;classification&gt;</code>（0 or More）</li>
+      </ul>
+
+      <h4>2.2.3.1.1 <code>&lt;general&gt;</code> Element の例</h4>
+
+      <p><code>&lt;general&gt;</code> 内の主要なサブ要素：<code>&lt;identifier&gt;</code>（予約・未使用）、<code>&lt;title&gt;</code>、<code>&lt;catalogentry&gt;</code>（<code>&lt;catalog&gt;</code> + <code>&lt;entry&gt;</code>）、<code>&lt;language&gt;</code>、<code>&lt;description&gt;</code>、<code>&lt;keyword&gt;</code>、<code>&lt;coverage&gt;</code>、<code>&lt;structure&gt;</code>、<code>&lt;aggregationlevel&gt;</code>。</p>
+
+<pre><code>&lt;general&gt;
+   &lt;title&gt;
+      &lt;langstring xml:lang=&quot;en&quot;&gt;Sample Resource Title&lt;/langstring&gt;
+   &lt;/title&gt;
+   &lt;catalogentry&gt;
+      &lt;catalog&gt;ISBN&lt;/catalog&gt;
+      &lt;entry&gt;
+         &lt;langstring xml:lang=&quot;en&quot;&gt;2-7342&lt;/langstring&gt;
+      &lt;/entry&gt;
+   &lt;/catalogentry&gt;
+   &lt;language&gt;en&lt;/language&gt;
+   &lt;description&gt;
+      &lt;langstring xml:lang=&quot;en&quot;&gt;Description of resource&lt;/langstring&gt;
+   &lt;/description&gt;
+   &lt;keyword&gt;
+      &lt;langstring xml:lang=&quot;en&quot;&gt;sample&lt;/langstring&gt;
+   &lt;/keyword&gt;
+   &lt;structure&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Hierarchical&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/structure&gt;
+&lt;/general&gt;</code></pre>
+
+      <p class="adl-note" style="display:block;">SCORM Version 1.2 では <code>&lt;structure&gt;</code> や <code>&lt;aggregationlevel&gt;</code> など Vocabulary 型の要素について、<code>&lt;source&gt;</code> と <code>&lt;value&gt;</code> を直接子要素として記述する。本書では誤って <code>&lt;vocabulary&gt;</code> 要素を経由する記述例があるが、これは <a href="scorm_addendums_ja.html#sec-1-3">Addendum 2</a> で訂正されている。</p>
+
+      <h4>2.2.3.1.2 <code>&lt;lifecycle&gt;</code> Element の例</h4>
+
+      <p>サブ要素：<code>&lt;version&gt;</code>、<code>&lt;status&gt;</code>、<code>&lt;contribute&gt;</code>。<code>&lt;contribute&gt;</code> はさらに <code>&lt;role&gt;</code>、<code>&lt;centity&gt;</code>（vCard）、<code>&lt;date&gt;</code> を含む。</p>
+
+<pre><code>&lt;lifecycle&gt;
+   &lt;version&gt;
+      &lt;langstring xml:lang=&quot;en&quot;&gt;1.0&lt;/langstring&gt;
+   &lt;/version&gt;
+   &lt;status&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Final&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/status&gt;
+   &lt;contribute&gt;
+      &lt;role&gt;
+         &lt;source&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+         &lt;/source&gt;
+         &lt;value&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;Author&lt;/langstring&gt;
+         &lt;/value&gt;
+      &lt;/role&gt;
+      &lt;centity&gt;
+         &lt;vcard&gt;begin:vcard
+fn: Joe Author
+end:vcard&lt;/vcard&gt;
+      &lt;/centity&gt;
+      &lt;date&gt;
+         &lt;datetime&gt;2001-10-01&lt;/datetime&gt;
+         &lt;description&gt;
+            &lt;langstring xml:lang=&quot;en&quot;&gt;Initial release&lt;/langstring&gt;
+         &lt;/description&gt;
+      &lt;/date&gt;
+   &lt;/contribute&gt;
+&lt;/lifecycle&gt;</code></pre>
+
+      <h4>2.2.3.1.3 <code>&lt;metametadata&gt;</code> Element の例</h4>
+
+      <p>サブ要素：<code>&lt;identifier&gt;</code>（予約）、<code>&lt;catalogentry&gt;</code>、<code>&lt;contribute&gt;</code>（<code>&lt;role&gt;</code> は <code>Creator</code>／<code>Validator</code>）、<code>&lt;metadatascheme&gt;</code>、<code>&lt;language&gt;</code>。</p>
+
+<pre><code>&lt;metametadata&gt;
+   &lt;contribute&gt;
+      &lt;role&gt;
+         &lt;source&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+         &lt;/source&gt;
+         &lt;value&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;Creator&lt;/langstring&gt;
+         &lt;/value&gt;
+      &lt;/role&gt;
+      &lt;centity&gt;
+         &lt;vcard&gt;begin:vcard
+fn: Meta Creator
+end:vcard&lt;/vcard&gt;
+      &lt;/centity&gt;
+      &lt;date&gt;
+         &lt;datetime&gt;2001-10-01&lt;/datetime&gt;
+      &lt;/date&gt;
+   &lt;/contribute&gt;
+   &lt;metadatascheme&gt;LOM-1.0&lt;/metadatascheme&gt;
+   &lt;metadatascheme&gt;ADL SCORM 1.2&lt;/metadatascheme&gt;
+   &lt;language&gt;en&lt;/language&gt;
+&lt;/metametadata&gt;</code></pre>
+
+      <h4>2.2.3.1.4 <code>&lt;technical&gt;</code> Element の例</h4>
+
+      <p>サブ要素：<code>&lt;format&gt;</code>、<code>&lt;size&gt;</code>、<code>&lt;location&gt;</code>（<code>type</code> 属性 = <code>URI</code> または <code>TEXT</code>）、<code>&lt;requirement&gt;</code>（<code>&lt;type&gt;</code>、<code>&lt;name&gt;</code>、<code>&lt;minimumversion&gt;</code>、<code>&lt;maximumversion&gt;</code>）、<code>&lt;installationremarks&gt;</code>、<code>&lt;otherplatformrequirements&gt;</code>、<code>&lt;duration&gt;</code>。</p>
+
+<pre><code>&lt;technical&gt;
+   &lt;format&gt;text/html&lt;/format&gt;
+   &lt;size&gt;1245&lt;/size&gt;
+   &lt;location type=&quot;URI&quot;&gt;http://example.org/resource/index.html&lt;/location&gt;
+   &lt;requirement&gt;
+      &lt;type&gt;
+         &lt;source&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+         &lt;/source&gt;
+         &lt;value&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;Browser&lt;/langstring&gt;
+         &lt;/value&gt;
+      &lt;/type&gt;
+      &lt;name&gt;
+         &lt;source&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+         &lt;/source&gt;
+         &lt;value&gt;
+            &lt;langstring xml:lang=&quot;x-none&quot;&gt;Microsoft Internet Explorer&lt;/langstring&gt;
+         &lt;/value&gt;
+      &lt;/name&gt;
+      &lt;minimumversion&gt;5.0&lt;/minimumversion&gt;
+   &lt;/requirement&gt;
+&lt;/technical&gt;</code></pre>
+
+      <h4>2.2.3.1.5 <code>&lt;educational&gt;</code> Element の例</h4>
+
+      <p>サブ要素：<code>&lt;interactivitytype&gt;</code>、<code>&lt;learningresourcetype&gt;</code>、<code>&lt;interactivitylevel&gt;</code>、<code>&lt;semanticdensity&gt;</code>、<code>&lt;intendedenduserrole&gt;</code>、<code>&lt;context&gt;</code>、<code>&lt;typicalagerange&gt;</code>、<code>&lt;difficulty&gt;</code>、<code>&lt;typicallearningtime&gt;</code>、<code>&lt;description&gt;</code>、<code>&lt;language&gt;</code>。</p>
+
+<pre><code>&lt;educational&gt;
+   &lt;interactivitytype&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Active&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/interactivitytype&gt;
+   &lt;learningresourcetype&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Simulation&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/learningresourcetype&gt;
+   &lt;intendedenduserrole&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Learner&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/intendedenduserrole&gt;
+   &lt;context&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Higher Education&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/context&gt;
+   &lt;typicallearningtime&gt;
+      &lt;datetime&gt;PT0H30M&lt;/datetime&gt;
+   &lt;/typicallearningtime&gt;
+&lt;/educational&gt;</code></pre>
+
+      <h4>2.2.3.1.6 <code>&lt;rights&gt;</code> Element の例</h4>
+
+      <p>サブ要素：<code>&lt;cost&gt;</code>、<code>&lt;copyrightandotherrestrictions&gt;</code>、<code>&lt;description&gt;</code>。<span class="adl-note" style="display:block; margin-top:6px;"><a href="scorm_addendums_ja.html#sec-1-4">Addendum 3</a>：要素名は <code>copyrightandotherrestrictions</code> であり、<code>copyrights...</code> ではない。</span></p>
+
+<pre><code>&lt;rights&gt;
+   &lt;cost&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;no&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/cost&gt;
+   &lt;copyrightandotherrestrictions&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;yes&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/copyrightandotherrestrictions&gt;
+&lt;/rights&gt;</code></pre>
+
+      <h4>2.2.3.1.7 <code>&lt;relation&gt;</code> / 2.2.3.1.8 <code>&lt;annotation&gt;</code> / 2.2.3.1.9 <code>&lt;classification&gt;</code> Element</h4>
+
+      <p><code>&lt;relation&gt;</code>：<code>&lt;kind&gt;</code>（語彙：<code>IsPartOf</code>、<code>HasPart</code>、<code>References</code> など）と <code>&lt;resource&gt;</code>（<code>&lt;identifier&gt;</code>=予約、<code>&lt;description&gt;</code>、<code>&lt;catalogentry&gt;</code>）。</p>
+
+      <p><code>&lt;annotation&gt;</code>：<code>&lt;person&gt;</code>（vCard）、<code>&lt;date&gt;</code>、<code>&lt;description&gt;</code>。</p>
+
+      <p><code>&lt;classification&gt;</code>：<code>&lt;purpose&gt;</code>、<code>&lt;taxonpath&gt;</code>（<code>&lt;source&gt;</code> + 再帰ネストの <code>&lt;taxon&gt;</code>。各 <code>&lt;taxon&gt;</code> は <code>&lt;id&gt;</code> と <code>&lt;entry&gt;</code> を持つ）、<code>&lt;description&gt;</code>、<code>&lt;keyword&gt;</code>。</p>
+
+<pre><code>&lt;classification&gt;
+   &lt;purpose&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;LOMv1.0&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;value&gt;
+         &lt;langstring xml:lang=&quot;x-none&quot;&gt;Discipline&lt;/langstring&gt;
+      &lt;/value&gt;
+   &lt;/purpose&gt;
+   &lt;taxonpath&gt;
+      &lt;source&gt;
+         &lt;langstring xml:lang=&quot;en&quot;&gt;Sample Taxonomy&lt;/langstring&gt;
+      &lt;/source&gt;
+      &lt;taxon&gt;
+         &lt;id&gt;1&lt;/id&gt;
+         &lt;entry&gt;
+            &lt;langstring xml:lang=&quot;en&quot;&gt;Engineering&lt;/langstring&gt;
+         &lt;/entry&gt;
+         &lt;taxon&gt;
+            &lt;id&gt;1.1&lt;/id&gt;
+            &lt;entry&gt;
+               &lt;langstring xml:lang=&quot;en&quot;&gt;Software Engineering&lt;/langstring&gt;
+            &lt;/entry&gt;
+         &lt;/taxon&gt;
+      &lt;/taxon&gt;
+   &lt;/taxonpath&gt;
+&lt;/classification&gt;</code></pre>
+
+      <p class="adl-note" style="display:block;">
+      <code>&lt;taxon&gt;</code> の最小許容最大値 15 は<strong>再帰ネストの深さ</strong>であり、<code>&lt;taxonpath&gt;</code> 内の同階層の <code>&lt;taxon&gt;</code> 数ではない（<a href="scorm_addendums_ja.html#sec-1-12">Addendum 11</a>）。</p>
+
+      <h4>2.2.3.2 共通要素型</h4>
+
+      <h5>LangString Element</h5>
+      <p>多言語文字列。<code>xml:lang</code> 属性で言語コード（ISO 639/3166）を示す。同一の親内で異なる言語の <code>&lt;langstring&gt;</code> を複数記述できる。</p>
+<pre><code>&lt;title&gt;
+   &lt;langstring xml:lang=&quot;en&quot;&gt;Title in English&lt;/langstring&gt;
+   &lt;langstring xml:lang=&quot;ja&quot;&gt;日本語のタイトル&lt;/langstring&gt;
+&lt;/title&gt;</code></pre>
+
+      <h5>Date Type</h5>
+      <p><code>&lt;datetime&gt;</code> と <code>&lt;description&gt;</code> から成る。<code>&lt;datetime&gt;</code> は ISO 8601 標準（<a href="scorm_addendums_ja.html#sec-1-11">Addendum 10</a> のベストプラクティス：<code>yyyy-mm-dd</code> または <code>hh:mm:ss</code>）。</p>
+
+      <h5>Vocabulary Type</h5>
+      <p><code>&lt;source&gt;</code> と <code>&lt;value&gt;</code> から成る。<code>&lt;source&gt;</code> は語彙の出典（LOMv1.0、組織独自など）、<code>&lt;value&gt;</code> は実値。両者ともに <code>&lt;langstring xml:lang="x-none"&gt;</code> を含む。</p>
+
+      <h4>2.2.3.3 Electronic Business Card 要素</h4>
+
+      <h5><code>&lt;vcard&gt;</code></h5>
+
+      <p>vCard 標準<sup>25</sup>に従って人物・組織を表現する要素。各 <code>&lt;centity&gt;</code> または <code>&lt;person&gt;</code> 内に出現する。</p>
+
+<pre><code>&lt;centity&gt;
+   &lt;vcard&gt;begin:vcard
+version: 2.1
+fn: Joe Author
+n: Author;Joe
+org: Sample University
+end:vcard&lt;/vcard&gt;
+&lt;/centity&gt;</code></pre>
+
+      <h4>2.2.3.4 XML 拡張機構</h4>
+
+      <p>SCORM メタデータ XML レコードは、IMS Learning Resource Meta-data Specification の規定に従う形で、追加の名前空間付き要素を含めることができる。これらの拡張要素は IMS のスキーマで許可される位置（特に <code>&lt;general&gt;</code>、<code>&lt;classification&gt;</code> 等）に追加される。SCORM Information Model および SCORM Application Profiles で必須とされる要素を変更してはならない。</p>
+
+      <h3 id="sec-2-2-4">2.2.4 SCORM Meta-data Application Profiles</h3>
+
+      <p>SCORM は 3 つのメタデータアプリケーションプロファイルを定義する。各プロファイルは、Information Model 要素のうちどれが必須／推奨／オプションかを規定する。</p>
+
+      <h4 id="sec-2-2-4-1">2.2.4.1 Content Aggregation Meta-data</h4>
+
+      <p>Content Aggregation を記述するメタデータ。content aggregation の発見可能性を高める目的で、リポジトリ内で可検索にする。content package が表す集約コンテンツ全体の自律的単位の記述情報を提供する。</p>
+
+      <h4 id="sec-2-2-4-2">2.2.4.2 Sharable Content Object Meta-data</h4>
+
+      <p>SCO に適用するメタデータ。SCO に含まれるコンテンツの記述情報を提供する。リポジトリ内での再利用と発見可能性を促進する。</p>
+
+      <h4 id="sec-2-2-4-3">2.2.4.3 Asset Meta-data</h4>
+
+      <p>「raw media」Asset に適用するメタデータ。コースウェアコンテンツでの利用文脈とは独立に Asset を記述する。コンテンツ作成時の Asset 再利用と発見可能性を主に促進する。</p>
+
+      <h4 id="sec-2-2-4-4">2.2.4.4 SCORM Meta-data Application Profile Requirements</h4>
+
+      <p>表 2.2.4.4a は、各メタデータ要素について 3 つのアプリケーションプロファイル（Content Aggregation／SCO／Asset）における必須性を示す。</p>
+
+      <ul>
+        <li><strong>M (Mandatory)</strong>：必須</li>
+        <li><strong>O (Optional)</strong>：オプション</li>
+        <li><strong>R (Reserved)</strong>：予約</li>
+      </ul>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th style="width: 50%;">要素</th><th>Content Aggregation</th><th>SCO</th><th>Asset</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>1.0 general</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>1.1 identifier</code></td><td>R</td><td>R</td><td>R</td></tr>
+          <tr><td><code>1.2 title</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>1.3 catalogentry</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>1.3.1 catalog</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>1.3.2 entry</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>1.4 language</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>1.5 description</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>1.6 keyword</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>1.7 coverage</code> / <code>1.8 structure</code> / <code>1.9 aggregationlevel</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>2.0 lifecycle</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>2.1 version</code> / <code>2.2 status</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>2.3 contribute</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>3.0 metametadata</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>3.1 identifier</code></td><td>R</td><td>R</td><td>R</td></tr>
+          <tr><td><code>3.2 catalogentry</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>3.3 contribute</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>3.4 metadatascheme</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>3.5 language</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>4.0 technical</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>4.1 format</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>4.2 size</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>4.3 location</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>4.4 requirement</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>4.5 installationremarks</code> / <code>4.6 otherplatformrequirements</code> / <code>4.7 duration</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>5.0 educational</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>6.0 rights</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>6.1 cost</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>6.2 copyrightandotherrestrictions</code></td><td>M</td><td>M</td><td>M</td></tr>
+          <tr><td><code>6.3 description</code></td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>7.0 relation</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>8.0 annotation</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>9.0 classification</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>9.1 purpose</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>9.2 taxonpath</code> および子要素</td><td>O</td><td>O</td><td>O</td></tr>
+          <tr><td><code>9.3 description</code></td><td>M</td><td>M</td><td>O</td></tr>
+          <tr><td><code>9.4 keyword</code></td><td>M</td><td>M</td><td>O</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12.5px; color: var(--muted); margin-top: -6px; font-style: italic;">表 2.2.4.4a: SCORM Meta-data Application Profile Requirements</p>
+
+      <p class="adl-note" style="display:block;">
+      上記のうち <code>1.3 catalogentry</code> 系列、<code>2.3 contribute</code> 系列、<code>3.2 catalogentry</code> 系列、<code>3.3 contribute</code> 系列、<code>7.2 resource</code> 系列の Catalog Entry サブ要素については、親要素を使用する場合に限り <code>&lt;catalog&gt;</code> 等の必須性が発生する（<a href="scorm_addendums_ja.html#sec-1-10">Addendum 9</a>）。</p>
+
+      <h3 id="sec-2-2-5">2.2.5 SCORM Meta-data Best Practice</h3>
+
+      <p>本節は ADL 技術チームが収集したベストプラクティス集を記述する。SCORM はメタデータ要素利用に関して、語彙とフォーマット制限以外の具体的ガイダンスを提供しない点に注意する。組織・コミュニティ内でメタデータ要素をどのように適用するかの具体的ガイダンスは、各組織・コミュニティに委ねられる。本節で示される例は、要素の利用法の一視点を提示するに過ぎない。</p>
+
+      <h4 id="sec-2-2-5-1">2.2.5.1 Vocabulary の利用</h4>
+
+      <p>SCORM Version 1.2 には Vocabulary について 2 つの概念がある：<strong>Restricted</strong> と <strong>Best Practice</strong>。Restricted は、SCORM メタデータレコードが列挙された語彙に従わなければならないことを示す。Best Practice は ADL が列挙した語彙を推奨することを示すが、SCORM メタデータレコードがそれを使用することは必須ではない。IMS Learning Resource Meta-data Version 1.2 の統合により、Best Practice として識別されたメタデータ要素について、組織独自の語彙を利用する定義済みの方法が用意されている。Vocabulary 型の要素には次の構造を適用する。</p>
+
+<pre><code>&lt;source&gt;
+   &lt;langstring xml:lang=&quot;x-none&quot;&gt;ADL&lt;/langstring&gt;
+&lt;/source&gt;
+&lt;value&gt;
+   &lt;langstring xml:lang=&quot;x-none&quot;&gt;Directed Graphs&lt;/langstring&gt;
+&lt;/value&gt;</code></pre>
+
+      <p>上記の例は組織の語彙を定義・利用する仕組みを示す。<code>&lt;source&gt;</code> 要素は語彙の出典を示す。これは URI または語彙出典を識別するラベルでありうる。<code>xml:lang</code> 属性は <code>x-none</code> に設定するべきである。これは IMS Learning Resource Meta-data 仕様で「値が token であること」（厳密な綴りと言語で文字列を表す）を示すために定義された値である。</p>
+
+      <p class="adl-note" style="display:block;">
+      Best Practice 語彙の場合、提供語彙を採用するなら <code>&lt;source&gt;</code> を <code>"LOMv1.0"</code> とする。組織独自の語彙を採用する場合、<code>"LOMv1.0"</code> 以外の値を <code>&lt;source&gt;</code> に設定する（<a href="scorm_addendums_ja.html#sec-1-9">Addendum 8</a>）。</p>
+
+      <h4 id="sec-2-2-5-2">2.2.5.2 スタンドアロン XML メタデータ文書</h4>
+
+      <p>SCORM メタデータ 3 カテゴリ（Asset、SCO、Content Aggregation）はそれぞれ、IMS Learning Resource Meta-data XML Binding Specification<sup>22</sup> に準拠するスタンドアロン XML 文書の形式を取ることが想定される。SCORM メタデータ文書は、IMS Learning Resource Meta-data XML Binding Specification<sup>22</sup> が参照する XML Schema Definition (XSD) に基づいて valid かつ well-formed な XML 文書であることが期待される。</p>
+
+      <h3 id="sec-2-2-6">2.2.6 XML 例</h3>
+
+      <p>SCORM Meta-data XML 文書の例については、ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）を参照のこと。</p>
+    </section>
+
+    <!-- ═══════════ 2.3 ═══════════ -->
+    <section id="sec-2-3">
+      <h2><span class="section-num">SECTION 2.3</span>Content Packaging</h2>
+
+      <h3 id="sec-2-3-1">2.3.1 概要</h3>
+
+      <p>Content Packaging の目的は、異なるシステム・ツール間でデジタル学習リソースを交換するための標準化された方法を提供することである。Content Packaging はまた、学習リソース集合の構造（または organization）と意図する動作も定義できる。Content Packaging が定義するのは、特に：</p>
+
+      <ul>
+        <li>パッケージ自体を記述する <strong>Manifest ファイル</strong>。次を含む：
+          <ul>
+            <li>パッケージに関する Meta-data</li>
+            <li>コンテンツ構造と動作を定義するオプションの Organization セクション</li>
+            <li>パッケージ内のリソースへの参照リスト</li>
+          </ul>
+        </li>
+        <li>XML ベースの Manifest の作成方法</li>
+        <li>Manifest および全関連物理ファイルを zip ファイルや CD-ROM にパッケージングする方法</li>
+      </ul>
+
+      <p>Content package は、LMS、開発ツール、コンテンツリポジトリ間でデジタル学習リソースまたはその集合を移動させるために用いることが想定される。Content Packaging 仕様は、任意のシステムが対応できる共通の「入出力」形式を提供する。</p>
+
+      <p>SCORM Content Packaging は、IMS Content Packaging Specification<sup>20</sup> の固有用例、すなわちアプリケーションプロファイル群である。SCORM パッケージングは IMS Content Packaging Specification に厳格に準拠しつつ、デジタル学習リソース（Asset、SCO、Content Aggregation）のパッケージングに関する追加の明示的実装ガイダンスを提供する。</p>
+
+      <p>本節は次のように構成される。</p>
+      <ul>
+        <li><strong>2.3.2 Content Structure</strong>：学習リソースを一貫した教育単位（コース、章、モジュールなど）に集約し、構造を適用し、学習タクソノミーを関連付ける仕組みを定義する。Content Structure は SCORM Version 1.1 と同じ情報モデルを用いるが、現在は Content Packaging に実装される。SCORM Version 1.1 で deprecated となった Content Structure Format の機能を本節で定義し、Content Packaging の organization 部分に実装する。</li>
+        <li><strong>2.3.3 IMS Package Description</strong>：IMS Content Packaging 構造の概観を提供する。</li>
+        <li><strong>2.3.4 SCORM Content Packaging Information Model</strong>：IMS Content Packaging Specification に直接基づくパッケージの情報モデルを定義し、SCORM 固有要素（主に SCORM Content Structure が配置される organization セクション）で拡張する。</li>
+        <li><strong>2.3.5 SCORM Content Package XML Binding</strong>：IMS Content Packaging XML Binding 仕様に直接基づき、情報モデルを XML 文書にエンコードする方法を定義する。本節は 2.3.4 で定義した SCORM 固有名前空間要素を含む。</li>
+        <li><strong>2.3.6 SCORM Content Packaging Application Profiles</strong>：Asset、SCO、Content Aggregation（コースやトピック）を含む SCORM 準拠パッケージの作成方法を具体的に定義する。</li>
+      </ul>
+
+      <h3 id="sec-2-3-2">2.3.2 Content Structure</h3>
+
+      <p>content structure の目的は、学習リソースの集合体を一貫した教育単位にオーサリングし、構造を適用し、LMS 環境間で一貫して再現可能な特定動作を関連付けるための手段をコンテンツ開発者に提供することである。</p>
+
+      <p>content structure は、content package で定義された学習リソースをシーケンス・ナビゲートするための地図とみなせる。content structure は学習リソースの構造だけでなく、学習体験に適用されるすべての動作も含む。</p>
+
+      <p>Content Structure は LMS の機能を定義しない。LMS がコンテンツ要素と構造を独自に表現し、別の LMS で読み込まれてその独自フォーマットに格納できる content package 内の content structure をエクスポートする能力を持つことは想定される。content structure は LMS システムに対して、当該モデルや構造を内部的に採用することを要件として課すものではない。</p>
+
+      <p>本書の Content Structure は AICC Computer Managed Instruction<sup>4</sup> から派生している。AICC 仕様はコース構造、プロパティ、目標の情報モデルを定義する。コース表現の主要構成要素が AICC ですでに定義されているため、これを出発点として選んだ。SCORM Content Structure は AICC 作業の修正サブセットである。</p>
+
+      <p>本バージョンの SCORM に含まれる Content Structure Information Model は、SCORM Version 1.1 から要素定義を抽出したものである。本バージョンの SCORM では、SCORM Version 1.1 で定義された XML「Content Structure Format」は <strong>deprecated</strong> となる。Content Information Model は Content Packaging の organization セクションに完全マッピングされた。既存の XML CSF ファイルは、本 Content Packaging 仕様を用いて organization に変換できる（また、変換すべきである）。</p>
+
+      <p>IMS Content Packaging Specification は、現在 deprecated となった CSF に存在していた情報のほとんどを含むフレームワークを提供し、content structure の残りの情報を取り込む拡張機構を加えるための論理的な箇所も提供する。</p>
+
+      <p>IMS Content Packaging モデルはまた、学習リソースの配信に必要なすべての物理ファイルを目録化・束ねる清浄な方法を提供し、1 つ以上の学習リソースに属するファイル間の関係（パッケージ内に物理ファイルとして含まれない外部参照リソースを含む）も識別する。IMS Content Packaging Specification は学習リソースとそのリソースが組織化される方法を分離し、同一学習リソースが異なる文脈・利用法で 1 回以上利用されることを可能にする。</p>
+
+      <p>SCORM Version 1.1 で予期されていたとおり、CSF を完全に包含する content packaging 仕様の利用可能性により、ADL は CSF 単独 XML バインディングを deprecated とした。すべての現行 CSF 要素は IMS organization 要素または新たな SCORM 名前空間要素に 1 対 1 でマッピングされたか、SCORM Meta-data へ全面的に移管された。</p>
+
+      <h4 id="sec-2-3-2-1">2.3.2.1 コンテンツとコンテンツ集合のオーサリング</h4>
+
+      <p>Content Structure は学習リソース集合の構造を表現する手段を提供する。これは学習コンテンツ設計に対する比較的新しいアプローチである。これまで、CBT オーサリングツールはコースの一部を作成する手段と、それらが学習者にいつ・どのように提示されるかを規定する手段を提供してきた。コンテンツとその構造の作成は、通常、同じツールと独自データフォーマットで開発されていた。インターネットベース技術への移行と、再利用可能なコンテンツオブジェクトという考え方が、オーサリングプロセスを大きく変えた。</p>
+
+      <p>SCORM では、コンテンツが学習者に提供される順序（シーケンス）を決定するのは LMS である。これは、設計者が学習リソースを学習者にいつ・どのように提示する意図だったかを LMS が知る必要があることを意味する。Content Packaging の organization セクションに位置する Content Structure は、設計者がこの情報を LMS に提供することを可能にする。教育単位のオーサリングは、学習リソース自体のオーサリングと、学習リソースの集合のオーサリング（おそらく異なるオーサリングツールを用いる）の双方から成る。</p>
+
+      <p>SCORM におけるオーサリングの 2 つの異なる成果物：ブラウザ環境で起動されるオーサリング済み学習リソース、および LMS が取り込み run-time に処理するオーサリング済み Content Structure 情報。古い CBT モデルとは異なり、構造情報はコンテンツから分離され、完全に外部化・標準化されているため、コンテンツコレクションは異なる LMS 環境間で動作する。</p>
+
+      <h4 id="sec-2-3-2-2">2.3.2.2 Content Structure の表現</h4>
+
+      <p>Content Structure には複数の部分があり、それぞれがオーサリングされた学習リソース集合の特定側面を定義する。</p>
+
+      <ul>
+        <li><strong>Content Hierarchy</strong>：目次のように、学習リソースを論理順序にグループ化する木ベース表現を定義する。多くの場合（すべてではない）、この階層的木は著者が学習者に教材を進ませる際に意図したデフォルト順序を表す。</li>
+        <li><strong>Context Specific Meta-data</strong>：学習リソースのオーサリング時、開発者は学習リソースの目的・記述・名前などを記述する関連メタデータを作成することが望ましい。この学習リソース固有メタデータは、学習リソースの最終利用先とは文脈独立である。学習リソース集合がオーサリングされるとき、特定集合における学習リソースの利用法を記述する文脈固有メタデータがあってよい。Content Structure はオプションの文脈固有メタデータを提供する。</li>
+        <li><strong>Sequencing and Navigation</strong>：LMS にどの学習リソースをいつ提示するかを決定するために必要な情報を提供する。利用者が学習リソース内をナビゲートする選択肢の提示方法に関する情報も LMS に提供すべきである。たとえば、最も単純なシーケンシング情報は、LMS にコンテンツツリーを単に学習リソースから次の学習リソースへ辿らせる。より複雑なシーケンシングは、特定学習リソース（prerequisites として定義されたもの）の完了状態、利用者の好みや評価結果のより複雑な計算に基づきうる。本バージョンの SCORM は非常に単純なシーケンシング機能のみを提供する。条件分岐を支援するより洗練されたシーケンシングの作業が進行中であり、次回 SCORM リリースに組み込まれる予定。</li>
+      </ul>
+
+      <p>Content Structure は多様なコンテンツ集約アプローチを表現するように意図されている。content structure は、HTML の数行や短いメディアクリップのような非常に小さい学習リソースから、LMS が追跡する高度に対話的な学習リソースまで、コンテンツ集約を表現できる。Content Structure は、コンテンツの複雑さ、特定コースの階層レベル数（タクソノミー）、コース設計に用いる教育方法論について中立である。</p>
+
+      <p>表 2.3.2.2a は複数のカリキュラムタクソノミーモデルの例を示す。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th>Army モデル</th><th>Air Force モデル</th><th>Marine Corps モデル</th><th>Canadian モデル</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Course</td><td>Course</td><td>Course</td><td>Course</td></tr>
+          <tr><td>Module</td><td>Block</td><td>Phase</td><td>Performance Objective</td></tr>
+          <tr><td>Lesson</td><td>Module</td><td>SubCourse (Annex)</td><td>Enabling Objective</td></tr>
+          <tr><td>Learning Objective</td><td>Lesson</td><td>Lesson</td><td>Teaching Point</td></tr>
+          <tr><td>Learning Step</td><td>Learning Objective</td><td>Task</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12.5px; color: var(--muted); margin-top: -6px; font-style: italic;">表 2.3.2.2a: カリキュラムタクソノミーモデルの例</p>
+
+      <p>コンテンツ構築時に用いた学習設計方法論を理解し、コンテンツ集約への異なるアプローチを理解することは、コンテンツ再利用に役立ち、コンテンツ移動時に LMS に追加情報を提供する。</p>
+
+      <p>SCORM Version 1.1 ではカリキュラムタクソノミーが Content Structure Format (CSF) で表現されていた。SCORM Version 1.2 では CSF が deprecated となったため、カリキュラムタクソノミーは content aggregation を記述するメタデータで識別すべきである。Meta-data の Classification セクションを用いてカリキュラムタクソノミーを記述できる。</p>
+
+      <h4 id="sec-2-3-2-3">2.3.2.3 Content Hierarchy</h4>
+
+      <p>学習リソース集合を論理構造にオーサリングする際は、特に学習リソースを階層に組織化する。SCORM の以前のバージョンでは、SCO の集合は「Block」にグループ化されていた。Block は他の Block の下に複数階層の任意レベルでネストできた。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="236" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">SCORM Version 1.1 における階層用語</text>
+          <rect x="320" y="60" width="120" height="36" fill="#6b2c39" stroke="#1c1e2a"/>
+          <text x="380" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#fdfcf7">content</text>
+          <line x1="380" y1="96" x2="180" y2="130" stroke="#1c1e2a"/>
+          <line x1="380" y1="96" x2="580" y2="130" stroke="#1c1e2a"/>
+          <rect x="120" y="130" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="180" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">block</text>
+          <rect x="520" y="130" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="580" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">block</text>
+          <line x1="180" y1="166" x2="100" y2="200" stroke="#1c1e2a"/>
+          <line x1="180" y1="166" x2="240" y2="200" stroke="#1c1e2a"/>
+          <line x1="580" y1="166" x2="500" y2="200" stroke="#1c1e2a"/>
+          <line x1="580" y1="166" x2="660" y2="200" stroke="#1c1e2a"/>
+          <rect x="60" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="100" y="219" text-anchor="middle" font-size="11" font-weight="700">sco</text>
+          <rect x="200" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="219" text-anchor="middle" font-size="11" font-weight="700">sco</text>
+          <rect x="460" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="500" y="219" text-anchor="middle" font-size="11" font-weight="700">sco</text>
+          <rect x="620" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="660" y="219" text-anchor="middle" font-size="11" font-weight="700">sco</text>
+        </svg></div>
+        <div class="figure-caption">図 2.3.2.3a: SCORM Version 1.1 の Content Hierarchy 用語</div>
+      </div>
+
+      <p>設計方法論によっては、この階層的グルーピングは Course、Chapter、Topic などの概念を表現する。</p>
+
+      <p>IMS Content Packaging Specification 策定中、SCORM Content Structure Format と IMS Packaging Specification は同じ階層概念を共有していたが、異なる用語を用いていることが指摘された。IMS の用語では同じ階層構造は次のようになる。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="316" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">SCORM Version 1.2 における階層用語（IMS 用語）</text>
+          <rect x="290" y="60" width="180" height="36" fill="#6b2c39" stroke="#1c1e2a"/>
+          <text x="380" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#fdfcf7">organization</text>
+
+          <line x1="380" y1="96" x2="180" y2="130" stroke="#1c1e2a"/>
+          <line x1="380" y1="96" x2="580" y2="130" stroke="#1c1e2a"/>
+
+          <rect x="120" y="130" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="180" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">item</text>
+          <rect x="520" y="130" width="120" height="36" fill="#8a4452" stroke="#1c1e2a"/>
+          <text x="580" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#fdfcf7">item</text>
+
+          <line x1="180" y1="166" x2="100" y2="200" stroke="#1c1e2a"/>
+          <line x1="180" y1="166" x2="240" y2="200" stroke="#1c1e2a"/>
+          <line x1="580" y1="166" x2="500" y2="200" stroke="#1c1e2a"/>
+          <line x1="580" y1="166" x2="660" y2="200" stroke="#1c1e2a"/>
+
+          <rect x="60" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="100" y="219" text-anchor="middle" font-size="11" font-weight="700">item</text>
+          <rect x="200" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="219" text-anchor="middle" font-size="11" font-weight="700">item</text>
+          <rect x="460" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="500" y="219" text-anchor="middle" font-size="11" font-weight="700">item</text>
+          <rect x="620" y="200" width="80" height="28" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="660" y="219" text-anchor="middle" font-size="11" font-weight="700">item</text>
+
+          <line x1="100" y1="228" x2="80" y2="262" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <line x1="240" y1="228" x2="220" y2="262" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <line x1="500" y1="228" x2="480" y2="262" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <line x1="660" y1="228" x2="640" y2="262" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+
+          <rect x="40" y="262" width="80" height="28" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="80" y="281" text-anchor="middle" font-size="10" font-weight="700">resource (SCO)</text>
+          <rect x="180" y="262" width="80" height="28" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="220" y="281" text-anchor="middle" font-size="10" font-weight="700">resource (Asset)</text>
+          <rect x="440" y="262" width="80" height="28" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="480" y="281" text-anchor="middle" font-size="10" font-weight="700">resource (SCO)</text>
+          <rect x="600" y="262" width="80" height="28" fill="#f0ebd8" stroke="#1c1e2a"/>
+          <text x="640" y="281" text-anchor="middle" font-size="10" font-weight="700">resource (Asset)</text>
+        </svg></div>
+        <div class="figure-caption">図 2.3.2.3b: SCORM Version 1.2 の Content Hierarchy 用語</div>
+      </div>
+
+      <p>SCORM の以前のバージョンの Content Structure Format で用いていた階層は IMS 仕様の organization 部分に直接マッピングされる。古い CSF 用語の <code>content</code> と <code>block</code> は IMS 用語の <code>item</code> に置き換えられる。それ以外の階層表現は同じだが、1 点例外がある：古い SCORM CSF では<strong>葉ノードのみ</strong>（他の item を含まない木の最下位 item）が SCO を指すことが許されていた。SCORM 1.2 では<strong>任意のレベル</strong>がオプションで学習リソースを指すことができる。</p>
+
+      <h4 id="sec-2-3-2-4">2.3.2.4 文脈固有メタデータ</h4>
+
+      <p>学習リソースが作成されるとき、学習リソースを記述するメタデータ文書も作成されることが望ましい。これにより、学習リソースは他所で発見・再利用できる。このようなメタデータは、特定の学習戦略を構成する特定の集合とは独立に学習リソースを記述するため、文脈独立とみなされる。たとえば、針への糸通しを教える単純な SCO を想像する。SCO を記述するメタデータは習得するスキル（針穴に糸を通す）を記述し、シミュレーションが学習体験の一部であることをさらに記述するかもしれない。ただし、このメタデータは針がどう用いられるかを記述しない。</p>
+
+      <p>特定トピックに関する教育戦略が作成されるとき、著者は特定目的のために学習リソースを文脈的に記述することを選ぶかもしれない。たとえば、ドレスメイキングのコースでは、針通しオブジェクトはローカルメタデータでオブジェクトを「補助参照スキル」として記述するかもしれない。あるいは、帆作りコースではオブジェクトを「前提帆作りスキル」として記述するかもしれない。</p>
+
+      <p>特定の学習戦略に固有のメタデータは <strong>context specific meta-data（文脈固有メタデータ）</strong> と呼ばれ、content hierarchy に組み込まれる。文脈独立メタデータは通常、デジタル Asset、コンテンツオブジェクト、オブジェクト集合のための変更不能でスタンドアロンなメタデータレコードを指す。</p>
+
+      <h4 id="sec-2-3-2-5">2.3.2.5 Sequencing and Navigation</h4>
+
+      <p>Sequencing and navigation は、LMS が特定の学習体験を提示するために従わなければならないルールである。コンテンツ開発者は LMS が遵守すべきルールを定義する責務を負う。これらのルールは Content Structure に表現され、Content Packaging の organization セクションにエンコードされる。これにより、学習リソース集合の意図する動作はパッケージとともに、ある LMS 環境から別の LMS 環境へ移動できる。</p>
+
+      <p>Sequencing and navigation は、特に、学習者が特定の教材を完了したか、許容スコアを得たかに応じて、ある学習リソースから他の学習リソースへ条件分岐する手段を提供する。Navigation 情報は、類似の情報に基づいて学習者がコンテンツを選択できるよう LMS にどう許可するかを通知できる。</p>
+
+      <p>これまで、スタンドアロン CBT オーサリングツールは独自データフォーマットでエンコードされた独自シーケンシング・ナビゲーション機能を提供してきた。LMS 配信のブラウザベースコンテンツへの移行は、コンテンツ集約を複数の LMS 環境間で移動・利用・再利用できるよう、シーケンシング・ナビゲーションの定義・エンコード方法の標準化を要請した。しかし、シーケンシング・ナビゲーションの標準化プロセスは、開発者コミュニティが望む設計アプローチの多様性により困難であった。</p>
+
+      <p>これまで SCORM はシーケンシング・ナビゲーション機能を限定的にしか提供してこなかった。学習設計コミュニティには多くの、しばしば乖離した要件があり、すべての設計事例を解決するアプローチはほぼ存在しないためである。したがって ADL はシーケンシング・ナビゲーションを段階的に扱っている。</p>
+
+      <p>ADL は SCORM 内に堅牢なシーケンシング・ナビゲーション機能を定義する必要性を十分認識しており、必要な機能を SCORM に追加するため、IMS Global Learning Consortium を主軸として複数組織と「fast track」仕様の策定に取り組んでいる。次節では現状の機能と次回 SCORM リリースで追加予定の作業を記述する。</p>
+
+      <h5 id="sec-2-3-2-5-1">2.3.2.5.1 現在の Sequencing/Navigation</h5>
+
+      <p>SCORM は prerequisites を用いて学習リソースをシーケンスするオプションの手段を提供する。prerequisites の利用は AICC<sup>4</sup> の作業から派生している。</p>
+
+      <p>content package は Item 構造に prerequisites と呼ばれるサブ要素を含むことを許可する。本要素はアルゴリズム的にコンテンツ集約のナビゲーションシーケンスを表現するために用いるフィールドを提供する。本要素は SCORM Run-Time Environment 巻に記述された Run-Time Environment Data Model の特定追跡データ要素を反映する。data model は学習リソースが LMS に対して、学習リソースの特定部分が「complete」または「incomplete」になったことを報告する手段を提供する。LMS は prerequisites のステートメントを評価し、学習者に次に提供する学習リソースを判断できる。prerequisites 要素は、コンテンツ集約や item の開始前に完了済みであるべき他のコンテンツ部分を定義する。これにより LMS は学習コンテンツを通る複数の経路を計算できる。</p>
+
+      <p>prerequisites で評価されるステートメントは SCO の <code>cmi.core.lesson_status</code> data model 要素によって決定される（SCORM Run-Time Environment 巻 Section 3.4.4 参照）。<code>lesson_status</code> 値は SCO 単位で機能する。たとえば、コンテンツ集約のステータスは集約に含まれる個別メンバー (item) によって決定される。コンテンツ集約のステータスを complete とすることは、集約を構成するすべてのメンバーが complete であることを意味する。<code>cmi.core.lesson_status</code> data model 要素は次の制限語彙を持つ：<code>"passed"</code>、<code>"completed"</code>、<code>"browsed"</code>、<code>"failed"</code>、<code>"not attempted"</code>、<code>"incomplete"</code>。</p>
+
+      <p>次の表は AICC <em>CMI001 Guidelines for Interoperability</em><sup>4</sup> 文書から抽出した <code>"aicc_script"</code> と呼ばれる prerequisite スクリプト言語の演算子を定義する。これらの演算子は、LMS が計算するロジックの許容表現と、Content Packaging の organization 部分にある prerequisite 要素にロジックをエンコードする方法を定義する。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th style="width: 130px;">演算子</th><th style="width: 60px;">記号</th><th>意味と例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>And</td><td><code>&amp;</code></td><td>区切られたすべての要素が complete のとき式は complete。<br>例：<code>S34 &amp; S36 &amp; S38</code> — SCO S34、S36、S38 のすべてが <code>"passed"</code> または <code>"completed"</code> のとき complete。</td></tr>
+          <tr><td>Or</td><td><code>|</code></td><td>区切られた要素のいずれかが complete のとき式は true。<br>例：<code>S34="passed" | S36="passed" | S38="passed"</code></td></tr>
+          <tr><td>Not</td><td><code>~</code></td><td>後続要素・式が complete なら incomplete (false) を、incomplete なら complete (true) を返す。<br>例：<code>~S35</code> — S35 が complete でない限り対象 SCO に入れる。</td></tr>
+          <tr><td>Equals</td><td><code>=</code></td><td>両辺の値が等しいとき true。<br>例：<code>S33="passed"</code></td></tr>
+          <tr><td>Not equals</td><td><code>&lt;&gt;</code></td><td>両辺の値が異なるとき true。<br>例：<code>S35&lt;&gt;"passed"</code>。<code>~S35</code> は <code>(S35&lt;&gt;"passed" &amp; S35&lt;&gt;"completed")</code> と同等。</td></tr>
+          <tr><td>Set</td><td><code>{}</code></td><td>カンマ区切りの SCO／Block のリストを中括弧で囲む。Block と異なり、set は prerequisite ファイル目的のみで定義され、学習コンテンツ構造に影響しない。<br>例：<code>{S34, S36, S37, S39}</code></td></tr>
+          <tr><td>Separator</td><td><code>,</code></td><td>set のメンバー区切り。各メンバーは Boolean 要素として評価される。</td></tr>
+          <tr><td>Count</td><td><code>X*</code></td><td>X は整数。set の X 個以上のメンバーが complete のとき式は complete。<br>例：<code>3*{S34, S36, S37, S39}</code></td></tr>
+          <tr><td>Precedence</td><td><code>()</code></td><td>括弧内の式を先に評価。ネスト可（C 言語と同等の優先順位）。<br>例：<code>S34 &amp; (S35 | S36)</code></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12.5px; color: var(--muted); margin-top: -6px; font-style: italic;">図 2.3.2.5.1a: AICC スクリプト言語</p>
+
+      <p>本リリース時点で定義されている言語は <code>"aicc_script"</code> のみである。次の例は AICC スクリプト言語を用いた prerequisite を示し、Item I1 と I2 が完了していなければ当該 prerequisites を持つ Item は LMS によって起動されない。</p>
+
+<pre><code>&lt;item identifier=&quot;I0&quot;&gt;
+   &lt;item identifier=&quot;I1&quot; identifierref=&quot;R_I1&quot;&gt;
+   &lt;item identifier=&quot;I2&quot; identifierref=&quot;R_I2&quot;&gt;
+   &lt;item identifier=&quot;I3&quot; identifierref=&quot;R_I3&quot;&gt;
+      &lt;adlcp:prerequisites type=&quot;aicc_script&quot;&gt;
+         I1&amp;I2&lt;/adlcp:prerequisites&gt;
+   &lt;/item&gt;
+&lt;/item&gt;</code></pre>
+
+      <h5 id="sec-2-3-2-5-2">2.3.2.5.2 Sequencing/Navigation の今後の展望</h5>
+
+      <p>ADL は現在、産業・政府・学術パートナーと協働し、content package に記述される現行 content structure を拡張することで、パッケージされた学習リソース集合に堅牢なシーケンシング・ナビゲーション情報を関連付ける仕様を策定中である。本仕様は、ルール・イベント・条件、および各種シーケンシング・ナビゲーション手法に関連する run-time 動作を表現する方法を定義する。</p>
+
+      <p>本仕様は、システムが学習リソースを予測可能な方法で配信し、学習者の学習リソースとのインタラクションに一貫して反応できるようにする。本アプローチは、コンテンツ開発者がシーケンシング・ナビゲーション動作を、学習リソース内に埋め込むのではなく外部から定義できるようにすることで、学習リソースの再利用性を促進する。シーケンシング・ナビゲーション情報は content package manifest 内にエンコードされ、学習リソースが複数の文脈（自身のシーケンシング・ナビゲーション情報を持つ複数の異なる manifest）で再利用されることを可能にする。</p>
+
+      <p>ADL はシーケンシング・ナビゲーション仕様をプレビューする Technical Papers を策定・公開する。本仕様の策定とトライアル実装の完了次第、SCORM Version 1.3 が本仕様を参照することが想定されている。</p>
+
+      <h3 id="sec-2-3-3">2.3.3 IMS Package Description</h3>
+
+      <p>IMS Content Packaging Specification は、コンテンツ作成ツール、LMS、run-time 環境とのインターネットベースコンテンツの相互運用性を提供するために用いるデータ構造を記述する。IMS Content Packaging Specification の目的は、コンテンツ交換に用いる構造の標準化集合を定義することである。IMS Content Packaging Specification の対象範囲は、学習コンテンツのパッケージをインポート・エクスポート・集約・分解したいシステム間の相互運用性の定義に焦点を絞る。</p>
+
+      <h4 id="sec-2-3-3-1">2.3.3.1 Content Packaging 概要</h4>
+
+      <p>IMS Content Package は 2 つの主要構成要素を含む：</p>
+      <ul>
+        <li>（必須）パッケージのコンテンツ組織とリソースを記述する特殊 XML 文書。これは <strong>Manifest ファイル</strong>（<code>imsmanifest.xml</code>）と呼ばれる。パッケージの内容と組織は manifest の文脈で記述されるためである。</li>
+        <li>Manifest で参照される物理ファイル。</li>
+      </ul>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="356" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">IMS Content Package 概念図</text>
+
+          <!-- Outer: PIF -->
+          <rect x="40" y="60" width="680" height="280" fill="none" stroke="#6b2c39" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="60" y="85" font-size="12" font-weight="700" fill="#6b2c39">Package Interchange File (PIF) — zip / jar / cab / tar</text>
+
+          <!-- Manifest box -->
+          <rect x="80" y="110" width="280" height="200" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="220" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Manifest File（imsmanifest.xml）</text>
+
+          <rect x="100" y="155" width="240" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="220" y="175" text-anchor="middle" font-size="11">Meta-data</text>
+
+          <rect x="100" y="195" width="240" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="220" y="215" text-anchor="middle" font-size="11">Organizations（content structure）</text>
+
+          <rect x="100" y="235" width="240" height="32" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="220" y="255" text-anchor="middle" font-size="11">Resources</text>
+
+          <rect x="100" y="275" width="240" height="28" fill="#fdfcf7" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <text x="220" y="294" text-anchor="middle" font-size="11">(Sub)Manifests（任意）</text>
+
+          <!-- Physical Files box -->
+          <rect x="400" y="110" width="280" height="200" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="540" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Physical Files</text>
+          <text x="540" y="170" text-anchor="middle" font-size="11" fill="#444759">実際のコンテンツ、メディア、</text>
+          <text x="540" y="190" text-anchor="middle" font-size="11" fill="#444759">評価、コラボレーション、</text>
+          <text x="540" y="210" text-anchor="middle" font-size="11" fill="#444759">その他のファイル</text>
+
+          <text x="540" y="250" text-anchor="middle" font-size="10" fill="#7a7565" font-style="italic">HTML / Flash / 画像 / XML /</text>
+          <text x="540" y="266" text-anchor="middle" font-size="10" fill="#7a7565" font-style="italic">音声 / 動画 などの実ファイル</text>
+
+          <line x1="345" y1="245" x2="395" y2="250" stroke="#1c1e2a" stroke-dasharray="4,3"/>
+          <text x="370" y="240" text-anchor="middle" font-size="9" fill="#444759">参照</text>
+        </svg></div>
+        <div class="figure-caption">図 2.3.3.1a: Content Packaging 概念図</div>
+      </div>
+
+      <h5>2.3.3.1.1 Package</h5>
+      <p>Package は利用可能（再利用可能）なコンテンツ単位を表す。コース組織の外で教育的妥当性を持ち、独立に配信できるコース部分、コース全体、コース集合のいずれでありうる。Package が LMS などの run-time サービスに到達した際、他のパッケージへの集約・分解を許容しなければならない。Package はスタンドアロンでなければならない — すなわち、開封時に学習目的で利用するために必要なすべての情報を含まなければならない。</p>
+
+      <h5>2.3.3.1.2 Manifest</h5>
+      <p>Manifest は、有意な教育を構成するリソースの XML による記述である。Manifest は教育リソースを提示する 0 個以上の静的な組織化方法も含むことができる。「manifest」のスコープは伸縮自在である：コース外でスタンドアロンに利用できるコース部分（「instructional object」）、コース全体、コース集合のいずれをも記述しうる。コンテンツ開発者は集約・分解されるべき方法でコンテンツを記述する。一般則として、パッケージは常に単一のトップレベル Manifest を含み、これが 1 個以上のサブ manifest を含みうる。トップレベル Manifest はパッケージ全体を記述する。ネストされたサブ manifest はそのスコープのコンテンツ（コース、instructional object など）を記述する。</p>
+
+      <h5>2.3.3.1.3 Meta-data</h5>
+      <p>Meta-data はデータに関するデータである。IMS Content Package の各レベルの構成要素を記述するために用いる。図 2.3.3.1a の meta-data はパッケージ全体を記述するために用いる。Meta-data は organizations や resources を記述するためにも存在し、それらの構成要素のサブ要素として存在する。</p>
+
+      <h5>2.3.3.1.4 Organizations</h5>
+      <p>organizations コンポーネントはコンテンツに構造を提供する。通常、この構造は学習タクソノミー階層の形で提供される。IMS Content Packaging Specification は利用者を特定の構造に縛らない。organizations コンポーネントは、必要となりうる任意数の異なるタクソノミーを記述する手段を提供する。</p>
+
+      <h5>2.3.3.1.5 Resources</h5>
+      <p>resources コンポーネントは、外部リソースおよびパッケージを構成する物理ファイルを記述できる。これらのファイルはメディアファイル、テキストファイル、評価オブジェクト、その他電子的データ片であってよい。ファイル間の概念的グルーピングと関係を resources コンポーネント内で表現できる。リソースの組合せは一般に「コンテンツ」と分類される。リソースは organizations コンポーネント内の各点で参照され、organizations コンポーネントがリソースに構造を提供する。</p>
+
+      <h5>2.3.3.1.6 Physical Files</h5>
+      <p>physical files コンポーネントは resources コンポーネントで参照される実ファイルを表す。これらのファイルは content package 内に実際に含まれるローカルファイルでも、URI で参照される外部ファイルでもありうる。</p>
+
+      <h5>2.3.3.1.7 Package Interchange File</h5>
+      <p>Package Interchange File (PIF) は、zip、jar、cab、tar などのアーカイブ形式での content packaging コンポーネントの表現である。content package が PIF としてアーカイブされることは必須ではない。PIF はシステム間で content package を運ぶことに使える簡潔な Web 配信形式を提供する。</p>
+
+      <h3 id="sec-2-3-4">2.3.4 SCORM Content Packaging Information Model</h3>
+
+      <p>本節は SCORM Content Packaging Information Model を表形式で示す。SCORM Content Packaging Information Model は、SCORM 準拠パッケージ構築に許容されるデータ要素を記述する。</p>
+
+      <p class="adl-note" style="display: block;">
+      本情報モデルは IMS Content Packaging Information Model に厳格に準拠しつつ、SCORM Version 1.1 Content Structure Information Model でかつて定義されていた要素を含めるよう拡張されている。これらの ADL 固有要素は説明欄に「ADL Note: This is an ADL extension to the IMS Content Packaging Information Model.」と注記される。SCORM 準拠パッケージは下表で定義される拡張要素の利用法と Section 2.3.5 の XML バインディング定義に準拠しなければならない。</p>
+
+      <table class="spec-table">
+        <thead><tr><th style="width: 60px;">Nr</th><th style="width: 18%;">Name</th><th>説明</th><th style="width: 130px;">Multiplicity</th><th style="width: 22%;">Data Type</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="name">Manifest</td><td>Manifest 内の最初のもっとも外側の <code>&lt;manifest&gt;</code> 要素はすべての参照データを内包する。最外 <code>&lt;manifest&gt;</code> 内の続く <code>&lt;manifest&gt;</code> 要素は集約・分解・再利用のためのファイル・メタデータ・組織構造の区画化に用いる。すべての名前空間宣言は <code>&lt;manifest&gt;</code> 要素内で行うべきである。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">1.1</td><td class="name">Identifier</td><td>著者またはオーサリングツールが提供する Manifest 内で一意な識別子。</td><td class="multi">1 and only 1</td><td class="dtype">ID</td></tr>
+          <tr><td class="nr">1.2</td><td class="name">Version</td><td>Manifest のバージョンを識別する。<span class="adl-note" style="display:block; margin-top:6px;">Multiplicity の正解は <strong>0 or 1</strong>（<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>）。</span></td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 20 文字）</td></tr>
+
+          <tr><td class="nr">2</td><td class="name">Metadata</td><td>パッケージ全体の文脈固有メタデータ（パッケージレベルメタデータ）。提供される場合、有効な IMS Learning Resource Meta-data でなければならない。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">2.1</td><td class="name">Schema</td><td>メタデータを定義するスキーマ。optional だが、存在する場合は値 <code>"ADL SCORM"</code> を含まなければならない。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 100 文字）</td></tr>
+          <tr><td class="nr">2.2</td><td class="name">Schema Version</td><td>メタデータを定義するスキーマのバージョン。optional だが、存在する場合は値 <code>"1.2"</code> を含まなければならない。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 20 文字）</td></tr>
+          <tr><td class="nr">2.3</td><td class="name">Location</td><td>パッケージを記述するメタデータの位置（URI でありうる）。<span class="adl-note" style="display:block; margin-top:6px;">IMS Content Packaging Information Model に対する ADL 拡張。メタデータをファイル参照する場合に使用するか、または <code>&lt;metadata&gt;</code> 内にインライン記述する。</span></td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">2.4</td><td class="name">{Meta-data}</td><td>メタデータを直接配置する場所（インライン記述）。</td><td class="multi">0 or 1</td><td class="dtype">Inline Meta-data Record</td></tr>
+
+          <tr><td class="nr">3</td><td class="name">Organizations</td><td>本パッケージの 1 個以上の構造／組織を記述する。SCORM Resource Package を定義する場合、本要素は空である必要がある。SCORM Content Aggregation Package を定義する場合、少なくとも 1 個の organization サブ要素を含まなければならない。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.1</td><td class="name">Default</td><td>システムに対し、デフォルトとして使用する organization を識別する。Organization の ID への ID 参照。Organizations 要素が複数の Organization 要素を含み Default が提供されない場合、最初に出現する Organization がデフォルトとみなされる。</td><td class="multi">0 or 1</td><td class="dtype">IDRef</td></tr>
+          <tr><td class="nr">3.2</td><td class="name">Organization</td><td>個別の organization を記述する。Organization 要素を複数インスタンス化することで、コンテンツへの異なるビュー・組織化パスを記述できる。<span class="adl-note" style="display:block; margin-top:6px;">SCORM Version 1.1 CSF の最外 <code>&lt;block&gt;</code> 要素を置き換える。SCORM Content Aggregation Package では少なくとも 1 個の organization が必要。SCORM Resource Package では存在を許されない。</span></td><td class="multi">0 or more</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.2.1</td><td class="name">Identifier</td><td>Manifest 内で一意な識別子。</td><td class="multi">1 and only 1</td><td class="dtype">ID</td></tr>
+          <tr><td class="nr">3.2.2</td><td class="name">Structure</td><td>organization の形状を記述する。デフォルト値は <code>"hierarchical"</code>。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 200）</td></tr>
+          <tr><td class="nr">3.2.3</td><td class="name">Title</td><td>organization のタイトル。</td><td class="multi">1 and only 1</td><td class="dtype">String（最小許容最大値: 200）</td></tr>
+          <tr><td class="nr">3.2.4</td><td class="name">Item</td><td>organization 構造内のノードを記述する。<span class="adl-note" style="display:block; margin-top:6px;">SCORM Version 1.1 CSF の <code>&lt;block&gt;</code> および <code>&lt;sco&gt;</code> 要素を表す。<a href="scorm_addendums_ja.html#sec-1-13">Addendum 12</a> により、container item でも <code>identifierref</code> 経由でリソースを参照可能。</span></td><td class="multi">0 or More</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.2.4.1</td><td class="name">Identifier</td><td>Manifest 内で一意な識別子。</td><td class="multi">1 and only 1</td><td class="dtype">ID</td></tr>
+          <tr><td class="nr">3.2.4.2</td><td class="name">Identifier Ref</td><td>同パッケージまたはサブ manifest 内の <code>&lt;resource&gt;</code> 識別子への参照。提供されなければ、本 organization エントリにコンテンツが関連付けられないとみなされる。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">3.2.4.3</td><td class="name">Is Visible</td><td>LMS のナビゲーション機構が item のタイトルを表示するか。デフォルトは <code>"true"</code>。</td><td class="multi">0 or 1</td><td class="dtype">Boolean</td></tr>
+          <tr><td class="nr">3.2.4.4</td><td class="name">Parameters</td><td>起動時にコンテンツファイルへ渡される静的パラメータ。SCORM Version 1.1 CSF の <code>&lt;parameterString&gt;</code> 要素を置き換える。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">3.2.4.5</td><td class="name">Title</td><td>item のタイトル。</td><td class="multi">1 and only 1</td><td class="dtype">String（最小許容最大値: 200 文字）</td></tr>
+          <tr><td class="nr">3.2.4.6</td><td class="name">Item</td><td>item 内のサブノード。3.2.4 Item の全部分を再帰する。</td><td class="multi">0 or More</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.2.4.7</td><td class="name">Metadata</td><td>item を記述する文脈固有メタデータ。SCORM Content Aggregation Meta-data でなければならない。Schema／SchemaVersion／Location／{Meta-data} を含む。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">3.2.4.8</td><td class="name">Prerequisites</td><td>本 Block／SCO 開始前に完了済みであるべき他の学習コンテンツ部分を定義する。<span class="adl-note" style="display:block; margin-top:6px;">IMS Content Packaging Information Model に対する ADL 拡張。</span></td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 200）</td></tr>
+          <tr><td class="nr">3.2.4.8.1</td><td class="name">Type</td><td>prerequisites 表現に用いるスクリプト言語。語彙：<code>"aicc_script"</code>。</td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">3.2.4.9</td><td class="name">Max Time Allowed</td><td>item が表す SCO の現行 attempt で学習者に許される時間量。<span class="adl-note" style="display:block; margin-top:6px;">親 item が SCO を表す場合のみ存在を許される。SCORM Version 1.1 CSF の <code>&lt;timeLimit&gt;</code> サブ要素であった。Data Type は <strong>Timespan（最大 13 文字）</strong>（<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>）。</span></td><td class="multi">0 or 1</td><td class="dtype">Timespan（最大 13 文字）</td></tr>
+          <tr><td class="nr">3.2.4.10</td><td class="name">Time Limit Action</td><td>item の SCO の現行 attempt で max time allowed が超過された際に取るべき動作。語彙：<code>"exit,message"</code>、<code>"exit,no message"</code>、<code>"continue,message"</code>、<code>"continue,no message"</code>。</td><td class="multi">0 or 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">3.2.4.11</td><td class="name">Data From LMS</td><td>SCO が起動後に期待する初期化データを置く場所。本データは制約なし・未定義。利用は注意深く行うこと。親 item が SCO を表す場合のみ存在を許される。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 255 文字）</td></tr>
+          <tr><td class="nr">3.2.4.12</td><td class="name">Mastery Score</td><td>item が表す SCO の合格スコアを設定する。pass score の解釈は SCO の文脈に依存する。0〜100 の正規化値であるべき。親 item が SCO を表し、SCORM Run-Time Environment API およびデータモデル経由でスコアを報告する場合のみ存在を許される。</td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 200）</td></tr>
+          <tr><td class="nr">3.2.5</td><td class="name">Metadata</td><td>organization を記述する文脈固有メタデータ。SCORM Content Aggregation Meta-data でなければならない。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+
+          <tr><td class="nr">4</td><td class="name">Resources</td><td>リソースへの参照のコレクション。順序や階層の前提はない。</td><td class="multi">1 and only 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1</td><td class="name">Resource</td><td>リソースへの参照。</td><td class="multi">0 or More</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1.1</td><td class="name">Identifier</td><td>Manifest 内で一意な識別子。</td><td class="multi">1 and only 1</td><td class="dtype">ID</td></tr>
+          <tr><td class="nr">4.1.2</td><td class="name">Type</td><td>リソース種別を識別する文字列。現行は <code>"webcontent"</code> のみ（HTML、プラグイン要、ブラウザ起動の実行可能ファイルを含む）。</td><td class="multi">1 and only 1</td><td class="dtype">String（最小許容最大値: 1000 文字）</td></tr>
+          <tr><td class="nr">4.1.3</td><td class="name">Href</td><td>本リソースの「entry point」への参照。<span class="adl-note" style="display:block; margin-top:6px;">リソース起動時の launch location として使用される。Multiplicity は <strong>0 or 1</strong>（<a href="scorm_addendums_ja.html#sec-1-2">Addendum 1</a>）。</span></td><td class="multi">0 or 1</td><td class="dtype">String（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">4.1.4</td><td class="name">SCORM Type</td><td>リソース種別を定義する。<span class="adl-note" style="display:block; margin-top:6px;">IMS Content Packaging Information Model に対する ADL 拡張。語彙：<code>"sco"</code>、<code>"asset"</code>。</span></td><td class="multi">1 and only 1</td><td class="dtype">Vocabulary (Restricted)</td></tr>
+          <tr><td class="nr">4.1.5</td><td class="name">Metadata</td><td>リソースを記述する文脈独立メタデータ。SCO なら SCO Meta-data、Asset なら Asset Meta-data、その他なら IMS Learning Resource Meta-data に準拠。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1.6</td><td class="name">File</td><td>本リソースが依存する 1 個以上のローカルファイルを識別する。<span class="adl-note" style="display:block; margin-top:6px;">親 resource が局所参照される SCO または Asset を記述する場合のみ存在しうる。SCO を表すファイルの場合、<code>href</code> 値は SCO の launch location を指さなければならず、SCORM Run-Time Environment テストの起動値となる。</span></td><td class="multi">0 or More</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1.6.1</td><td class="name">Href</td><td>本ファイルの位置への参照。<span class="adl-note" style="display:block; margin-top:6px;">Multiplicity は <strong>1 and only 1</strong>（<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>）。</span></td><td class="multi">1 and only 1</td><td class="dtype">String（最小許容最大値: 2000 文字）</td></tr>
+          <tr><td class="nr">4.1.6.2</td><td class="name">Metadata</td><td>ファイル (Asset) を記述する文脈独立メタデータ。SCORM Asset Meta-data に準拠。</td><td class="multi">0 or 1</td><td class="dtype">Container</td></tr>
+          <tr><td class="nr">4.1.7</td><td class="name">Dependency</td><td>リソースが依存しうる複数ファイルのコンテナとして機能する単一リソースへの参照。</td><td class="multi">0 or More</td><td class="dtype">Empty Element</td></tr>
+          <tr><td class="nr">4.1.7.1</td><td class="name">Identifier Ref</td><td>リソースへの参照。<span class="adl-note" style="display:block; margin-top:6px;">Data Type は <strong>String</strong>（<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>）。</span></td><td class="multi">1 and only 1</td><td class="dtype">String（最小許容最大値 2000 文字）</td></tr>
+
+          <tr><td class="nr">5</td><td class="name">Manifest</td><td>再利用可能な教育単位。メタデータ、organizations、リソース参照をカプセル化する。サブ manifest を利用する仕組み。構造は 1. Manifest と同じ。</td><td class="multi">0 or More</td><td class="dtype">Container</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="sec-2-3-5">2.3.5 SCORM Content Packaging XML Binding</h3>
+
+      <p>本節は SCORM Content Packaging Information Model の XML バインディングを記述する。XML バインディングの作成にあたっては次の規則が指針となった。</p>
+      <ul>
+        <li>XML バインディングは W3C の XML 1.0 仕様<sup>27</sup>に従う。</li>
+        <li>XML バインディングは SCORM Content Packaging Information Model の定義構造を維持しなければならない。</li>
+      </ul>
+      <p>本抽象を実装する XML Schema (XSD) は ADLNet で公開されている。</p>
+
+      <p>表 2.3.5b は <code>imsmanifest.xml</code> レコード内の要素・属性のデータ型一覧を示す。</p>
+
+      <table class="spec-table">
+        <thead><tr><th style="width: 130px;">データ型</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>Container</td><td>サブ要素を含み、データ値を直接持たないことを示す。</td></tr>
+          <tr><td>String</td><td>文字の集合。最小許容最大値が併記される。</td></tr>
+          <tr><td>Timespan</td><td>時・分・秒の長さを <code>HHHH:MM:SS.SS</code> の形式で示す。時は最小 2 桁・最大 4 桁、分は厳密 2 桁、秒は 2 桁＋オプションの小数点と 1〜2 桁。</td></tr>
+          <tr><td>ID</td><td>XML インスタンス内でオブジェクトを一意識別する要素。</td></tr>
+          <tr><td>IDRef</td><td>ID への参照。</td></tr>
+          <tr><td>Boolean</td><td><code>"true"</code> または <code>"false"</code>。</td></tr>
+          <tr><td>Vocabulary</td><td>制限語彙リストが要素に存在し、要素値はリストから選ぶ。完全一致が必須。</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12.5px; color: var(--muted); margin-top: -6px; font-style: italic;">表 2.3.5b: 要素・属性データ型</p>
+
+      <h4 id="sec-2-3-5-1">2.3.5.1 <code>&lt;manifest&gt;</code> Element</h4>
+
+      <p>Manifest の最初・最外の <code>&lt;manifest&gt;</code> 要素はすべての参照データを内包する。最外 <code>&lt;manifest&gt;</code> 内の続く <code>&lt;manifest&gt;</code> はファイル・メタデータ・組織構造の集約・分解・再利用のために区画化に用いる。すべての名前空間宣言は <code>&lt;manifest&gt;</code> 要素内で行う。</p>
+
+      <ul>
+        <li><strong>Data Type</strong>：Container</li>
+        <li><strong>Multiplicity</strong>：content package のトップレベル要素</li>
+        <li><strong>Attributes</strong>：
+          <ul>
+            <li><code>identifier</code>（required）— Manifest 内で一意な識別子。</li>
+            <li><code>version</code>（optional）— Manifest のバージョン。同一識別子の Manifest 区別に使用。</li>
+            <li><code>xml:base</code>（optional）— manifest 内ファイルの相対パスオフセット。W3C XML Base Working Draft に従う。Data Type = String。</li>
+          </ul>
+        </li>
+        <li><strong>Elements</strong>：<code>&lt;metadata&gt;</code>、<code>&lt;organizations&gt;</code>、<code>&lt;resources&gt;</code>、<code>&lt;manifest&gt;</code>（サブ manifest）</li>
+      </ul>
+
+<pre><code>&lt;manifest identifier=&quot;Manifest&quot; version=&quot;1.1&quot;
+   xmlns=&quot;http://www.imsproject.org/xsd/imscp_rootv1p1p2&quot;
+   xmlns:adlcp=&quot;http://www.adlnet.org/xsd/adlcp_rootv1p2&quot;
+   xmlns:imsmd=&quot;http://www.imsglobal.org/xsd/imsmd_rootv1p2p1&quot;
+   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xsi:schemaLocation=&quot;http://www.imsproject.org/xsd/imscp_rootv1p1p2
+                       imscp_rootv1p1p2.xsd
+                       http://www.imsglobal.org/xsd/imsmd_rootv1p2p1
+                       imsmd_rootv1p2p1.xsd
+                       http://www.adlnet.org/xsd/adlcp_rootv1p2
+                       adlcp_rootv1p2.xsd&quot;&gt;
+   <span class="tok-c">&lt;!-- imsmanifest contents --&gt;</span>
+&lt;/manifest&gt;</code></pre>
+
+      <p class="adl-note" style="display:block;">
+      上記スキーマ参照は <a href="scorm_addendums_ja.html#sec-1-16">Addendum 15</a> による訂正済みのもの。SCORM 1.2 開発で使用すべき最新スキーマを反映する。</p>
+
+      <h5 id="sec-2-3-5-1-1">2.3.5.1.1 <code>&lt;metadata&gt;</code> Element</h5>
+
+      <p>パッケージ全体（パッケージレベル）のコンテンツを記述する文脈固有メタデータ。実装者は IMS Learning Resource Meta-data Specification Version 1.2 で定義されたメタデータ要素から自由に選択できる。</p>
+
+      <ul>
+        <li><strong>Multiplicity</strong>：<code>&lt;manifest&gt;</code> 内に 0 or 1 回</li>
+        <li><strong>Elements</strong>：<code>&lt;schema&gt;</code>、<code>&lt;schemaversion&gt;</code>、<code>&lt;adlcp:location&gt;</code>、IMS Meta-data</li>
+      </ul>
+
+<pre><code>&lt;metadata&gt;
+   &lt;schema&gt;ADL SCORM&lt;/schema&gt;
+   &lt;schemaversion&gt;1.2&lt;/schemaversion&gt;
+   &lt;imsmd:lom&gt;
+      &lt;imsmd:general&gt;
+         &lt;imsmd:title&gt;
+            &lt;imsmd:langstring xml:lang=&quot;en-US&quot;&gt;Simple Manifest&lt;/imsmd:langstring&gt;
+         &lt;/imsmd:title&gt;
+      &lt;/imsmd:general&gt;
+   &lt;/imsmd:lom&gt;
+&lt;/metadata&gt;</code></pre>
+
+      <h5 id="sec-2-3-5-1-2">2.3.5.1.2 <code>&lt;organizations&gt;</code> Element</h5>
+
+      <p>パッケージの 1 個以上の構造／組織を記述する。SCORM Resource Package では空、SCORM Content Aggregation Package では少なくとも 1 個の <code>&lt;organization&gt;</code> サブ要素が必要。</p>
+
+      <ul>
+        <li><strong>Attributes</strong>：<code>default</code>（<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14 により optional</a>）— デフォルト organization の ID 参照。Data Type = IDRef。</li>
+        <li><strong>Elements</strong>：<code>&lt;organization&gt;</code></li>
+      </ul>
+
+<pre><code>&lt;organizations default=&quot;TOC1&quot;&gt;
+   &lt;organization identifier=&quot;TOC1&quot; structure=&quot;hierarchical&quot;&gt;
+      &lt;title&gt;default&lt;/title&gt;
+      &lt;item identifier=&quot;ITEM1&quot; identifierref=&quot;RESOURCE1&quot; isvisible=&quot;true&quot;&gt;
+         &lt;title&gt;Lesson 1&lt;/title&gt;
+         &lt;item identifier=&quot;ITEM2&quot; identifierref=&quot;RESOURCE2&quot; isvisible=&quot;true&quot;&gt;
+            &lt;title&gt;Introduction 1&lt;/title&gt;
+         &lt;/item&gt;
+         &lt;item identifier=&quot;ITEM3&quot; identifierref=&quot;RESOURCE3&quot; isvisible=&quot;true&quot;&gt;
+            &lt;title&gt;Content 1&lt;/title&gt;
+         &lt;/item&gt;
+      &lt;/item&gt;
+   &lt;/organization&gt;
+&lt;/organizations&gt;</code></pre>
+
+      <h5 id="sec-2-3-5-1-3">2.3.5.1.3 <code>&lt;resources&gt;</code> Element</h5>
+
+      <p>リソースへの参照のコレクション。順序や階層の前提はない。</p>
+
+      <ul>
+        <li><strong>Multiplicity</strong>：<code>&lt;manifest&gt;</code> 内に 1 and only 1 回</li>
+        <li><strong>Attributes</strong>：<code>xml:base</code>（optional）— コンテンツファイルの相対パスオフセット。Data Type = String。</li>
+        <li><strong>Elements</strong>：<code>&lt;resource&gt;</code></li>
+      </ul>
+
+<pre><code>&lt;resources&gt;
+   &lt;resource identifier=&quot;RESOURCE1&quot; type=&quot;webcontent&quot;
+             adlcp:scormtype=&quot;sco&quot; href=&quot;lesson1.htm&quot;&gt;
+      &lt;file href=&quot;lesson1.htm&quot;/&gt;
+   &lt;/resource&gt;
+   &lt;resource identifier=&quot;RESOURCE2&quot; type=&quot;webcontent&quot;
+             adlcp:scormtype=&quot;asset&quot; href=&quot;intro1.htm&quot;&gt;
+      &lt;file href=&quot;intro1.htm&quot;/&gt;
+   &lt;/resource&gt;
+&lt;/resources&gt;</code></pre>
+
+      <h4 id="sec-2-3-5-2">2.3.5.2 <code>&lt;metadata&gt;</code> Element 詳細</h4>
+
+      <p>本要素は <code>&lt;manifest&gt;</code>、<code>&lt;organization&gt;</code>、<code>&lt;item&gt;</code>、<code>&lt;resource&gt;</code>、<code>&lt;file&gt;</code> 内で使用する。準拠ルールは含む要素を参照する。</p>
+
+      <ul>
+        <li><strong>2.3.5.2.1 <code>&lt;schema&gt;</code></strong>：メタデータを定義するスキーマ。<code>&lt;metadata&gt;</code> 内に 0 or 1 回。Data Type = String（最小許容最大値: 100 文字）。SCORM の場合 <code>"ADL SCORM"</code>。</li>
+        <li><strong>2.3.5.2.2 <code>&lt;schemaversion&gt;</code></strong>：スキーマのバージョン。値 <code>"1.2"</code>。<a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>：最小許容最大値は <strong>20</strong> 文字。</li>
+        <li><strong>2.3.5.2.3 <code>&lt;adlcp:location&gt;</code></strong>：メタデータの位置（URI）。IMS Content Packaging に対する ADL 名前空間拡張。Data Type = String（最小許容最大値: 2000 文字）。</li>
+        <li><strong>2.3.5.2.4 <code>{Meta-data}</code></strong>：IMS Learning Resource Meta-data の XML Binding に従いインライン記述。</li>
+      </ul>
+
+      <h4 id="sec-2-3-5-3">2.3.5.3 <code>&lt;organizations&gt;</code> Element 詳細</h4>
+
+      <h5>2.3.5.3.1 <code>&lt;organization&gt;</code> Element</h5>
+
+      <p>個別の organization を記述する Container。</p>
+
+      <ul>
+        <li><strong>Multiplicity</strong>：<code>&lt;organizations&gt;</code> 内に 0 or more 回。SCORM Content Aggregation Package では少なくとも 1 個必要。SCORM Resource Package では存在を許されない。</li>
+        <li><strong>Attributes</strong>：<code>identifier</code>（required, ID）、<code>structure</code>（optional, デフォルト <code>"hierarchical"</code>）</li>
+        <li><strong>Elements</strong>：<code>&lt;title&gt;</code>、<code>&lt;item&gt;</code>、<code>&lt;metadata&gt;</code></li>
+      </ul>
+
+      <h5>2.3.5.3.1.1 <code>&lt;title&gt;</code> Element</h5>
+
+      <p>organization のタイトル。<code>&lt;organization&gt;</code> 内に 1 and only 1 回。Data Type = String（最小許容最大値: <a href="scorm_addendums_ja.html#sec-1-15">Addendum 14</a>により <strong>200</strong> 文字）。</p>
+
+      <h5>2.3.5.3.1.2 <code>&lt;item&gt;</code> Element</h5>
+
+      <p>organization 構造内のノードを記述する。</p>
+
+      <ul>
+        <li><strong>Multiplicity</strong>：<code>&lt;organization&gt;</code> 内および <code>&lt;item&gt;</code> 内に 0 or More 回。任意レベルの深さでネスト可能。</li>
+        <li><strong>Attributes</strong>：
+          <ul>
+            <li><code>identifier</code>（required, ID）</li>
+            <li><code>identifierref</code>（optional, String）— 同パッケージまたはサブ Manifest 内の <code>&lt;resource&gt;</code> 識別子への参照。</li>
+            <li><code>isvisible</code>（optional, Boolean, default <code>"true"</code>）</li>
+            <li><code>parameters</code>（optional, String）— 起動時にコンテンツに渡す静的パラメータ。</li>
+          </ul>
+        </li>
+        <li><strong>Elements</strong>：<code>&lt;title&gt;</code>、<code>&lt;item&gt;</code>、<code>&lt;metadata&gt;</code>、<code>&lt;adlcp:prerequisites&gt;</code>、<code>&lt;adlcp:maxtimeallowed&gt;</code>、<code>&lt;adlcp:timelimitaction&gt;</code>、<code>&lt;adlcp:datafromlms&gt;</code>、<code>&lt;adlcp:masteryscore&gt;</code></li>
+      </ul>
+
+      <h5>2.3.5.3.1.2.4 <code>&lt;adlcp:prerequisites&gt;</code> Element</h5>
+
+      <p>本 <code>&lt;item&gt;</code> 開始前に完了済みであるべき他の学習コンテンツ部分を定義する。IMS Content Packaging Information Model に対する ADL 拡張。</p>
+
+      <ul>
+        <li><strong>Data Type</strong>：String（最小許容最大値: 200）</li>
+        <li><strong>Attributes</strong>：<code>type</code>（required, 語彙：<code>"aicc_script"</code>）</li>
+      </ul>
+
+<pre><code>&lt;item identifier=&quot;ITEM3&quot; identifierref=&quot;RESOURCE3&quot; isvisible=&quot;true&quot;&gt;
+   &lt;title&gt;Content 1&lt;/title&gt;
+   &lt;adlcp:prerequisites type=&quot;aicc_script&quot;&gt;R1&amp;R2&lt;/adlcp:prerequisites&gt;
+&lt;/item&gt;</code></pre>
+
+      <h5>2.3.5.3.1.2.5 <code>&lt;adlcp:maxtimeallowed&gt;</code> Element</h5>
+
+      <p>SCO の現行 attempt で学習者に許される時間量。Data Type = Timespan。<code>&lt;item&gt;</code> 内 0 or 1 回。親 <code>&lt;item&gt;</code> が SCO を表す場合のみ存在を許される。</p>
+
+<pre><code>&lt;item identifier=&quot;ITEM3&quot; identifierref=&quot;RESOURCE3&quot; isvisible=&quot;true&quot;&gt;
+   &lt;title&gt;Content 1&lt;/title&gt;
+   &lt;adlcp:maxtimeallowed&gt;00:30:00&lt;/adlcp:maxtimeallowed&gt;
+&lt;/item&gt;</code></pre>
+
+      <h5>2.3.5.3.1.2.6 <code>&lt;adlcp:timelimitaction&gt;</code> Element</h5>
+
+      <p>max time allowed 超過時の動作。Data Type = Vocabulary (Restricted)：<code>"exit,message"</code>、<code>"exit,no message"</code>、<code>"continue,message"</code>、<code>"continue,no message"</code>。親 <code>&lt;item&gt;</code> が SCO を表す場合のみ存在を許される。</p>
+
+      <h5>2.3.5.3.1.2.7 <code>&lt;adlcp:datafromlms&gt;</code> Element</h5>
+
+      <p>SCO の起動後の初期化データ。Data Type = String（最小許容最大値: 255 文字）。利用は注意深く。</p>
+
+      <h5>2.3.5.3.1.2.8 <code>&lt;adlcp:masteryscore&gt;</code> Element</h5>
+
+      <p>SCO の合格スコア。Data Type = String（最小許容最大値: 200）。<a href="scorm_addendums_ja.html#sec-1-18">Addendum 17</a>：Manifest に値が無い場合の LMS 初期化挙動が規定される。</p>
+
+      <h4 id="sec-2-3-5-4">2.3.5.4 <code>&lt;resources&gt;</code> Element 詳細</h4>
+
+      <h5>2.3.5.4.1 <code>&lt;resource&gt;</code> Element</h5>
+
+      <p>特定のコンテンツファイルを記述する Container。<code>&lt;resources&gt;</code> 内に 0 or more 回。</p>
+
+      <ul>
+        <li><strong>Attributes</strong>：
+          <ul>
+            <li><code>identifier</code>（required, ID）</li>
+            <li><code>type</code>（required, String）— 現行は <code>"webcontent"</code></li>
+            <li><code>adlcp:scormtype</code>（required）— <code>"sco"</code> または <code>"asset"</code></li>
+            <li><code>href</code>（<a href="scorm_addendums_ja.html#sec-1-2">Addendum 1 により optional</a>）— リソースの entry point。外部完全修飾 URI も許容。</li>
+            <li><code>xml:base</code>（optional）</li>
+          </ul>
+        </li>
+        <li><strong>Elements</strong>：<code>&lt;metadata&gt;</code>、<code>&lt;file&gt;</code>、<code>&lt;dependency&gt;</code></li>
+      </ul>
+
+<pre><code>&lt;resources&gt;
+   &lt;resource identifier=&quot;R_A2&quot; type=&quot;webcontent&quot;
+             adlcp:scormtype=&quot;sco&quot; href=&quot;sco1.html&quot;&gt;
+      &lt;metadata/&gt;
+      &lt;file href=&quot;sco1.html&quot;/&gt;
+      &lt;dependency identifierref=&quot;R_A5&quot;/&gt;
+   &lt;/resource&gt;
+   &lt;resource identifier=&quot;R_A5&quot; type=&quot;webcontent&quot;
+             adlcp:scormtype=&quot;asset&quot;&gt;<span class="tok-c">&lt;!-- href なし --&gt;</span>
+      &lt;file href=&quot;pics/distress_sigs_add.jpg&quot;/&gt;
+   &lt;/resource&gt;
+&lt;/resources&gt;</code></pre>
+
+      <h5>2.3.5.4.2 <code>&lt;metadata&gt;</code> Element</h5>
+
+      <p>リソースを記述する文脈独立メタデータ。SCO なら SCO Meta-data、Asset なら Asset Meta-data、それ以外なら IMS Learning Resource Meta-data に準拠。</p>
+
+      <h5>2.3.5.4.3 <code>&lt;file&gt;</code> Element</h5>
+
+      <p>本リソースが依存する 1 個以上のローカルファイルを識別する Container。</p>
+
+      <ul>
+        <li><strong>Multiplicity</strong>：<code>&lt;resource&gt;</code> 内に 0 or more 回</li>
+        <li><strong>Attributes</strong>：<code>href</code>（required, String, 最小許容最大値 2000 文字）</li>
+        <li><strong>Elements</strong>：<code>&lt;metadata&gt;</code></li>
+      </ul>
+
+      <h5>2.3.5.4.4 <code>&lt;dependency&gt;</code> Element</h5>
+
+      <p>本リソースが依存する複数ファイルのコンテナとして機能する単一リソースへの参照。空要素として表現する。</p>
+
+      <ul>
+        <li><strong>Attributes</strong>：<code>identifierref</code>（required, <a href="scorm_addendums_ja.html#sec-1-15">Addendum 14 により Data Type = String</a>）</li>
+      </ul>
+
+<pre><code>&lt;dependency identifierref=&quot;R_A5&quot;/&gt;</code></pre>
+
+      <h4 id="sec-2-3-5-5">2.3.5.5 サブ <code>&lt;manifest&gt;</code> Elements</h4>
+
+      <p>最外 <code>&lt;manifest&gt;</code> 内の続く <code>&lt;manifest&gt;</code> 要素は集約・分解・再利用のためのファイル・メタデータ・組織構造の区画化に用いる。属性・要素は最外 <code>&lt;manifest&gt;</code> と同じ。</p>
+
+      <h4 id="sec-2-3-5-6">2.3.5.6 XML 拡張機構</h4>
+
+      <p>IMS Content Packaging はコミュニティが <code>imsmanifest</code> XML レコード全体に独自の名前空間付き要素を配置することを許す。SCORM はこの慣行を継承するが、相互運用性問題のため警告する。将来 ADL が IMS Content Packaging Information Model をさらに拡張する必要が生じうる。SCORM 1.2 manifest が独自拡張を含んでも、それゆえに invalid とされない。準拠システムは SCORM 1.2 で定義されたスキーマに含まれない XML 要素を無視してよい。Content Packaging Information Model への追加候補は ADL コミュニティに報告するよう要請される。</p>
+
+      <h3 id="sec-2-3-6">2.3.6 Content Packaging Application Profiles</h3>
+
+      <p>SCORM Packaging Application Profiles は、IMS Content Packaging Specification を SCORM の文脈でどのように適用するかを記述する。実装者への実用的ガイダンスを提供し、SCORM 準拠要件を定義する。SCORM 準拠コンテンツのパッケージングには IMS Content Packaging Specification を基礎として用いるが、SCORM は各パッケージに十分な情報を含めるための追加要件を課す。これにより、SCORM 準拠学習システムは互いに利用可能なパッケージをインポート・エクスポートできる。</p>
+
+      <p>SCORM は Content Aggregation Model（Section 2.1.2）を導入し、オブジェクトベース学習コンテンツの汎用フレームワークを定義する。構成要素は Asset、SCO、Content Aggregation。SCORM Packaging Application Profiles には現在 2 種類が識別されている：<strong>Resource Package</strong> と <strong>Content Aggregation Package</strong>。</p>
+
+      <h4 id="sec-2-3-6-1">2.3.6.1 Resource Package</h4>
+
+      <p>SCORM Resource Package Application Profile は、特定の組織、学習文脈、カリキュラムタクソノミーを提供せずに学習リソース（Asset、SCO）をパッケージングする仕組みを定義する。学習リソースのパッケージングは交換のための共通媒体を提供する。SCORM Content Package は、学習システム間で転送可能な再利用可能学習リソースの単なるコレクションである。</p>
+
+      <p>Asset または SCO は単一ファイルから成る場合もあるが、複数ファイルから成る場合もある。SCORM Resource Package Application Profile は、単一・複数ファイル構成の Asset・SCO のパッケージングを許容する。Asset・SCO はパッケージにローカル含めることも、外部参照することもできる。ローカルパッケージ化されたファイルは物理ファイルとしてパッケージ全体に含まれる。外部参照される場合、Asset・SCO はパッケージ内の物理ファイルとして含まれず、URL で参照される。</p>
+
+<pre><code><span class="tok-c">&lt;!-- Resource Package: Asset を &lt;file&gt; として表す例 --&gt;</span>
+&lt;manifest ...&gt;
+   &lt;organizations/&gt;
+   &lt;resources&gt;
+      &lt;resource href=&quot;sco01.htm&quot; adlcp:scormtype=&quot;sco&quot; identifier=&quot;sco01_01&quot;&gt;
+         &lt;metadata&gt;
+            &lt;schema&gt;ADL SCORM&lt;/schema&gt;
+            &lt;schemaversion&gt;1.2&lt;/schemaversion&gt;
+            &lt;adlcp:location&gt;image1.xml&lt;/adlcp:location&gt;
+         &lt;/metadata&gt;
+         &lt;file href=&quot;image1.jpg&quot;/&gt;
+      &lt;/resource&gt;
+   &lt;/resources&gt;
+&lt;/manifest&gt;</code></pre>
+
+      <h4 id="sec-2-3-6-2">2.3.6.2 Content Aggregation Package</h4>
+
+      <p>古い SCORM Version 1.1 CSF は、SCO から構築されたコース（またはその一部）の構造とカリキュラムタクソノミーを表現する手段を提供していた。SCORM はコンテンツ集約に特定の構造を課さない。個別のコンテンツ開発者は価値があると判断した任意の構造にコンテンツを集約できる。</p>
+
+      <p>SCORM Version 1.1 CSF は Content Packaging に適していなかった。IMS Content Packaging Specification Version 1.1 モデルは CSF に存在していたほぼすべての情報を含むフレームワークと、CSF の残り情報を ADL 拡張で取り込む論理的位置を提供する。さらに、IMS パッケージングモデルは、コンテンツ配信に必要なすべての物理ファイルを目録化・束ねる清浄な方法と、複数の content「resources」に属するファイル間の関係（パッケージ内に物理ファイルとして含まれない外部参照リソースを含む）を識別する方法も提供する。IMS Content Packaging Specification はコンテンツリソースとその組織化方法を分離し、同一リソースの異なる文脈・利用での 1 回以上の利用を可能にする。SCORM はファイルのパッケージングと構造提供の仕組みを定義する。</p>
+
+<pre><code><span class="tok-c">&lt;!-- Content Aggregation Package の例 --&gt;</span>
+&lt;manifest ...&gt;
+   &lt;organizations default=&quot;TOC1&quot;&gt;
+      &lt;organization identifier=&quot;TOC1&quot;&gt;
+         &lt;title&gt;Sample Course&lt;/title&gt;
+         &lt;item identifier=&quot;I1&quot; identifierref=&quot;R_01&quot; isvisible=&quot;true&quot;&gt;
+            &lt;title&gt;Lesson 1&lt;/title&gt;
+            &lt;adlcp:masteryscore&gt;70&lt;/adlcp:masteryscore&gt;
+         &lt;/item&gt;
+      &lt;/organization&gt;
+   &lt;/organizations&gt;
+   &lt;resources&gt;
+      &lt;resource href=&quot;index.htm&quot; adlcp:scormtype=&quot;sco&quot; identifier=&quot;R_01&quot;&gt;
+         &lt;metadata&gt;
+            &lt;schema&gt;ADL SCORM&lt;/schema&gt;
+            &lt;schemaversion&gt;1.2&lt;/schemaversion&gt;
+            &lt;adlcp:location&gt;R_01.xml&lt;/adlcp:location&gt;
+         &lt;/metadata&gt;
+         &lt;file href=&quot;index.htm&quot;/&gt;
+         &lt;file href=&quot;image1.jpg&quot;/&gt;
+      &lt;/resource&gt;
+   &lt;/resources&gt;
+&lt;/manifest&gt;</code></pre>
+
+      <h4 id="sec-2-3-6-3">2.3.6.3 推奨ベストプラクティス</h4>
+
+      <h5 id="sec-2-3-6-3-1">2.3.6.3.1 複数コースのパッケージング</h5>
+
+      <p>コンテンツ開発者が複数の異なるコースを 1 つのシステムへの配信用にパッケージしたい場合がある。これは各コースを別々のサブ manifest にバンドルすることで実現できる。複数コースをパッケージ（カリキュラム）で移動させたい場合、コンテンツ開発者はトップレベル manifest を用いて各コースレベル manifest と、各コースに含まれる instructional object manifest を内包させる。</p>
+
+      <h5 id="sec-2-3-6-3-2">2.3.6.3.2 単一コースの複数 organization</h5>
+
+      <p>content package はリソースに対する複数 organization の表現を許容する。ただし、これらの複数 organization は、リソースを通る異なるビュー・組織化パスでなければならない。複数コースをパッケージ・移動させたい場合、それらのコースは別々のサブ manifest として作成すべきである。</p>
+
+      <h5 id="sec-2-3-6-3-3">2.3.6.3.3 再利用のための学習コンテンツのパッケージング</h5>
+
+      <p>manifest のスコープは伸縮自在である。コース外でスタンドアロンに利用できるコース部分（instructional object）、コース全体、コース集合のいずれも記述しうる。コンテンツ開発者は集約・分解の対象として考える方法でコンテンツを記述する。</p>
+
+      <p>一般則：パッケージは常に単一のトップレベル manifest を含み、これが 1 個以上のサブ manifest を含みうる。トップレベル manifest はパッケージを記述する。ネストされたサブ manifest はそのスコープのコンテンツ（コース、instructional object など）を記述する。</p>
+
+      <p>たとえば、コースを構成するすべてのコンテンツがコース文脈外で提示できないほど密結合であれば、コンテンツ開発者は単一 manifest でそのコースのリソース・組織を記述する。一方、他の instructional object と再結合して異なるコース提示を作成できる instructional object を作成するコンテンツ開発者は、各 instructional object をそれぞれの manifest で記述し、それらの manifest をコース organization を含むより上位の manifest に集約する。</p>
+
+      <h4 id="sec-2-3-6-4">2.3.6.4 XML 例</h4>
+
+      <p>SCORM Content Packaging の例については、ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）を参照のこと。</p>
+    </section>
+
+    <!-- ═══════════ Appendix A ═══════════ -->
+    <section id="sec-appendix-a">
+      <h2><span class="section-num">APPENDIX A</span>略語一覧</h2>
+
+      <table class="spec-table acronym">
+        <thead>
+          <tr><th style="width: 130px;">略語</th><th>原語</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ADL</td><td>Advanced Distributed Learning</td></tr>
+          <tr><td>AICC</td><td>Aviation Industry CBT Committee</td></tr>
+          <tr><td>API</td><td>Application Program Interface</td></tr>
+          <tr><td>ARIADNE</td><td>Alliance of Remote Instructional Authoring &amp; Distribution Networks for Europe</td></tr>
+          <tr><td>ASCII</td><td>American Standard Code for Information Interchange</td></tr>
+          <tr><td>AU</td><td>Assignable Unit</td></tr>
+          <tr><td>AWT</td><td>Abstract Window Toolkit</td></tr>
+          <tr><td>CBI</td><td>Computer-Based Instruction</td></tr>
+          <tr><td>CBT</td><td>Computer-Based Training</td></tr>
+          <tr><td>CDATA</td><td>Character Data</td></tr>
+          <tr><td>CMI</td><td>Computer Managed Instruction</td></tr>
+          <tr><td>COTS</td><td>Commercial Off-The-Shelf</td></tr>
+          <tr><td>CSF</td><td>Content Structure Format</td></tr>
+          <tr><td>DC</td><td>Dublin Core</td></tr>
+          <tr><td>DoD</td><td>Department of Defense</td></tr>
+          <tr><td>DOL</td><td>Department of Labor</td></tr>
+          <tr><td>DTD</td><td>Document Type Definition</td></tr>
+          <tr><td>HTML</td><td>HyperText Markup Language</td></tr>
+          <tr><td>HTTP</td><td>Hypertext Transfer Protocol</td></tr>
+          <tr><td>IDA</td><td>Institute for Defense Analyses</td></tr>
+          <tr><td>IEEE</td><td>Institute of Electrical and Electronics Engineers</td></tr>
+          <tr><td>ISO</td><td>International Organization for Standardization</td></tr>
+          <tr><td>ITS</td><td>Intelligent Tutoring Systems</td></tr>
+          <tr><td>LMS</td><td>Learning Management System</td></tr>
+          <tr><td>LOM</td><td>Learning Objects Metadata</td></tr>
+          <tr><td>LTSC</td><td>Learning Technology Standards Committee</td></tr>
+          <tr><td>MIME</td><td>Multipurpose Internet Mail Extensions</td></tr>
+          <tr><td>NGB</td><td>National Guard Bureau</td></tr>
+          <tr><td>OSTP</td><td>Office of Science and Technology Policy</td></tr>
+          <tr><td>PCDATA</td><td>Parsable Character Data</td></tr>
+          <tr><td>PIF</td><td>Package Interchange File</td></tr>
+          <tr><td>SCO</td><td>Sharable Content Object</td></tr>
+          <tr><td>SCORM</td><td>Sharable Content Object Reference Model</td></tr>
+          <tr><td>URI</td><td>Universal Resource Identifier</td></tr>
+          <tr><td>URL</td><td>Universal Resource Locator</td></tr>
+          <tr><td>W3C</td><td>World Wide Web Consortium</td></tr>
+          <tr><td>WWW</td><td>World Wide Web</td></tr>
+          <tr><td>XML</td><td>eXtensible Markup Language</td></tr>
+          <tr><td>XSD</td><td>XML Schema Definition</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════ Appendix B ═══════════ -->
+    <section id="sec-appendix-b">
+      <h2><span class="section-num">APPENDIX B</span>参考文献</h2>
+
+      <ol style="font-size: 14px; line-height: 1.85;">
+        <li>Aviation Industry CBT (Computer-Based Training) Committee. <a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>Institute of Electrical and Electronics Engineers (IEEE) Learning Technology Standards Committee (LTSC). <a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS Global Learning Consortium, Inc. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>AICC/CMI <em>CMI001 Guidelines for Interoperability Version 3.4</em>. October 23, 2000. AICC Course Structure Format、AICC CMI Data Model を含む。<a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>ADL Co-Laboratories. <a href="http://www.adlnet.org/">http://www.adlnet.org/</a></li>
+        <li>Institute for Defense Analyses (IDA). <a href="http://www.ida.org/">http://www.ida.org/</a></li>
+        <li>Executive Order 13111: <em>Using Technology To Improve Training Opportunities for Federal Government Employees</em>. 1999 年 1 月 12 日。</li>
+        <li>Alliance of Remote Instructional Authoring and Distribution Networks for Europe (ARIADNE). <a href="http://www.ariadne-eu.org/">http://www.ariadne-eu.org/</a></li>
+        <li>IMS <em>Content Packaging Specification Version 1.1.2</em>. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>IEEE <em>Information Technology — Learning Technology — Learning Objects Metadata LOM: Working Draft 6.1</em> (2001-04-18). IMS Learning Resource Meta-data Specification Version 1.2 から参照。<a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS <em>Learning Resource Meta-data Specification Version 1.2</em>. Information Model、XML Binding、Best Practice and Implementation Guide を含む。<a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>ISO 639：言語表記の国際標準。Version 1 は 2 文字言語コード（例：'en'=英語、'fr'=フランス語、'nl'=オランダ語）を使用。これらは IETF の RFC 1766: "Tags for the identification of languages" の言語タグレジストリの基礎となっている。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>ISO 3166：国名表記の国際標準（例：'BE'=ベルギー、'CA'=カナダ、'FR'=フランス、'GB'=英国、'US'=米国 など）。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>vCard：個人・組織の連絡先情報の表現方法を定める標準。<a href="http://www.imc.org/pdi/">http://www.imc.org/pdi/</a></li>
+        <li>ISO 8601：日付と時刻の数値表現を規定する国際標準。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>World Wide Web Consortium (W3C). <a href="http://www.w3c.org/">http://www.w3c.org/</a><br>URL、URI、XML 1.0、DOM 仕様などを含む。</li>
+        <li>Dublin Core Metadata Initiative. <a href="http://www.dublincore.org/">http://www.dublincore.org/</a></li>
+      </ol>
+    </section>
+
+    <!-- ═══════════ Appendix C ═══════════ -->
+    <section id="sec-appendix-c">
+      <h2><span class="section-num">APPENDIX C</span>改訂履歴</h2>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 110px;">SCORM Version</th>
+            <th style="width: 150px;">リリース日</th>
+            <th>変更箇所と内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td>
+              <p><strong>2.1 Content Aggregation Model</strong>：Content Aggregation の概念を追加。Content Model（Asset／SCO／Content Aggregation）の定義を整理。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td>
+              <p><strong>2.2 Meta-data</strong>：IMS Learning Resource Meta-data Specification Version 1.2 への参照に更新。Information Model および XML Binding を新規定する。アプリケーションプロファイル名を Content Aggregation Meta-data／SCO Meta-data／Asset Meta-data に統一。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td>
+              <p><strong>2.3 Content Packaging（新規）</strong>：IMS Content Packaging Specification を採用。SCORM Version 1.1 で定義されていた Content Structure Format (CSF) を deprecated とし、その情報モデルを Content Packaging の <code>&lt;organization&gt;</code> セクションに完全マッピング。<code>adlcp:</code> 名前空間で SCORM 固有要素（<code>prerequisites</code>、<code>maxtimeallowed</code>、<code>timelimitaction</code>、<code>masteryscore</code>、<code>scormtype</code>、<code>location</code>）を導入。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td>
+              <p><strong>全般</strong>：文法・スタイルの調整。図表とテーブルの再整備。</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 24px; font-size: 13px; color: var(--muted);">
+        SCORM Version 1.2 公開後の正誤訂正は <a href="scorm_addendums_ja.html">SCORM 1.2 Addendums（日本語訳）</a> を参照のこと（Addendum 1〜10、12〜15 が本書の Content Packaging および Meta-data に関係する）。
+      </p>
+    </section>
+
+    <footer class="doc-footer">
+      <p>
+        <span class="brand">SCORM 1.2 The SCORM Content Aggregation Model</span> ／ 日本語訳<br>
+        Original document © 2001 Advanced Distributed Learning Initiative — All Rights Reserved.<br>
+        翻訳: 株式会社エレファンキューブ ／ 翻訳支援: Anthropic Claude<br>
+        Translation © 2026 Elephancube Inc. — Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br>
+        本翻訳は規格仕様書を技術者向けに参照しやすくする目的で作成された非公式の日本語訳である。実装にあたっては必ず Original を参照すること。
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

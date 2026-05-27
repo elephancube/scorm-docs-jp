@@ -1,0 +1,49 @@
+scorm-docs-jp — Japanese translation of SCORM 1.2
+Copyright (c) 2026 Elephancube Inc.
+
+SPDX-License-Identifier: CC-BY-4.0
+
+このリポジトリの翻訳成果物（HTML / SVG / Markdown / その他テキスト）は、
+クリエイティブ・コモンズ 表示 4.0 国際 (CC BY 4.0) ライセンスのもとで提供されます。
+
+利用者は本著作物を以下の条件のもとで自由に利用できます:
+  - 共有: 複製・頒布・公衆送信・展示・上映、その他あらゆる方法および形態での利用
+  - 翻案: マテリアルのリミックス・改変、新たな著作物の作成（商業利用を含む）
+
+ただし、以下の条件を遵守する必要があります:
+  - 表示 (BY): 適切なクレジット (株式会社エレファンキューブ) を表示し、
+    ライセンスへのリンクを提供し、変更を加えた場合はその旨を表示すること。
+  - 追加の制限を課してはならない。
+
+ライセンス全文 (Legal Code):
+  https://creativecommons.org/licenses/by/4.0/legalcode.ja  (日本語)
+  https://creativecommons.org/licenses/by/4.0/legalcode     (英語、正本)
+
+要約版 (Deed):
+  https://creativecommons.org/licenses/by/4.0/deed.ja
+  https://creativecommons.org/licenses/by/4.0/
+
+----
+
+【本ライセンスの適用範囲】
+
+本ライセンス (CC BY 4.0) は scorm-docs-jp リポジトリ内の以下にのみ適用されます:
+  - 日本語訳された HTML ファイル (scorm-*/scorm_*_ja.html)
+  - 翻訳に付随するインライン SVG 図版
+  - README.md / NOTICE / CHANGELOG.md / index.html およびその他の Markdown
+  - その他、本リポジトリ内で新規に作成された翻訳・解説テキスト
+
+各バージョンディレクトリの source/ 配下に同梱されている SCORM 原典 PDF
+(例: scorm-1.2/source/) は Advanced Distributed Learning Initiative の
+著作物であり (© 2001-2002 ADL)、本ライセンスの対象外です。
+原典 PDF の利用条件については ADL の指示に従ってください。
+
+----
+
+【免責 / 無保証】
+
+本翻訳は技術者向け参照を目的として作成された非公式の日本語訳であり、
+誤訳・解釈相違・最新版との不一致を含む可能性があります。
+本翻訳は「現状のまま (AS IS)」提供され、いかなる種類の保証も付帯しません。
+LMS や SCORM コンテンツの実装にあたっては、必ず ADL が発行する原典を参照してください。
+本翻訳と原典に矛盾がある場合は、原典の記述が優先します。

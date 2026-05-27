@@ -1,0 +1,3796 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCORM 1.2 The Run-Time Environment（日本語訳）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ec;
+    --bg-tint: #efeadd;
+    --ink: #1c1e2a;
+    --ink-soft: #444759;
+    --muted: #7a7565;
+    --rule: #d4ccb8;
+    --rule-soft: #e6dfcd;
+    --accent: #6b2c39;
+    --accent-soft: #8a4452;
+    --code-bg: #1f2230;
+    --code-text: #e8e3d3;
+    --code-comment: #8a8676;
+    --code-string: #c9a76a;
+    --code-keyword: #d68a7a;
+    --code-fn: #8eb4c9;
+    --warn-bg: #fbf3df;
+    --warn-rule: #cdb676;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.85;
+    font-feature-settings: "palt" 1;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* ─── Sidebar TOC ────────────────────────────────── */
+  .toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 48px 28px 48px 36px;
+    border-right: 1px solid var(--rule);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .toc-mark {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .toc-title {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc > ul > li {
+    margin-bottom: 14px;
+  }
+
+  .toc ul ul {
+    margin-top: 6px;
+    padding-left: 14px;
+    border-left: 1px solid var(--rule-soft);
+  }
+
+  .toc ul ul li {
+    margin-bottom: 4px;
+  }
+
+  .toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s;
+    display: block;
+    padding: 2px 0;
+  }
+
+  .toc a:hover {
+    color: var(--accent);
+  }
+
+  .toc .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-right: 6px;
+  }
+
+  /* ─── Main Content ───────────────────────────────── */
+  main {
+    padding: 56px 64px 120px;
+    max-width: 880px;
+  }
+
+  /* document header */
+  .doc-header {
+    margin-bottom: 56px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .doc-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 64px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .doc-org {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .doc-title {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1.25;
+    margin: 0 0 12px;
+    letter-spacing: -0.005em;
+  }
+
+  .doc-subtitle {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0 0 24px;
+  }
+
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .doc-meta span strong {
+    color: var(--ink);
+    font-weight: 500;
+    margin-left: 6px;
+  }
+
+  /* sample notice */
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn-rule);
+    padding: 16px 22px;
+    margin: 0 0 56px;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .notice .label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    color: #8a6d2e;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* section headings */
+  h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 28px;
+    margin: 80px 0 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em;
+    line-height: 1.35;
+  }
+
+  h2:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  h3 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 21px;
+    margin: 56px 0 18px;
+    line-height: 1.4;
+  }
+
+  h4 {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 36px 0 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .section-num {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  /* paragraphs */
+  p {
+    margin: 0 0 18px;
+  }
+
+  p + p { margin-top: -2px; }
+
+  /* inline elements */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    background: var(--bg-tint);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+
+  /* code blocks */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 18px 22px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 18px 0;
+    font-size: 13px;
+    line-height: 1.65;
+    border-left: 3px solid var(--accent);
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    white-space: pre;
+    font-size: inherit;
+  }
+
+  .tok-c { color: var(--code-comment); font-style: italic; }
+  .tok-s { color: var(--code-string); }
+  .tok-k { color: var(--code-keyword); }
+  .tok-f { color: var(--code-fn); }
+
+  /* figure */
+  .figure {
+    margin: 32px 0;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .figure-caption {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    font-style: italic;
+  }
+
+  .figure-svg {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  .figure-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .figure-placeholder {
+    padding: 48px 24px;
+    background: var(--bg-tint);
+    border: 1px dashed var(--rule);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border-radius: 2px;
+  }
+
+  /* function definition block */
+  .fn-block {
+    margin: 32px 0;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+  }
+
+  .fn-header {
+    padding: 14px 22px;
+    background: var(--ink);
+    color: var(--bg);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .fn-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  .fn-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 2px;
+    color: var(--bg-tint);
+  }
+
+  .fn-body {
+    padding: 20px 24px 24px;
+  }
+
+  .fn-row {
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .fn-row:last-child { border-bottom: none; }
+
+  .fn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 4px;
+  }
+
+  .fn-content > *:first-child { margin-top: 0; }
+  .fn-content > *:last-child { margin-bottom: 0; }
+
+  .fn-content ul {
+    margin: 8px 0;
+    padding-left: 22px;
+  }
+
+  .fn-content li {
+    margin-bottom: 4px;
+  }
+
+  /* role list */
+  .roles {
+    margin: 24px 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .roles > li {
+    border-bottom: 1px solid var(--rule);
+    padding: 18px 0;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 24px;
+  }
+
+  .role-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+  }
+
+  .role-desc { margin: 0; }
+  .role-desc code { white-space: normal; }
+
+  /* footer */
+  .doc-footer {
+    margin-top: 96px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .doc-footer .brand {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* tables (error codes, vocab) */
+  table.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 13.5px;
+    background: white;
+    border: 1px solid var(--rule);
+  }
+  table.spec-table th {
+    background: var(--ink);
+    color: var(--bg);
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--ink);
+  }
+  table.spec-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.65;
+  }
+  table.spec-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    color: var(--accent);
+    font-weight: 500;
+    width: 64px;
+  }
+  table.spec-table td p { margin: 0 0 8px; }
+  table.spec-table td p:last-child { margin-bottom: 0; }
+  table.spec-table td pre {
+    margin: 6px 0;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  table.spec-table td .ex-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 4px 0 8px;
+  }
+
+  /* behavior nested list */
+  .behavior-list {
+    margin: 8px 0;
+    padding-left: 22px;
+  }
+  .behavior-list > li {
+    margin-bottom: 8px;
+  }
+  .behavior-list ul {
+    margin: 4px 0;
+    padding-left: 20px;
+  }
+  .behavior-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    color: var(--accent);
+  }
+
+  /* data-model element blocks */
+  .dm-block {
+    margin: 28px 0;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+  }
+  .dm-header {
+    padding: 12px 18px;
+    background: #2a2c3a;
+    color: var(--bg);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .dm-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .dm-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .dm-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 2px;
+    color: var(--bg-tint);
+    white-space: nowrap;
+  }
+  .dm-tag.must { background: rgba(168,80,90,0.4); border-color: rgba(168,80,90,0.5); }
+  .dm-meta-row {
+    padding: 8px 18px;
+    background: var(--bg-tint);
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .dm-meta-row code {
+    background: white;
+    font-size: 11.5px;
+  }
+  .dm-body {
+    padding: 16px 22px 20px;
+  }
+  .dm-body h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 18px 0 8px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule-soft);
+    font-weight: 500;
+  }
+  .dm-body h5:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .dm-body p { margin: 0 0 10px; }
+  .dm-body p:last-child { margin-bottom: 0; }
+  .dm-body ul { margin: 6px 0 10px; padding-left: 22px; }
+  .dm-body li { margin-bottom: 4px; }
+
+  /* responsive */
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+      padding: 32px 24px;
+    }
+    main { padding: 40px 24px 80px; }
+    .doc-title { font-size: 30px; }
+    .fn-row { grid-template-columns: 1fr; gap: 4px; }
+    .fn-label { padding-top: 0; }
+    .roles > li { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ═══ Sidebar TOC ═══ -->
+  <nav class="toc">
+    <div class="toc-mark">Contents</div>
+    <div class="toc-title">SCORM 1.2<br>Run-Time Environment</div>
+    <ul>
+      <li>
+        <a href="#sec-3-1"><span class="num">3.1</span>Run-Time Environment 概要</a>
+      </li>
+      <li>
+        <a href="#sec-3-2"><span class="num">3.2</span>Launch</a>
+        <ul>
+          <li><a href="#sec-3-2-1"><span class="num">3.2.1</span>学習リソースの起動</a></li>
+          <li><a href="#sec-3-2-1-1"><span class="num">3.2.1.1</span>Asset</a></li>
+          <li><a href="#sec-3-2-1-2"><span class="num">3.2.1.2</span>SCO</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-3-3"><span class="num">3.3</span>Application Program Interface (API)</a>
+        <ul>
+          <li><a href="#sec-3-3-1"><span class="num">3.3.1</span>API 概要</a></li>
+          <li><a href="#sec-3-3-2"><span class="num">3.3.2</span>SCO–LMS 通信 API の概説</a></li>
+          <li><a href="#sec-3-3-2-1"><span class="num">3.3.2.1</span>API 詳細仕様</a></li>
+          <li><a href="#sec-3-3-2-2"><span class="num">3.3.2.2</span>API Adapter 状態遷移</a></li>
+          <li><a href="#sec-3-3-3"><span class="num">3.3.3</span>エラーコード使用法</a></li>
+          <li><a href="#sec-3-3-4"><span class="num">3.3.4</span>API 一般ルール</a></li>
+          <li><a href="#sec-3-3-5"><span class="num">3.3.5</span>LMS 責務</a></li>
+          <li><a href="#sec-3-3-6"><span class="num">3.3.6</span>SCO 責務（Find API）</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-3-4"><span class="num">3.4</span>Data Model</a>
+        <ul>
+          <li><a href="#sec-3-4-1"><span class="num">3.4.1</span>Data Model 概要</a></li>
+          <li><a href="#sec-3-4-2"><span class="num">3.4.2</span>Data Model 要素</a></li>
+          <li><a href="#sec-3-4-3"><span class="num">3.4.3</span>リスト取扱</a></li>
+          <li><a href="#sec-3-4-4"><span class="num">3.4.4</span>RTE Data Model</a></li>
+          <li><a href="#sec-3-4-5"><span class="num">3.4.5</span>データ型・語彙</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-3-5"><span class="num">3.5</span>Run-Time Environment 動作</a>
+      </li>
+      <li style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--rule);">
+        <a href="#sec-appendix-a"><span class="num">A</span>略語一覧</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-b"><span class="num">B</span>参考文献</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-c"><span class="num">C</span>改訂履歴</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ═══ Main Content ═══ -->
+  <main>
+
+    <header class="doc-header">
+      <div class="doc-org">Advanced Distributed Learning Initiative</div>
+      <h1 class="doc-title">The SCORM Run-Time Environment</h1>
+      <p class="doc-subtitle">Sharable Content Object Reference Model (SCORM™) Version 1.2</p>
+      <div class="doc-meta">
+        <span>Version<strong>1.2</strong></span>
+        <span>Original<strong>October 1, 2001</strong></span>
+        <span>Translation<strong>日本語訳</strong></span>
+      </div>
+    </header>
+
+    <div class="notice" style="background: #f0ebd8; border-left-color: var(--accent);">
+      <div class="label" style="color: var(--accent);">日本語訳・全文</div>
+      本ドキュメントは ADL Initiative 発行の SCORM 1.2「The Run-Time Environment」(October 1, 2001) を日本語に翻訳したものです。規格用語（API 関数名、データモデル要素名、エラーコード、語彙値、データ型）は原文どおり英語表記を維持し、説明文を技術者向けに翻訳しています。
+    </div>
+
+    <!-- ─── 3.1 ─── -->
+    <section id="sec-3-1">
+      <h2><span class="section-num">SECTION 3.1</span>Run-Time Environment 概要</h2>
+
+      <p>SCORM™ の目標の一つは、学習リソースを複数の Learning Management System (LMS) 間で再利用可能かつ相互運用可能にすることである。これを実現するためには、学習リソースを起動するための共通の方法、学習リソースが LMS と通信するための共通の仕組み、そしてその通信の基礎となる事前定義された言語ないし語彙が必要となる。図 3.1a に示すように、Run-Time Environment のこれら 3 つの側面が、Launch、Application Program Interface (API)、Data Model である。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" font-family="'Noto Sans JP', 'Noto Sans CJK JP', 'Helvetica Neue', sans-serif">
+  <defs>
+    <!-- Markers -->
+    <marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a84040"/>
+    </marker>
+    <marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6f8048"/>
+    </marker>
+    <marker id="ar-blue-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3d5d80"/>
+    </marker>
+    <marker id="ar-blue-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#3d5d80"/>
+    </marker>
+    <marker id="ar-thin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1c1e2a"/>
+    </marker>
+    <marker id="ar-thin-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#1c1e2a"/>
+    </marker>
+  </defs>
+
+  <!-- Outer frame -->
+  <rect x="2" y="2" width="756" height="516" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+
+  <!-- Server-side LMS shaded area (top + left column) -->
+  <path d="M 2 2 L 758 2 L 758 195 L 200 195 L 200 518 L 2 518 Z" fill="#b8aec8" opacity="0.55"/>
+
+  <!-- LMS Title -->
+  <text x="380" y="42" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#1c1e2a">Learning Management System (LMS)</text>
+
+  <!-- LMS Server box -->
+  <rect x="320" y="62" width="120" height="62" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+  <text x="380" y="86" text-anchor="middle" font-size="15" font-weight="700" font-style="italic" fill="#1c1e2a">LMS</text>
+  <text x="380" y="106" text-anchor="middle" font-size="15" font-weight="700" font-style="italic" fill="#1c1e2a">Server</text>
+
+  <!-- Server/Client divider (double line) -->
+  <line x1="2" y1="190" x2="758" y2="190" stroke="#1c1e2a" stroke-width="1.2"/>
+  <line x1="2" y1="195" x2="758" y2="195" stroke="#1c1e2a" stroke-width="1.2"/>
+
+  <!-- Side labels -->
+  <text x="746" y="180" text-anchor="end" font-size="12" font-weight="700" font-style="italic" fill="#1c1e2a">Server Side</text>
+  <text x="746" y="214" text-anchor="end" font-size="12" font-weight="700" font-style="italic" fill="#1c1e2a">Client Side</text>
+
+  <!-- Browser dashed rectangle -->
+  <rect x="240" y="245" width="460" height="220" fill="none" stroke="#1c1e2a" stroke-width="1.8" stroke-dasharray="7,4"/>
+  <text x="430" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Browser</text>
+
+  <!-- SCO dashed rectangle -->
+  <rect x="395" y="295" width="160" height="160" fill="none" stroke="#1c1e2a" stroke-width="1.4" stroke-dasharray="4,3"/>
+  <text x="551" y="312" text-anchor="end" font-size="13" font-weight="700" fill="#1c1e2a">SCO</text>
+
+  <!-- Asset dashed rectangle -->
+  <rect x="575" y="295" width="110" height="160" fill="none" stroke="#1c1e2a" stroke-width="1.4" stroke-dasharray="4,3"/>
+  <text x="681" y="312" text-anchor="end" font-size="13" font-weight="700" fill="#1c1e2a">Asset</text>
+
+  <!-- JavaScript box -->
+  <rect x="415" y="375" width="120" height="50" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+  <text x="475" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">JavaScript</text>
+
+  <!-- API Adapter box (straddling boundary) -->
+  <rect x="148" y="375" width="100" height="50" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+  <text x="198" y="395" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c1e2a">API</text>
+  <text x="198" y="412" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c1e2a">Adapter</text>
+
+  <!-- Browser-LMS Server vertical connector (black double-headed) -->
+  <line x1="380" y1="124" x2="380" y2="245" stroke="#1c1e2a" stroke-width="1.4" marker-start="url(#ar-thin-start)" marker-end="url(#ar-thin)"/>
+
+  <!-- Launch red arrows (LMS Server -> SCO and Asset) -->
+  <path d="M 360 124 Q 400 200 460 295" stroke="#a84040" stroke-width="3.2" fill="none" marker-end="url(#ar-red)"/>
+  <path d="M 410 124 Q 540 200 620 295" stroke="#a84040" stroke-width="3.2" fill="none" marker-end="url(#ar-red)"/>
+
+  <!-- Launch label -->
+  <text x="715" y="290" text-anchor="end" font-size="13" font-weight="700" font-style="italic" fill="#1c1e2a">Launch</text>
+  <line x1="690" y1="285" x2="638" y2="298" stroke="#1c1e2a" stroke-width="0.9" marker-end="url(#ar-thin)"/>
+
+  <!-- API blue double-headed arrow (between API Adapter and JavaScript) -->
+  <line x1="252" y1="400" x2="411" y2="400" stroke="#3d5d80" stroke-width="4.5" marker-start="url(#ar-blue-start)" marker-end="url(#ar-blue-end)"/>
+
+  <!-- Data Model green dashed arrows -->
+  <!-- Big zigzag from API Adapter area going up to LMS Server -->
+  <path d="M 215 375 Q 260 290 310 220 Q 340 170 365 124" stroke="#6f8048" stroke-width="3" stroke-dasharray="9,4" fill="none" marker-end="url(#ar-green)"/>
+
+  <!-- Data Model label box (left side) -->
+  <text x="22" y="305" font-size="12" font-weight="700" font-style="italic" fill="#1c1e2a">Data Model</text>
+  <text x="22" y="323" font-size="11" fill="#1c1e2a">SCO と LMS の間で</text>
+  <text x="22" y="338" font-size="11" fill="#1c1e2a">実際にやり取りされる</text>
+  <text x="22" y="353" font-size="11" fill="#1c1e2a">データ</text>
+  <line x1="115" y1="335" x2="148" y2="395" stroke="#1c1e2a" stroke-width="0.8" marker-end="url(#ar-thin)"/>
+
+  <!-- API label (bottom center) -->
+  <text x="280" y="492" font-size="12" font-weight="700" font-style="italic" fill="#1c1e2a">API</text>
+  <text x="310" y="492" font-size="11" fill="#1c1e2a">(SCO と LMS 間の</text>
+  <text x="310" y="506" font-size="11" fill="#1c1e2a">通信リンク)</text>
+  <line x1="320" y1="480" x2="320" y2="425" stroke="#1c1e2a" stroke-width="0.8" marker-end="url(#ar-thin)"/>
+</svg></div>
+        <div class="figure-caption">図 3.1a: SCORM Run-Time Environment における Launch、API、Data Model</div>
+      </div>
+
+      <p><strong>Launch</strong> の仕組みは、LMS が Web ベースの学習リソースを起動するための共通の方法を定義する。この仕組みは、配信される学習リソースと LMS との間で通信を確立するための手順と責務を規定する。通信プロトコルは共通の API を通じて標準化される。</p>
+
+      <p><strong>API</strong> は、学習リソースの状態（initialized、finished、エラー状態など）を LMS に通知するための通信メカニズムであり、LMS と Sharable Content Object (SCO) との間でデータ（スコア、制限時間など）の取得・設定を行うために使用される。</p>
+
+      <p><strong>Data Model</strong> は、学習リソースのステータスなど通信される情報を定義するための、データ要素の標準セットである。最も単純な形では、Data Model は LMS と SCO の双方が「知っている」べき要素を定義する。LMS はセッションをまたいで必須データ要素の状態を保持しなければならず、複数システム間での再利用を成立させるためには、学習コンテンツはこれら事前定義されたデータ要素のみを使用する必要がある。</p>
+    </section>
+
+    <!-- ─── 3.2 ─── -->
+    <section id="sec-3-2">
+      <h2><span class="section-num">SECTION 3.2</span>Launch</h2>
+
+      <p>共通の Launch スキームを採用することで、LMS の内部実装を規定することなく、複数の LMS 間で学習リソースの配信動作の一貫性を担保できる。なお本節における「LMS」とは、学習リソースの配信を管理する機能を含むシステムを指す用語として用いている。この Launch スキームは、学習体験の文脈において、SCO および Asset の形式で配信される Web ベース学習リソースを対象とする。</p>
+
+      <h3 id="sec-3-2-1">3.2.1 学習リソースの起動</h3>
+
+      <p>Content Aggregation Model に記述されているとおり、SCORM Content Model は次の 3 つのコンポーネントから構成される：</p>
+
+      <ul>
+        <li>Asset</li>
+        <li>SCO</li>
+        <li>Content Aggregation</li>
+      </ul>
+
+      <p>LMS が起動できる SCORM Content Model のコンポーネントは、Asset と SCO の 2 つである。起動する学習リソースの種類によって、起動時の要件は異なる。Launch メカニズムは、LMS が学習リソースを起動するための共通の方法を定義する。配信された学習リソースと LMS との間で通信を確立するための手順と責務は、起動する SCORM 学習リソースの種類によって異なる。</p>
+
+      <p>content package で定義された content structure に基づき、学習リソース間の sequencing および navigation を管理することは LMS の責務である。LMS は、学習リソースに定義された前提条件の達成状況に基づいて、シーケンスを適応的に決定してもよい。特定の学習体験を構成する学習リソースの進行は、LMS の能力に応じて、シーケンシャル、非シーケンシャル、ユーザー主導、またはアダプティブのいずれかとなる。現時点では、SCORM は学習リソース間の sequencing と navigation の標準化を扱わない。したがって、sequencing に関連するビジュアルコンポーネントの look and feel についてもガイドラインを定めていない。これらは SCORM の将来のバージョンで取り扱う予定である。</p>
+
+      <p>たとえば、LMS は content aggregation 内をユーザー主導で navigation できるメニューをレンダリングしてもよい。このメニューは、メニュー内に表示される各学習リソースの起動位置（launch location）をターゲットとするハイパーリンクの一覧として表示できる。</p>
+
+      <p>あるいは、LMS は学習者のパフォーマンスに基づいて学習リソースの起動順序を適応的に決定する、サーバーサイドの配信メカニズムを備える、または利用するという形でもよい。この場合、配信を担当するサーバーサイドコンポーネントは、該当する学習リソースに指定された launch location に基づき、直接または間接にその学習リソースを提供することになる。</p>
+
+      <p>何らかのイベントを契機として、起動すべき学習リソースを決定するのは LMS（またはその配信コンポーネント／サービス）の責務である。LMS は、content structure で定義されたシーケンス内の次の学習リソースを起動してもよいし、ユーザーが選択した SCO を起動してもよいし、学習者のパフォーマンスに基づいて起動する SCO をアダプティブに決定してもよい。起動すべき学習リソースが決まったら、LMS は content package で定義された launch location の URL を用いて、その URL へ遷移するか、または現在表示されている学習リソースを launch location 上の学習リソースに置き換える。</p>
+
+      <p>LMS は Launch を任意の方法で実装してよく、必要に応じて実際の起動責務を LMS のクライアント側またはサーバー側のいずれかに委ねてもよい。ただし、実際の起動は HTTP プロトコルを用いて行わなければならない。最終的に、content package 内の launch location で識別される学習リソースが起動され、クライアントブラウザに配信される。</p>
+
+      <h4 id="sec-3-2-1-1">3.2.1.1 Asset</h4>
+
+      <p>Asset を表す学習リソースの場合、SCORM の Launch モデルが要求するのは、LMS が HTTP プロトコルで Asset を起動することのみである。Asset は API および Data Model を介して LMS と通信する必要がないため、LMS が提供する API Adapter を Asset 側で探索する必要はない。</p>
+
+      <h4 id="sec-3-2-1-2">3.2.1.2 Sharable Content Object (SCO)</h4>
+
+      <p>SCO を表す学習リソースの場合、SCORM の Launch モデルは、LMS が同時に 1 つの SCO のみを起動し、同時にアクティブな SCO も 1 つだけであることを要求する。さらに、SCO を起動できるのは LMS のみであり、SCO が別の SCO を起動することはできない。</p>
+
+      <p>LMS は、API Adapter を Document Object Model (DOM)<sup>27</sup> オブジェクトとして公開している LMS ウィンドウの子ウィンドウまたは子フレームとなるブラウザウィンドウで、SCO を起動しなければならない。API Adapter は LMS が提供しなければならない。</p>
+
+      <p>API Adapter が見つかるまで、親ウィンドウおよび／または opener ウィンドウの階層を再帰的に探索することは SCO の責務である。API Adapter が見つかれば、SCO は LMS との通信を開始できる。</p>
+    </section>
+
+    <!-- ─── 3.3 ─── -->
+    <section id="sec-3-3">
+      <h2><span class="section-num">SECTION 3.3</span>Application Program Interface (API)</h2>
+
+      <h3 id="sec-3-3-1">3.3.1 API 概要</h3>
+
+      <p>SCORM は、AICC の <em>CMI001 Guidelines for Interoperability</em><sup>4</sup> 文書で定義された Run-Time Environment 機能を直接ベースとしている。ADL は AICC のメンバーおよび参加者と協力して、共通の Launch および API 仕様を策定するとともに、Web ベースのデータ要素を採用した。以下では、SCORM に関連する AICC API 仕様の主要な要素について概説する。</p>
+
+      <h3 id="sec-3-3-2">3.3.2 SCO–LMS 通信 API の概説</h3>
+
+      <p>共通の API を採用することで、相互運用性と再利用性に関する SCORM の上位要件の多くが満たされる。API は、SCO が LMS と通信するための標準化された手段を提供しつつ、特定の通信実装の詳細をコンテンツ開発者から隠蔽する。最も単純に言えば、API とは「SCO が利用可能であることを前提にできる、事前定義された関数の集合」にすぎない。API は実装の詳細を SCO から隠蔽することで、再利用性と相互運用性を促進する。</p>
+
+      <p><strong>API Adapter</strong> とは、API が定める関数を実装し公開する機能ソフトウェアである。コンテンツ開発者にとって API Adapter の内部実装は、同一の public interface を介してアクセスする限り問題にならない。LMS が提供する必要があるのは、API の機能を実装し、そのインタフェースをクライアント SCO に公開する API Adapter のみである。</p>
+
+      <p>API の重要な性質は、SCO が LMS と通信できるようにする通信メカニズムである、という点にある。SCO がいったん起動された後は、LMS との間で情報を get / set できることが前提となる。API Adapter と SCO 間のすべての通信は SCO 側から開始される。LMS 側から SCO に実装された関数の呼び出しを開始する仕組みは、現時点ではサポートされていない。API Adapter オブジェクトの関数の役割は、次の 3 つに大別される。</p>
+
+      <ul class="roles">
+        <li>
+          <span class="role-name">Execution State</span>
+          <p class="role-desc">API 関数のうち <code>LMSInitialize("")</code> と <code>LMSFinish("")</code> の 2 つが、実行状態を扱う。</p>
+        </li>
+        <li>
+          <span class="role-name">State Management</span>
+          <p class="role-desc">エラーを扱うために 3 つの関数が用意されている。<code>LMSGetLastError()</code>、<code>LMSGetErrorString(errornumber)</code>、<code>LMSGetDiagnostic(parameter)</code> である。<br><span style="color:var(--muted); font-size:13px;">※ 原文では State Management の見出しの下にエラー処理関数が列挙されているが、これは原文のまま訳出している。</span></p>
+        </li>
+        <li>
+          <span class="role-name">Data Transfer</span>
+          <p class="role-desc">残りの 3 つの API 関数は、LMS との間でデータを転送するために使用される。<code>LMSGetValue(data&nbsp;model&nbsp;element)</code>、<code>LMSSetValue(data&nbsp;model&nbsp;element,&nbsp;value)</code>、<code>LMSCommit("")</code>。なお、API は外部の Data Model によって個別に定義されたデータ値の取得・設定を行うように設計されている。AICC 仕様はそのような Data Model の一つとして「cmi」を定義しているが、本 API とともに用いる Data Model を別途開発・利用することも可能である。</p>
+        </li>
+      </ul>
+
+      <h3 id="sec-3-3-2-1">3.3.2.1 SCO–LMS 通信 API 詳細仕様</h3>
+
+      <p>SCO–LMS 通信 API の詳細を以下に示す。</p>
+
+      <h4>Execution State</h4>
+
+      <!-- LMSInitialize -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSInitialize</span>
+          <span class="fn-tag">Execution State</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>SCO が LMS と通信を開始することを API Adapter に通知する関数。これにより LMS は LMS 固有の初期化処理を行うことができる。SCO は、他のいかなる API 関数を呼び出すよりも前に、本関数を呼び出すことが必須である。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSInitialize(parameter)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p><code>""</code> 本標準に準拠するためには、空文字列を渡さなければならない。<code>""</code> 以外の値は将来の拡張のために予約されている。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>boolean を表す文字列。</p>
+              <ul>
+                <li><code>"true"</code> は <code>LMSInitialize("")</code> が成功したことを示す</li>
+                <li><code>"false"</code> は <code>LMSInitialize("")</code> が失敗したことを示す</li>
+              </ul>
+              <p><code>"false"</code> が返された場合、これは「LMS が不明な状態にあり、以降の API 呼び出しが LMS 側で処理されない」ことを SCO に対して示す。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Example</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> result = <span class="tok-f">LMSInitialize</span>(<span class="tok-s">""</span>)
+<span class="tok-k">if</span> (result == <span class="tok-s">"false"</span>)
+{
+    <span class="tok-c">// エラー処理</span>
+}
+<span class="tok-k">else</span>
+{
+    <span class="tok-c">// SCO の実行を継続</span>
+}</code></pre>
+              <p>SCO は API Adapter に対して、コンテンツが LMS との通信を確立したい旨を伝える。典型的な戻り値は <code>"true"</code> である。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LMSFinish -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSFinish</span>
+          <span class="fn-tag">Execution State</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>過去のいずれかの時点で <code>LMSInitialize</code> の呼び出しに成功した SCO が、これ以上 LMS との通信を必要としないと判断した場合に、本関数を呼び出さなければならない。本呼び出しは次の 2 つを意味する。</p>
+              <ol>
+                <li><code>LMSSetValue()</code> で設定した任意のデータが、LMS によって永続化されたことを SCO に保証する。</li>
+                <li>SCO が LMS との通信を終了したことを示す。</li>
+              </ol>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSFinish(parameter)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p><code>""</code> 本標準に準拠するためには、空文字列を渡さなければならない。<code>""</code> 以外の値は将来の拡張のために予約されている。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>boolean を表す文字列。</p>
+              <ul>
+                <li><code>"true"</code> は <code>LMSFinish("")</code> が成功したことを示す</li>
+                <li><code>"false"</code> は <code>LMSFinish("")</code> が失敗したことを示す</li>
+              </ul>
+              <p><code>"true"</code> が返された場合、SCO はそれ以降、他のいかなる API 関数も呼び出してはならない。</p>
+              <p><code>"false"</code> が返された場合、これは「LMS が不明な状態にあり、以降の API 呼び出しが LMS 側で処理される保証がない」ことを SCO に対して示す。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Example</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> result = <span class="tok-f">LMSFinish</span>(<span class="tok-s">""</span>);</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <h4>Data Transfer</h4>
+
+      <!-- LMSGetValue -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSGetValue</span>
+          <span class="fn-tag">Data Transfer</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>SCO が LMS から情報を取得するための関数。次の用途で使用する：</p>
+              <ul>
+                <li>data model 内の各種カテゴリ（グループ）および要素の値</li>
+                <li>サポートされている data model のバージョン</li>
+                <li>特定のカテゴリまたは要素がサポートされているかどうか</li>
+                <li>配列または要素リスト内の現在の項目数</li>
+              </ul>
+              <p>完全なデータ要素名およびキーワードをパラメータとして渡す。要求された data model パラメータの現在の値が返される。1 回の呼び出しで返される値は常に文字列 1 つだけである。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSGetValue(parameter)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p><code>datamodel.group.element</code><br>指定された要素の値を返す。</p>
+              <p><code>datamodel._version</code><br><code>_version</code> キーワード。LMS がサポートする data model のバージョンを取得するために使用する。</p>
+              <p><code>datamodel.element._count</code><br><code>_count</code> キーワード。配列内の現在の要素数を取得するために使用する。返されるのは配列の要素総数であり、配列の最終位置のインデックス番号ではない。</p>
+              <p><code>datamodel.element._children</code><br><code>_children</code> キーワード。LMS がサポートしているグループまたはカテゴリ内のすべての要素を取得するために使用する。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>すべての戻り値は文字列である。</p>
+              <p><code>LMSGetValue(datamodel.group.element)</code><br>要求された要素またはグループの現在の値を表す文字列を返す。</p>
+              <p><code>LMSGetValue(datamodel._version)</code><br>LMS がサポートする data model のバージョンを表す文字列を返す。</p>
+              <p><code>LMSGetValue(datamodel.group._children)</code><br>指定したグループまたはカテゴリ内で LMS がサポートしているすべての要素名を、カンマ区切りリストで返す。要素に子要素はないがサポートされている場合は、空文字列 (<code>""</code>) を返す。要素自体がサポートされていない場合も空文字列 (<code>""</code>) を返す。続けて <code>LMSGetLastError()</code> を呼び出すことで、要素がサポートされていないかどうかを判別できる。エラー <code>401 - Not implemented error</code> は、要素がサポートされていないことを示す。</p>
+              <p><code>LMSGetValue(datamodel.group._count)</code><br>要素リストまたは配列内の現在の項目数を示す整数を返す。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> value = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.student_name"</span>)</code></pre>
+              <p>典型的な戻り値の例：<code>"Hyde, Jackson"</code></p>
+<pre><code><span class="tok-k">var</span> value = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.lesson_status"</span>)</code></pre>
+              <p>典型的な戻り値の例：<code>"incomplete"</code></p>
+<pre><code><span class="tok-k">var</span> value = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi._version"</span>)</code></pre>
+              <p>CMI data model を定義する IEEE ドキュメントの現行ドラフト規格は <em>Draft Standard for Computer Managed Instruction</em> と題され、ID は P1484.11.2、バージョン番号は 3.4 である。本呼び出しはこの IEEE ドキュメントのバージョン番号 <code>3.4</code> を返す。</p>
+<pre><code><span class="tok-k">var</span> value = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.student_preferences._children"</span>)</code></pre>
+              <p>これはカテゴリのサポート情報を求めるリクエストである。典型的な戻り値の例は <code>"audio,speed,text"</code>。空文字列 (<code>""</code>) が返された場合、<code>student_preferences</code> はサポートされていない。続けて API 呼び出しでエラーを確認することで、これを検証できる。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LMSSetValue -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSSetValue</span>
+          <span class="fn-tag">Data Transfer</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>SCO が LMS に情報を送信するための関数。API Adapter は、情報を即座に LMS に転送するように設計されることもあれば、別の方式で情報を転送するように設計されることもある。</p>
+              <p>本関数は、data model 内の各種カテゴリ（グループ）および要素の現在値を設定するために使用する。</p>
+              <p>第 1 パラメータでデータ要素名とそのグループを指定し、第 2 パラメータで設定したい新しい値を渡す。1 回の呼び出しで送信される値は 1 つのみである。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSSetValue(parameter, value)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p>data model で定義された完全修飾要素の名前。引数は大文字小文字を区別する。引数は引用符で囲まれた文字列として渡す。</p>
+              <p>このパラメータが取り得る形式の例：</p>
+              <p><code>datamodel.element</code><br>Data Model で定義されたカテゴリまたはグループの名前。例：<code>"cmi.comments"</code>。</p>
+              <p><code>datamodel.group.element</code><br>Data Model で定義された要素の名前。例：<code>"cmi.core.lesson_status"</code>。</p>
+              <p><code>datamodel.group.n.element</code><br>要素配列の n 番目（0 ベースインデックスで n−1 番目のメンバー）におけるサブ要素の値。</p>
+              <p><strong>Value</strong>：第 1 パラメータで指定したデータ要素について、本標準で定義されたデータ型に変換可能な文字列でなければならない。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>boolean を表す文字列。</p>
+              <ul>
+                <li><code>"true"</code> は <code>LMSSetValue()</code> が成功したことを示す</li>
+                <li><code>"false"</code> は <code>LMSSetValue()</code> が失敗したことを示す</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> result = <span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.score.raw"</span>, <span class="tok-s">"95"</span>);</code></pre>
+              <p><code>cmi.core.score.raw</code> を <code>"95"</code> に設定する。続けて <code>LMSGetValue("cmi.core.score.raw")</code> を呼び出すと、<code>"95"</code> が返されなければならない。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LMSCommit -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSCommit</span>
+          <span class="fn-tag">Data Transfer</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>API Adapter が <code>LMSSetValue()</code> 経由で SCO から受信した値をキャッシュしている場合、本呼び出しは LMS によってまだ永続化されていない値の永続化を要求する。</p>
+              <p>実装によっては、API Adapter は受信した設定値を即座に永続化し、クライアント上にキャッシュしないこともある。そのような実装では本 API 呼び出しは冗長であり、API Adapter は追加の動作を行わない。本呼び出しは、<code>LMSSetValue()</code> 経由で送信されたデータが、<code>LMSCommit()</code> の完了時点で LMS により永続化されることを SCO に対して保証する。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSCommit(parameter)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p><code>""</code> 本標準に準拠するためには、空文字列を渡さなければならない。<code>""</code> 以外の値は将来の拡張のために予約されている。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>boolean を表す文字列。</p>
+              <ul>
+                <li><code>"true"</code> は <code>LMSCommit("")</code> が成功したことを示す</li>
+                <li><code>"false"</code> は <code>LMSCommit("")</code> が失敗したことを示す</li>
+              </ul>
+              <p><code>"false"</code> が返された場合、これは「LMS が不明な状態にあり、以降の API 呼び出しが LMS 側で処理される保証がない」ことを SCO に対して示す。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> result = <span class="tok-f">LMSCommit</span>(<span class="tok-s">""</span>);</code></pre>
+              <p>SCO が以前に <code>LMSSetValue()</code> で設定したものの、LMS によってまだ永続化されていないキャッシュ値の永続化を要求する。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <h4>State Management</h4>
+
+      <!-- LMSGetLastError -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSGetLastError</span>
+          <span class="fn-tag">State Management</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>SCO は、与えられた API 呼び出しが成功したかどうか、また成功しなかった場合は何が問題だったかを判別する手段を持たなければならない。本関数は、直前の API 呼び出しに起因するエラーステータスコードを返す。<code>LMSGetLastError</code>、<code>LMSGetErrorString</code>、<code>LMSGetDiagnostic</code> の 3 つのエラー関数を除く API 関数が呼ばれるたびに、エラーコードはリセットされる。SCO はエラー関数を何度でも呼び出してエラーコードを取得できるが、コードは次の API 呼び出しが行われるまで変化しない。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSGetLastError()</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content"><p>なし</p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>戻り値は文字列で、整数に変換するとエラーが次のいずれのカテゴリに分類されるかを識別できる：</p>
+              <ul>
+                <li>100 番台：一般エラー（General errors）</li>
+                <li>200 番台：構文エラー（Syntax errors）</li>
+                <li>300 番台：LMS エラー（LMS errors）</li>
+                <li>400 番台：data model エラー（Data model errors）</li>
+              </ul>
+              <p>エラーメッセージとして利用可能なコードは次のとおり：</p>
+              <ul style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px;">
+                <li>0 — No error</li>
+                <li>101 — General exception</li>
+                <li>201 — Invalid argument error</li>
+                <li>202 — Element cannot have children</li>
+                <li>203 — Element not an array — cannot have count</li>
+                <li>301 — Not initialized</li>
+                <li>401 — Not implemented error</li>
+                <li>402 — Invalid set value, element is a keyword</li>
+                <li>403 — Element is read only</li>
+                <li>404 — Element is write only</li>
+                <li>405 — Incorrect Data Type</li>
+              </ul>
+              <p>追加コードは TBD。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> errorCode = <span class="tok-f">LMSGetLastError</span>();</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LMSGetErrorString -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSGetErrorString</span>
+          <span class="fn-tag">State Management</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>本関数により、コンテンツはエラーコード番号で表されるエラーのテキスト記述を取得できる。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSGetErrorString(errornumber)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content"><p>エラーコードを表す整数値。</p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content"><p>エラーの文章的記述を表す文字列。</p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> errorString = <span class="tok-f">LMSGetErrorString</span>(<span class="tok-s">"403"</span>);</code></pre>
+              <p><code>errorString</code> には <code>"Element is read only"</code> が格納される。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LMSGetDiagnostic -->
+      <div class="fn-block">
+        <div class="fn-header">
+          <span class="fn-name">LMSGetDiagnostic</span>
+          <span class="fn-tag">State Management</span>
+        </div>
+        <div class="fn-body">
+          <div class="fn-row">
+            <div class="fn-label">Description</div>
+            <div class="fn-content">
+              <p>本関数により、ベンダー固有のエラー記述を実装し、コンテンツから取得できる。通常は、エラーに関する追加の詳細情報を提供する。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Syntax</div>
+            <div class="fn-content"><p><code>LMSGetDiagnostic(parameter)</code></p></div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Parameter</div>
+            <div class="fn-content">
+              <p>パラメータは次の 2 つの形式のいずれかを取る：</p>
+              <ul>
+                <li>エラーコードを表す整数値。指定されたエラーコードに関する追加情報を要求する。</li>
+                <li><code>""</code>（空文字列）。直前に発生したエラーに関する追加情報を要求する。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Return Value</div>
+            <div class="fn-content">
+              <p>戻り値は、要求されたエラーまたは直前のエラーに関するベンダー固有の追加情報を表す文字列である。</p>
+            </div>
+          </div>
+          <div class="fn-row">
+            <div class="fn-label">Examples</div>
+            <div class="fn-content">
+<pre><code><span class="tok-k">var</span> moreInfo = <span class="tok-f">LMSGetDiagnostic</span>(<span class="tok-s">"403"</span>);</code></pre>
+              <p><code>moreInfo</code> には、<code>"Element is read only"</code> エラーに関するベンダー固有の追加情報が格納される可能性がある。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="sec-3-3-2-2">3.3.2.2 SCO–LMS 通信 API Adapter の状態遷移</h3>
+
+      <p>SCO–LMS 通信 API Adapter は、SCO の特定のインスタンスに対して、実行時に複数の状態を遷移する（図 3.3.2.2a）。API Adapter の状態は、特定の入力イベントに対する API Adapter の応答を規定する。各状態において SCO が行いうる活動は異なる。API が経由する状態は <strong>Not Initialized</strong>、<strong>Initialized</strong>、<strong>Finished</strong> の 3 つである。</p>
+
+      <div class="figure" style="background: white;">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" font-family="'Noto Sans JP', 'Noto Sans CJK JP', 'Helvetica Neue', sans-serif">
+  <defs>
+    <marker id="ar-state" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1c1e2a"/>
+    </marker>
+  </defs>
+
+  <!-- Yellow rounded background (the API Adapter context) -->
+  <rect x="20" y="30" width="680" height="320" rx="18" ry="18" fill="#faf2d4" stroke="#c9b870" stroke-width="1"/>
+
+  <!-- Initial state: "SCO Launched By LMS" -->
+  <text x="78" y="118" text-anchor="middle" font-size="12.5" font-weight="700" font-style="italic" fill="#1c1e2a">SCO Launched</text>
+  <text x="78" y="134" text-anchor="middle" font-size="12.5" font-weight="700" font-style="italic" fill="#1c1e2a">By LMS</text>
+  <circle cx="78" cy="160" r="5" fill="#1c1e2a"/>
+  <line x1="84" y1="160" x2="135" y2="160" stroke="#1c1e2a" stroke-width="1.4" marker-end="url(#ar-state)"/>
+
+  <!-- State 1: Not Initialized -->
+  <ellipse cx="200" cy="160" rx="62" ry="28" fill="#c8dee8" stroke="#1c1e2a" stroke-width="1.6"/>
+  <text x="200" y="165" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c1e2a">Not Initialized</text>
+
+  <!-- Arrow: Not Initialized -> Initialized, label LMSInitialize("") -->
+  <text x="332" y="148" text-anchor="middle" font-size="12" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSInitialize("")</text>
+  <line x1="262" y1="160" x2="408" y2="160" stroke="#1c1e2a" stroke-width="1.6" marker-end="url(#ar-state)"/>
+
+  <!-- State 2: Initialized -->
+  <ellipse cx="465" cy="160" rx="55" ry="28" fill="#c8dee8" stroke="#1c1e2a" stroke-width="1.6"/>
+  <text x="465" y="165" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c1e2a">Initialized</text>
+
+  <!-- Arrow: Initialized -> Finished, label LMSFinish("") -->
+  <text x="568" y="148" text-anchor="middle" font-size="12" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSFinish("")</text>
+  <line x1="520" y1="160" x2="615" y2="160" stroke="#1c1e2a" stroke-width="1.6" marker-end="url(#ar-state)"/>
+
+  <!-- State 3: Finished -->
+  <ellipse cx="660" cy="160" rx="42" ry="28" fill="#c8dee8" stroke="#1c1e2a" stroke-width="1.6"/>
+  <text x="660" y="165" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c1e2a">Finished</text>
+
+  <!-- Description under Not Initialized -->
+  <text x="138" y="220" font-size="11.5" font-weight="700" text-decoration="underline" fill="#1c1e2a">SCO の責務:</text>
+  <text x="138" y="237" font-size="11.5" fill="#1c1e2a">API を探索し</text>
+  <text x="138" y="252" font-size="11.5" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSInitialize</text>
+  <text x="138" y="267" font-size="11.5" fill="#1c1e2a">を呼び出す</text>
+
+  <!-- Description under Initialized -->
+  <text x="378" y="220" font-size="11.5" font-weight="700" text-decoration="underline" fill="#1c1e2a">SCO が呼び出せる関数:</text>
+  <text x="378" y="237" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetValue</text>
+  <text x="378" y="251" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSSetValue</text>
+  <text x="378" y="265" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetLastError</text>
+  <text x="378" y="279" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetErrorString</text>
+  <text x="378" y="293" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetDiagnostic</text>
+  <text x="378" y="307" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSCommit</text>
+  <text x="378" y="321" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSFinish</text>
+
+  <!-- Description under Finished -->
+  <text x="540" y="220" font-size="11" font-weight="700" text-decoration="underline" fill="#1c1e2a">LMSFinish が false を</text>
+  <text x="540" y="234" font-size="11" font-weight="700" text-decoration="underline" fill="#1c1e2a">返した場合に限り</text>
+  <text x="540" y="248" font-size="11" font-weight="700" text-decoration="underline" fill="#1c1e2a">SCO が呼び出せる関数:</text>
+  <text x="540" y="265" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetLastError</text>
+  <text x="540" y="279" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetErrorString</text>
+  <text x="540" y="293" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">・LMSGetDiagnostic</text>
+
+  <!-- State labels below the yellow box -->
+  <text x="200" y="400" text-anchor="middle" font-size="14" font-weight="700" font-style="italic" fill="#1c1e2a">Not Initialized</text>
+  <text x="465" y="400" text-anchor="middle" font-size="14" font-weight="700" font-style="italic" fill="#1c1e2a">Initialized</text>
+  <text x="660" y="400" text-anchor="middle" font-size="14" font-weight="700" font-style="italic" fill="#1c1e2a">Finished</text>
+</svg></div>
+        <div class="figure-caption">図 3.3.2.2a: API Adapter の状態遷移</div>
+      </div>
+
+      <p><strong>Not Initialized</strong>：SCO が実際に起動された後、SCO が <code>LMSInitialize("")</code> API 関数を呼び出すまでの間の状態。この状態の間、LMS が提供する API Adapter を探索することは SCO の責務である。SCO が API Adapter を見つけたら、SCO は次の API 関数を呼び出すことが許可される：</p>
+      <ul>
+        <li><code>LMSInitialize("")</code></li>
+        <li><code>LMSGetLastError()</code></li>
+        <li><code>LMSGetErrorString()</code></li>
+        <li><code>LMSGetDiagnostic()</code></li>
+      </ul>
+
+      <p><strong>Initialized</strong>：SCO が <code>LMSInitialize("")</code> API 関数を呼び出した後、<code>LMSFinish("")</code> API 関数を呼び出すまでの間の状態。SCO が Initialized 状態にあるとき、<code>LMSInitialize("")</code> を除くすべての API 関数を呼び出すことが許可される。</p>
+
+      <p><strong>Finished</strong>：SCO が <code>LMSFinish("")</code> API 関数を呼び出した後の状態。<code>LMSFinish("")</code> の呼び出しに対して API Adapter が <code>"false"</code> を返した場合、SCO は次の API 関数を呼び出すことが許可される：</p>
+      <ul>
+        <li><code>LMSGetLastError()</code></li>
+        <li><code>LMSGetErrorString()</code></li>
+        <li><code>LMSGetDiagnostic()</code></li>
+      </ul>
+
+      <p>LMS API Adapter が <code>"false"</code> を返した場合、それ以降の API 関数呼び出しに対して LMS API Adapter が適切に応答する保証はない。</p>
+
+      <h3 id="sec-3-3-3">3.3.3 API エラーコードの使用法</h3>
+
+      <p>SCO は、与えられた API 関数呼び出しが成功したかどうか、また成功しなかった場合は何が問題だったかを判別する手段を持たなければならない。<code>LMSGetLastError()</code> 関数は、直前の API 関数呼び出しによって発生したエラーの種類を判別するためのエラーコードを返す。</p>
+
+      <p><strong>Syntax</strong>：<code>LMSGetLastError()</code><br>
+      <strong>Parameters</strong>：なし<br>
+      <strong>Return Type</strong>：String — 値は次表に示す整数に変換可能である。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 64px;">Code</th>
+            <th style="width: 220px;">Description</th>
+            <th>Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"0"</td>
+            <td>No error</td>
+            <td><p>エラーなし。API 呼び出しは成功。</p></td>
+          </tr>
+          <tr>
+            <td>"101"</td>
+            <td>General Exception</td>
+            <td><p>一般的な例外を示すために使用する。</p></td>
+          </tr>
+          <tr>
+            <td>"201"</td>
+            <td>Invalid argument error</td>
+            <td>
+              <p>存在しない SCORM Run-Time Environment データモデル要素への呼び出しが行われた場合に使用する。</p>
+              <p>API 経由で無効な引数が渡された場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.zip_code"</span>)</code></pre>
+              <p class="ex-note"><code>"cmi.core.zip_code"</code> は有効な CMI Data Model 要素ではない。</p>
+<pre><code>例：<span class="tok-f">LMSInitialize</span>(<span class="tok-s">"init"</span>)</code></pre>
+              <p class="ex-note"><code>LMSInitialize("")</code> は空文字列引数を期待する。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>"202"</td>
+            <td>Element cannot have children</td>
+            <td>
+              <p><code>_children</code> をサポートしないデータモデルカテゴリまたは要素に対して <code>LMSGetValue()</code> が呼ばれた場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.student_id._children"</span>)</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td>"203"</td>
+            <td>Element not an array. Cannot have count.</td>
+            <td>
+              <p><code>_count</code> をサポートしないデータモデルカテゴリまたは要素に対して <code>LMSGetValue()</code> が呼ばれた場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core._count"</span>)</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td>"301"</td>
+            <td>Not initialized</td>
+            <td><p><code>LMSInitialize("")</code> が呼ばれる前に他の API 関数呼び出しが行われた場合に使用する。</p></td>
+          </tr>
+          <tr>
+            <td>"401"</td>
+            <td>Not implemented error</td>
+            <td>
+              <p>LMS がサポートしていない Data Model 要素への呼び出しが行われた場合、または SCORM Run-Time Environment Data Model 以外の Data Model が使用された場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.objectives.0.id"</span>)</code></pre>
+              <p class="ex-note"><code>"cmi.objectives.0.id"</code> は任意（オプション）要素である。LMS がこの要素をサポートしていない場合、LMS は空文字列 (<code>""</code>) を返し、エラーコードを 401 に設定すべきである。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"xyz.score.result"</span>)</code></pre>
+              <p class="ex-note"><code>"xyz.score.result"</code> は有効な SCORM Run-Time Environment Data Model 要素ではない。有効なデータモデル要素ではない（<code>"xyz"</code> 対 <code>"cmi"</code>）ため、LMS はエラーコードを <code>"401"</code> に設定し、空文字列を返すべきである。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>"402"</td>
+            <td>Invalid set value, element is a keyword</td>
+            <td>
+              <p>キーワードに対して <code>LMSSetValue()</code> 呼び出しが行われた場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core._children"</span>, <span class="tok-s">"student_id,student_name"</span>)</code></pre>
+              <p class="ex-note"><code>"cmi.core._children"</code> はキーワードである。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>"403"</td>
+            <td>Element is read only.</td>
+            <td>
+              <p>読み取り専用要素に対して <code>LMSSetValue()</code> 呼び出しが行われた場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.student_id"</span>, <span class="tok-s">"JoeStudent"</span>)</code></pre>
+              <p class="ex-note"><code>"cmi.core.student_id"</code> は読み取り専用の CMI 要素である。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>"404"</td>
+            <td>Element is write only</td>
+            <td>
+              <p>書き込み専用要素に対して <code>LMSGetValue()</code> 呼び出しが行われた場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.exit"</span>)</code></pre>
+              <p class="ex-note"><code>"cmi.core.exit"</code> は書き込み専用の CMI 要素である。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>"405"</td>
+            <td>Incorrect Data Type</td>
+            <td>
+              <p>誤ったデータ型で要素を設定しようとした場合に使用する。</p>
+<pre><code>例：<span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.score.raw"</span>, <span class="tok-s">"eighty five"</span>)</code></pre>
+              <p class="ex-note"><code>"eighty five"</code> は <code>"cmi.core.score.raw"</code> の正しいデータ型ではない。正しいデータ型は <code>CMIDecimal</code>（例：<code>"85"</code>）または <code>CMIBlank</code>（例：<code>""</code>）である。</p>
+<pre><code>例：<span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.lesson_status"</span>, <span class="tok-s">"Not Attempted"</span>)</code></pre>
+              <p class="ex-note"><code>"Not Attempted"</code> は <code>cmi.core.lesson_status</code> 要素の有効な語彙値ではない。語彙は大文字小文字を区別し、完全に一致しなければならない。</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="sec-3-3-4">3.3.4 API 一般ルール</h3>
+
+      <p>以下に API 使用上の一般的なルールを示す：</p>
+      <ul>
+        <li>関数名はすべて大文字小文字を区別し、常に表示どおりに正確に記述しなければならない。</li>
+        <li>関数のパラメータまたは引数は大文字小文字を区別する。すべてのパラメータは小文字である。</li>
+        <li>エラーハンドリング関数を除く API 関数の各呼び出しは、エラーコードをリセットする。</li>
+      </ul>
+
+      <h3 id="sec-3-3-5">3.3.5 LMS 責務</h3>
+
+      <h4 id="sec-3-3-5-1">3.3.5.1 API Adapter</h4>
+
+      <p>SCORM は、前節で説明した必須の API 機能を実装した API Adapter を LMS が提供することを要求する。この Adapter は、Adapter 固有の実装の詳細から SCO を隔離しなければならない。これにより SCO は、基盤となる通信インフラの知識を持つ必要がなく、標準化された LMS Application Program Interface の存在のみに依拠できる。API Adapter の使用に関する要件は次のとおり：</p>
+
+      <ul>
+        <li>LMS は、API Adapter を含む LMS ウィンドウの子ウィンドウまたは子フレームとなるブラウザウィンドウで SCO を起動しなければならない。</li>
+        <li>API Adapter は LMS が提供しなければならない。</li>
+        <li>SCO からの API インタラクションがサポートされる唯一のメカニズムは、ECMAScript (JavaScript) の呼び出しである。</li>
+        <li>API Adapter は、DOM<sup>27</sup> 経由で <code>"API"</code> という名前のオブジェクトとしてアクセス可能でなければならない。</li>
+      </ul>
+
+      <p>例として、API Adapter は次のようなシグネチャを持つ Java アプレットとして実装できる：</p>
+
+<pre><code><span class="tok-k">public class</span> API <span class="tok-k">extends</span> Applet
+{
+    <span class="tok-k">public</span> String <span class="tok-f">LMSInitialize</span>( String parameter )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSGetValue</span>( String element )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSSetValue</span>( String element, String value )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSCommit</span>( String parameter )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSFinish</span>( String parameter )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSGetLastError</span>()
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSGetErrorString</span>( String errorCode )
+    { . . . }
+    <span class="tok-k">public</span> String <span class="tok-f">LMSGetDiagnostic</span>( String errorCode )
+    { . . . }
+}</code></pre>
+
+      <p>なお、API Adapter は C++ などの他のプログラミング言語で実装することもでき、たとえばブラウザプラグインとして読み込むこともできる。API Adapter の実装は LMS 固有のものとなる。上記のコード片はあくまで一例であり、LMS API Adapter の実装方法はさまざまである。</p>
+
+      <h3 id="sec-3-3-6">3.3.6 SCO 責務</h3>
+
+      <h4 id="sec-3-3-6-1">3.3.6.1 Find API</h4>
+
+      <p>SCO は、最低限 <code>LMSInitialize("")</code> および <code>LMSFinish("")</code> の API 呼び出しを発行する責務を負う。これを行うためには、コンテンツが LMS から提示される API Adapter を見つけられなければならない。LMS は、SCO が親ウィンドウおよび／または opener ウィンドウの階層を再帰的に探索して API を見つけられるよう、DOM ウィンドウ階層に API Adapter を配置する責務を負う。LMS の API Adapter を見つけて通信を確立するのはコンテンツの責務である。SCO がこれをどのように行うかは SCORM では規定しない。</p>
+
+      <p>以下のコード例は、SCO が LMS の API Adapter を見つけるために使用できるアルゴリズムを示す。これらの関数の使用は SCORM が課す要件ではなく、SCO は他の方法で LMS の API Adapter を見つけてもよい。</p>
+
+<pre><code><span class="tok-c">&lt;SCRIPT LANGUAGE=JAVASCRIPT&gt;</span>
+<span class="tok-k">var</span> findAPITries = 0;
+
+<span class="tok-k">function</span> <span class="tok-f">findAPI</span>(win)
+{
+    <span class="tok-c">// win に API が含まれているかをチェックする。</span>
+    <span class="tok-c">// win に API が含まれず、かつ win に親ウィンドウがあり、</span>
+    <span class="tok-c">// 親ウィンドウが win 自身と異なる場合にループを継続する。</span>
+    <span class="tok-k">while</span> ( (win.API == <span class="tok-k">null</span>) &amp;&amp;
+            (win.parent != <span class="tok-k">null</span>) &amp;&amp;
+            (win.parent != win) )
+    {
+        <span class="tok-c">// 探索回数をインクリメント</span>
+        findAPITries++;
+
+        <span class="tok-c">// 注：7 は任意の値だが、十分すぎるはず</span>
+        <span class="tok-k">if</span> (findAPITries &gt; 7)
+        {
+            <span class="tok-f">alert</span>(<span class="tok-s">"Error finding API -- too deeply nested."</span>);
+            <span class="tok-k">return</span> <span class="tok-k">null</span>;
+        }
+
+        <span class="tok-c">// 探索対象のウィンドウを現ウィンドウの親に切り替えて再探索</span>
+        win = win.parent;
+    }
+    <span class="tok-k">return</span> win.API;
+}
+
+<span class="tok-k">function</span> <span class="tok-f">getAPI</span>()
+{
+    <span class="tok-c">// まず現在のウィンドウから API を探す</span>
+    <span class="tok-k">var</span> theAPI = <span class="tok-f">findAPI</span>(window);
+    <span class="tok-c">// API が見つからず（現ウィンドウに無く）、</span>
+    <span class="tok-c">// 現ウィンドウに opener が存在する場合</span>
+    <span class="tok-k">if</span> ( (theAPI == <span class="tok-k">null</span>) &amp;&amp;
+            (window.opener != <span class="tok-k">null</span>) &amp;&amp;
+            (<span class="tok-k">typeof</span>(window.opener) != <span class="tok-s">"undefined"</span>) )
+    {
+        <span class="tok-c">// 現ウィンドウの opener から API を探索</span>
+        theAPI = <span class="tok-f">findAPI</span>(window.opener);
+    }
+    <span class="tok-c">// API がまだ見つからない場合</span>
+    <span class="tok-k">if</span> (theAPI == <span class="tok-k">null</span>)
+    {
+        <span class="tok-c">// API Adapter が見つからない旨をユーザに通知</span>
+        <span class="tok-f">alert</span>(<span class="tok-s">"Unable to find an API adapter"</span>);
+    }
+    <span class="tok-k">return</span> theAPI;
+}
+<span class="tok-c">&lt;/SCRIPT&gt;</span></code></pre>
+
+    </section>
+
+    <!-- ─── 3.4 ─── -->
+    <section id="sec-3-4">
+      <h2><span class="section-num">SECTION 3.4</span>Data Model</h2>
+
+      <h3 id="sec-3-4-1">3.4.1 Data Model 概要</h3>
+
+      <p>共通の Data Model を確立する目的は、SCO に関する所定の情報セットを、異なる LMS 環境間で追跡できるようにすることにある。たとえば、学習者のスコアを追跡することが一般的な要件として求められる場合、コンテンツが LMS にスコアを報告するための共通の方法を確立する必要がある。SCO が独自のスコア表現を使用すると、LMS はその情報をどのように受信・保存・処理すべきかを判断できない可能性がある。</p>
+
+      <p>各種コミュニティおよび標準化団体において、複数の Data Model の開発が進められている。これらのドラフト Data Model 仕様は、SCO と LMS 環境の間で交換される情報セットを機能的にグルーピングしようとするものである。例として、学習者プロファイル情報、設問・テストインタラクション、状態情報、評価などが挙げられる。本バージョンの SCORM のリリース時点では、これらのドラフト Data Model セットはまだ開発途上にあり、広範な実装やテストは行われていない。</p>
+
+      <h4 id="sec-3-4-1-1">3.4.1.1 SCORM Run-Time Environment Data Model</h4>
+
+      <p>本節で定義する Data Model は、AICC CMI Guidelines for Interoperability<sup>4</sup> に記述された AICC CMI Data Model から直接派生したもので、SCORM Run-Time Environment Data Model として定義される。AICC CMI Data Model が SCORM に採用されたのは、定義が明確で、過去に実装実績があるためである。将来的には新しい Data Model セットが採用され、SCORM に組み込まれることが想定されている。本バージョンの SCORM で定義されたデータ要素は、新しい Data Model セットが定義・採用された際にマッピング可能であると想定される。現行の Data Model から新しい要素へのマッピングは、将来の Data Model への移行を比較的スムーズにするはずである。</p>
+
+      <p>使用中の Data Model を識別するため、本節で記述するすべての要素名は <code>"cmi"</code> で始まる。これは実装者に対して、これらの要素が AICC CMI Data Model の一部であることを示すシグナルとなる。今後開発される代替 Data Model は、異なる識別子で始まることになる（例：<code>cmi.elementName</code> ではなく <code>adl.elementName</code>）。</p>
+
+      <p>SCORM のテストおよび評価フェーズで、AICC および IEEE のメンバーは、AICC CMI Data Model の要素数を大幅に削減することを決定した。これは、開発中の新 Data Model への移行を容易にするためと、削除された要素の多くがほとんどの実装者によって実際には実装されていなかったためである。SCORM Version 1.0 に含まれていた AICC CMI Data Model から削除された要素のリストは Appendix C に要約されている。本書に含まれる SCORM Run-Time Environment Data Model は、削減後の AICC CMI Data Model セットと一致する。</p>
+
+      <h4 id="sec-3-4-1-2">3.4.1.2 Data Model 一般ルール</h4>
+
+      <p>以下に Data Model の一般的な使用ルールを示す：</p>
+      <ul>
+        <li>データ要素名の最初のシンボルが、その Data Model を識別する。例：<code>"cmi"</code> は AICC CMI Data Model を示す。これにより同一 API を他の Data Model でも利用できるよう機能を拡張している。</li>
+        <li>予約キーワードが 3 つある。いずれもすべて小文字で、アンダースコアで始まる：
+          <ul>
+            <li><code>_version</code>：LMS がサポートする Data Model のバージョンを取得するキーワード</li>
+            <li><code>_children</code>：LMS がサポートする Data Model 要素を取得するキーワード</li>
+            <li><code>_count</code>：リスト内の現在の要素数を取得するキーワード</li>
+          </ul>
+        </li>
+        <li>すべての配列は 0 ベースの配列である。要素は配列内に順次配置されるべきである。</li>
+        <li>Data Model の要素名は大文字小文字を区別する。</li>
+        <li>Data Model は SCO 単位で実装される。あるSCO が他の SCO のデータ要素にアクセスすることはできない。</li>
+      </ul>
+
+      <h3 id="sec-3-4-2">3.4.2 Data Model 要素</h3>
+
+      <p>Data Model 要素は次の 2 つのカテゴリに分けられる：必須（mandatory）と任意（optional）。AICC CMI001 Guidelines for Interoperability<sup>4</sup> 文書は、LMS による必須実装が要求される要素と、任意で実装する要素を規定している。</p>
+
+      <p>必須 Data Model 要素はすべて LMS によってサポートされなければならない。LMS 環境は、任意 Data Model 要素のすべて、または一部のサポートを実装してもよい。</p>
+
+      <p>SCO による Data 要素の使用は、すべて任意である。SCO に必須なのは API 関数 <code>LMSInitialize("")</code> および <code>LMSFinish("")</code> の使用のみであり、<code>LMSSetValue()</code> や <code>LMSGetValue()</code> の使用は要求されない。SCO は非常に小さく、詳細な追跡を想定しない設計でも構わない。ただし、追跡を行う場合は、複数 LMS 環境間での再利用性を確保するため、共通の Data Model に準拠しなければならない。</p>
+
+      <h3 id="sec-3-4-3">3.4.3 リストの取り扱い</h3>
+
+      <p>リストまたは配列として現れるデータ要素がいくつかある。例として「objectives」がある。コンテンツ内で扱われる目標は複数あり得るし、学習者が同じ目標を複数回経験することも許される場合がある。</p>
+
+      <p>リスト内の値を取得・設定するには、インデックス番号を使用する。インデックス番号を省略できるのは、リストにメンバーが 1 つしかない場合のみである。インデックス番号付けは 0 から始まる。リストに値を追記する場合、SCO は最後に使用したインデックス番号を把握していなければならない。配列要素はすべて順次的に追加されなければならない。SCO は配列値のリストを構築する際に配列番号をスキップしたり、配列要素を空のままにしたりしてはならない。リスト内の現在のレコード数を取得するには <code>_count</code> キーワードを使用する。たとえば、現在保存されている objective レコード数を取得するには、次の API 呼び出しを使用する：</p>
+
+<pre><code><span class="tok-k">var</span> numOfObjectives = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.objective._count"</span>);</code></pre>
+
+      <p>SCO が objective レコードの数を把握していない場合、現在の学習者カウントを 0 から開始することもできる。これは、最初のインデックス位置に保存されている objective に関する情報を上書きすることになる。上書きするか追記するかは、SCO 作成者が SCO を作成する際に判断する。</p>
+
+      <p>リスト内の要素はドット番号表記（<code>.n</code> で表す）で参照する。たとえば、SCO 内の最初の objective の status 要素の値は <code>"cmi.objective.0.status"</code> として参照される。4 番目の objective の status 要素は <code>"cmi.objective.3.status"</code> として参照される。</p>
+
+      <p style="background:#fcf3e1; border-left:3px solid #cdb676; padding:8px 14px; font-size:13px; line-height:1.7;"><span style="font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:#8a6d2e; display:block; margin-bottom:4px;">※ 訳注</span>原文中の例 <code>cmi.objective._count</code>、<code>cmi.objective.0.status</code>、<code>cmi.objective.3.status</code> はいずれもタイポであり、正しくは複数形の <code>cmi.objectives._count</code>、<code>cmi.objectives.0.status</code>、<code>cmi.objectives.3.status</code> である（3.4.4 の Data Model 表で正しく定義されている）。本翻訳は原文の表記を維持するが、実装時は複数形を使用すること。</p>
+
+      <h3 id="sec-3-4-4">3.4.4 SCORM Run-Time Environment Data Model</h3>
+
+      <p>以下、各データ要素の詳細仕様を示す。各要素ブロックには、データ型・必須／任意の別・SCO のアクセス権・対応 API 呼び出しを併記する。</p>
+
+      <h4>cmi.core 系列</h4>
+
+      <p>すべての LMS が必須でサポートしなければならない情報。SCO が起動時に依拠できる情報。</p>
+      <p><strong>cmi.core の子要素</strong>：<code>student_id</code>、<code>student_name</code>、<code>lesson_location</code>、<code>credit</code>、<code>lesson_status</code>、<code>entry</code>、<code>score</code>、<code>total_time</code>、<code>lesson_mode</code>、<code>exit</code>、<code>session_time</code></p>
+
+      <div class="dm-block" id="dm-cmi_core__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p><code>_children</code> キーワードは、LMS がサポートする core カテゴリ内のすべての要素を取得するために使用する。子を持たないがサポートされている要素については、空文字列が返される。要素自体がサポートされていない場合も空文字列が返される。続けて last error を要求することで、その要素がサポートされていないかどうかを確認できる。</p>
+
+          <h5>Usage</h5>
+          <p>LMS がどの cmi.core データ要素をサポートしているかを判定するために使用する。</p>
+
+          <h5>Format</h5>
+          <p>戻り値は、LMS がサポートする core カテゴリ内のすべての要素名のカンマ区切りリスト。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> このグループのサポート対象子要素のセットを初期化する。<code>LMSGetValue()</code> 要求に対して適切なリストを返せるようにする。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> サポートされている要素のカンマ区切りリストを返す。
+              <ul>
+                <li>API 呼び出し例：<code>LMSGetValue("cmi.core._children")</code></li>
+                <li>典型的な戻り値：<code>"student_id,student_name,lesson_location,credit,lesson_status,entry,score,total_time,exit,session_time"</code></li>
+                <li>Error Code：401 — Not implemented error。本要素は必須なので LMS がサポートしなければならない。</li>
+              </ul>
+            </li>
+            <li><span class="behavior-label">LMSSetValue():</span> 本要素はキーワードのため、設定不可。402（Invalid set value, element is a keyword）を返す。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> coreChildren = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core._children"</span>);
+<span class="tok-k">if</span> (coreChildren.<span class="tok-f">indexOf</span>(<span class="tok-s">"student_name"</span>) != -1)
+{
+    studentName = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.student_name"</span>);
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_student_id">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.student_id</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIIdentifier</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS の単一ユーザーを参照する一意な英数字コード／識別子。</p>
+
+          <h5>Usage</h5>
+          <p>学習者を一意に識別するために使用する。</p>
+
+          <h5>Format</h5>
+          <p>スペースを含まない最大 255 文字の英数字。ハイフンとアンダースコアは使用可。ピリオドは使用不可。大文字小文字は区別しない。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 学習者登録に基づき LMS が責任を持つ。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> LMS が学習者について保持する現在値を返す。
+              <ul>
+                <li>戻り値の例：<code>"Joe_Student1"</code>、<code>"JS-2000"</code>、<code>"joe2000-3"</code></li>
+                <li>Error Code：401 — Not implemented error（必須要素のためサポート必須）</li>
+              </ul>
+            </li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403（Element is read only）を返す。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> coreStudentID = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.student_id"</span>);</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_student_name">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.student_name</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>通常はコース名簿で使用される学習者の正式名。ファーストネームのみではなく完全な名前。</p>
+
+          <h5>Usage</h5>
+          <p>学習者の正式名を表すために使用する。</p>
+
+          <h5>Format</h5>
+          <p>姓、名、ミドルイニシャルの順。姓と名はカンマで区切る。名前内のスペースは保持される。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 学習者登録に基づき LMS が責任を持つ。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> LMS が保持する現在値を返す。
+              <ul>
+                <li>戻り値の例：<code>"Student, Joseph A."</code>、<code>"Student, Mike A. Jr."</code></li>
+              </ul>
+            </li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403 を返す。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> coreStudentName = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.student_name"</span>);</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_lesson_location">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.lesson_location</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が前回 SCO を経験した際に LMS に渡された SCO の出口点に対応する。学習者が以前に離脱した位置から SCO に戻れるようにする 1 つの仕組みとなる。すなわち、本要素は学習者の出口点を識別でき、その出口点を SCO は次回起動時の入り口点として利用できる。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が SCO 内で最後にどこにいたかを表す。SCO がセッション中に「ブックマーク」として保存する用途に使える。SCO が中断され後で再開された場合、SCO は <code>lesson_location</code> を使って学習者を離脱位置に戻すことができる。</p>
+
+          <h5>Format</h5>
+          <p>実装依存。LMS は本データを保持し、学習者が再入する際に SCO が要求すれば返す。SCO が LMS に渡したものがそのまま返される。フォーマットは SCO が期待する形式（SCO 自身が作成する）。SCO への初回入場時、または推奨開始位置がない場合、<code>lesson_location</code> は空文字列 (<code>""</code>) でよい。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> LMS は空文字列に設定すべき。SCO が任意で値を設定し、SCO 再入時に取得できる。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> LMS が保持する現在値を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 渡された値でデータモデル要素を設定する。値はデータ型に一致しなければならない。Error Code：405（Incorrect Data Type）、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-c">// HTML のアンカーを使う SCO の例（onLoad で呼び出す関数）</span>
+<span class="tok-k">var</span> coreSCOLocation = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.lesson_location"</span>);
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>)
+{
+    <span class="tok-c">// coreSCOLocation には HTML 内のアンカー名が入っている</span>
+    <span class="tok-c">// 学習者を前回離脱位置から再開させる</span>
+    window.location.hash = coreSCOLocation;
+}
+<span class="tok-k">else</span>
+{
+    <span class="tok-c">// エラー処理</span>
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_credit">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.credit</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIVocabulary (Credit)</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者がこの SCO のパフォーマンス（合否やスコア）に基づき LMS によって credit（評価）を付与されるかどうかを示す。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が SCO を credit 対象として受講しているかどうかを LMS が示すために使用する。<code>cmi.core.credit</code> は <code>lesson_mode</code> と組み合わせて使用される。詳細は <code>cmi.core.lesson_mode</code> を参照。<code>cmi.core.credit</code> は <code>lesson_status</code> の決定にも使用される。詳細は <code>cmi.core.lesson_status</code> を参照。</p>
+
+          <h5>Format</h5>
+          <p>定義済み語彙のいずれか：</p>
+          <ul>
+            <li><code>"credit"</code>：学習者は SCO を credit 対象として受講している。SCO が LMS にデータを送信した場合、LMS は学習者にそれを credit する。</li>
+            <li><code>"no-credit"</code>：学習者は SCO を no-credit で受講している。現在の credit（たとえばスコア 80 で <code>passed</code>）は、この SCO のパフォーマンスによって変更されない。</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 学習者がコースを credit／no-credit のどちらで受講しているかは LMS が決定する。SCORM では credit／no-credit の指定方法を定義していないため、実装は LMS 固有となる。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 現在値（<code>"credit"</code> または <code>"no-credit"</code>）を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> creditFlag = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.credit"</span>)
+<span class="tok-k">if</span> (creditFlag == <span class="tok-s">"credit"</span>)
+{
+    <span class="tok-c">// credit 対象。それに応じた処理</span>
+}
+<span class="tok-k">else</span>
+{
+    <span class="tok-c">// no-credit 対象。それに応じた処理</span>
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_lesson_status">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.lesson_status</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIVocabulary (Status)</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS が判定する現在の学習者ステータス。可能な値は 6 つ。</p>
+
+          <h5>Usage</h5>
+          <p>通常、SCO 自身がステータスを決定し LMS に渡す。次の挙動に注意：</p>
+          <ol>
+            <li><code>cmi.core.credit</code> が <code>"credit"</code> で、manifest に <code>adlcp:masteryscore</code> がある場合、LMS は学習者のスコアと mastery score の比較に応じて、ステータスを <code>"passed"</code> または <code>"failed"</code> に変更できる。</li>
+            <li>manifest に mastery score がない場合、LMS は SCO が決定したステータスを上書きできない。</li>
+            <li>学習者が SCO を no-credit で受講している場合、<code>lesson_status</code> は変更されない。ただし例外として、<code>lesson_mode</code> が <code>"browse"</code> の場合、no-credit であっても <code>lesson_status</code> は <code>"browsed"</code> に変更されることがある。</li>
+          </ol>
+
+          <h5>Format</h5>
+          <p>定義済み語彙のいずれか：</p>
+          <ul>
+            <li><code>"passed"</code>：必要数の objective に習熟した、または必要なスコアを達成した。SCO 完了かつ合格。</li>
+            <li><code>"completed"</code>：合格／不合格に関わらず、SCO 内のすべての要素を経験した。たとえば、合格判定が LMS 側のスコアに依存し、SCO は素点しか把握していない場合に使う。</li>
+            <li><code>"failed"</code>：SCO に合格しなかった。すべての要素を完了していない場合もある。SCO 完了かつ不合格。</li>
+            <li><code>"incomplete"</code>：SCO を開始したが完了していない。</li>
+            <li><code>"browsed"</code>：初回試行時、LMS モード「Browse」で SCO を起動した。</li>
+            <li><code>"not attempted"</code>：SCO を開始すらしていない（目次や概要のみを見て、まだ準備ができないと判断した等）。<code>"not attempted"</code> から <code>"incomplete"</code> への移行判定アルゴリズムは SCO 内で任意に決定できる。</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 初回試行時、LMS は <code>"not attempted"</code> を初期値として設定する。SCO が <code>cmi.core.lesson_status</code> を設定しない場合の追加要件：
+              <ul>
+                <li>初回起動時、LMS は <code>cmi.core.lesson_status</code> を <code>"not attempted"</code> に設定する。</li>
+                <li><code>LMSFinish()</code> を受信、または学習者が画面遷移した場合、LMS は <code>cmi.core.lesson_status</code> を <code>"completed"</code> に設定する。</li>
+                <li><code>"completed"</code> 設定後、LMS は <code>cmi.student_data.mastery_score</code>（サポートされていれば）または manifest に mastery score が指定されているかチェックする。指定があり SCO が <code>cmi.core.score.raw</code> を設定していれば、LMS は raw スコアと mastery score を比較して <code>"passed"</code> または <code>"failed"</code> に設定する。指定がなければ <code>"completed"</code> のままとする。</li>
+              </ul>
+            </li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデルに保存された値を返す。値は定義済み語彙のいずれか。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。Error Code 405、401。</li>
+          </ul>
+
+          <h5>SCO Usage</h5>
+          <ul>
+            <li><code>"passed"</code>：SCO を credit で受講する場合に使用</li>
+            <li><code>"failed"</code>：SCO を credit で受講する場合に使用</li>
+            <li><code>"completed"</code>：SCO を no-credit で受講する場合に使用</li>
+            <li><code>"incomplete"</code>：SCO が <code>passed/failed/completed</code> を判定する前に終了した場合（credit/no-credit 共通）</li>
+            <li><code>"browsed"</code>：<code>lesson_mode</code> が <code>browse</code> の場合に使用</li>
+            <li><code>"not attempted"</code>：SCO が設定すべきではない（学習者が SCO を初回試行する際に LMS が初期化する）</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> lessonStatus = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.lesson_status"</span>);
+<span class="tok-k">if</span> (lessonStatus == <span class="tok-s">"failed"</span>)
+{
+    <span class="tok-c">// 学習者が不合格。それに応じた処理</span>
+}
+<span class="tok-k">else</span>
+{
+    <span class="tok-c">// それ以外。それに応じた処理</span>
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_entry">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.entry</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIVocabulary (Entry)</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が当該 SCO に過去にいたかどうかを示す。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が初回入場の場合、LMS は <code>"ab-initio"</code> に設定すべき。中断状態から再入する場合は <code>"resume"</code> に設定すべき。</p>
+
+          <h5>Format</h5>
+          <ul>
+            <li><code>"ab-initio"</code>：SCO への初回入場。pre-test で全 objective に合格した場合など、<code>"not attempted"</code> でない状態で SCO を初めて見ることもありうるため、<code>"not attempted"</code> は信頼できる初回判定の指標にならない。</li>
+            <li><code>"resume"</code>：学習者が以前 SCO 内にいた。中断状態から再開している。</li>
+            <li><code>""</code>：初回（ab-initio）でも中断からの再開（resume）でもない入場。たとえば SCO が完了済みで、後にレビュー目的で読み込まれた場合などに使う。</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 初回起動時、LMS は <code>"ab-initio"</code> に初期化する。次回起動時の値は、SCO が前回設定した <code>cmi.core.exit</code> によって決まる。<code>exit="suspend"</code> なら <code>entry="resume"</code>、それ以外なら <code>entry=""</code>。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデル値を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> entryStatus = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.entry"</span>)
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>)
+{
+    <span class="tok-k">if</span> (entryStatus == <span class="tok-s">"resume"</span>)
+    {
+        <span class="tok-c">// SCO 再開中</span>
+    }
+    <span class="tok-k">else</span>
+    {
+        <span class="tok-c">// SCO への初回入場</span>
+    }
+}</code></pre>
+
+        </div>
+      </div>
+      <h4>cmi.core.score 系列</h4>
+      <p>学習者のパフォーマンスを示す情報。子要素：<code>raw</code>、<code>min</code>、<code>max</code></p>
+
+      <div class="dm-block" id="dm-cmi_core_score__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.score._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p><code>_children</code> キーワードは、LMS がサポートする score カテゴリ内のすべての要素を取得するために使用する。</p>
+
+          <h5>Usage</h5>
+          <p>LMS がどの <code>cmi.core.score</code> 子要素をサポートしているかを判定する。<code>raw</code> のみ必須でサポートされなければならない。</p>
+
+          <h5>Format</h5>
+          <p>戻り値はカンマ区切りリスト。例：<code>"raw"</code>（最低限）、<code>"raw,min,max"</code>、<code>"raw,min"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> scoreChildren = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.score._children"</span>);
+<span class="tok-k">if</span> (scoreChildren.<span class="tok-f">indexOf</span>(<span class="tok-s">"min"</span>) != -1)
+{
+    <span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.score.min"</span>, <span class="tok-s">"10"</span>);
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_score_raw">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.score.raw</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO の前回試行における学習者のパフォーマンス指標。SCO 設計者が任意に算出方式を決められる（達成 objective の割合、選択式テストの素点、埋め込み問題への正解数など）。<code>cmi.core.score.raw</code> は 0〜100 の範囲で正規化された値でなければならない。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が SCO に初回試行している間は空文字列 (<code>""</code>) に設定すべき。追加試行では、前回試行で記録された値を反映する。SCO 内でセットされていない状態で取得が要求された場合、空文字列を返す。</p>
+
+          <h5>Format</h5>
+          <p>小数値または空文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に空文字列で初期化。値の設定責務は SCO にある。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> <code>CMIDecimal</code> または <code>CMIBlank</code> を返す。例：<code>LMSGetValue("cmi.core.score.raw")</code>。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。例：<code>LMSSetValue("cmi.core.score.raw", "85.7")</code>。Error Code 405、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.score.raw"</span>, <span class="tok-s">"85"</span>);</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_score_max">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.score.max</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が達成し得た最大スコアまたは合計値。0〜100 の範囲で正規化された値でなければならない。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が達成し得た最大スコアを示す。</p>
+
+          <h5>Format</h5>
+          <p>小数値または空文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。SCO が値を設定する責務を持つ。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> <code>CMIDecimal</code> または <code>CMIBlank</code> を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_score_min">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.score.min</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が達成し得た最小スコア。0〜100 の範囲で正規化された値でなければならない。</p>
+
+          <h5>Usage</h5>
+          <p>学習者が達成し得た最低スコアを示す。</p>
+
+          <h5>Format</h5>
+          <p>小数値または空文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。SCO が値を設定する責務を持つ。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> <code>CMIDecimal</code> または <code>CMIBlank</code> を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_total_time">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.total_time</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMITimespan</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>当該 SCO における学習者の全セッション時間の累積。</p>
+
+          <h5>Usage</h5>
+          <p>SCO の全セッション時間を学習者単位で追跡する。LMS は SCO 起動時にデフォルト値で初期化し、SCO が報告する <code>session_time</code> を加算して累計を維持する。</p>
+
+          <h5>Format</h5>
+          <p>時:分:秒 をコロン区切り。<code>HHHH:MM:SS.SS</code>。時は最小 2 桁・最大 4 桁、分はちょうど 2 桁、秒は 2 桁＋オプションで小数点と 1〜2 桁。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に <code>"0000:00:00.00"</code> で初期化。<code>LMSFinish()</code> または学習者の画面遷移時に、SCO が最後に設定した <code>session_time</code>（設定があれば）を <code>total_time</code> に加算する。<code>session_time</code> への複数回の <code>LMSSetValue()</code> は加算せず、最新値で上書きする。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> <code>CMITimespan</code> を返す。例：<code>"00:29:00"</code>、<code>"01:27:45.5"</code>。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_lesson_mode">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.lesson_mode</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIVocabulary (Mode)</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO 起動後に望まれる SCO 動作を識別する。多くの SCO は単一の動作だが、講師や設計者の判断によって、提示する情報量・順序・トレーニング哲学を変えられる SCO も存在する。本標準は、SCO の動作に影響しうる 3 つのパラメータの伝達をサポートする。</p>
+
+          <h5>Usage</h5>
+          <p>SCO がどのモードで起動されたかを表す。<code>lesson_status</code> と組み合わせて使用する。</p>
+
+          <h5>Format</h5>
+          <ul>
+            <li><code>"browse"</code>：学習者は教材をプレビューしたいが、必ずしも評価対象として SCO に挑戦したいわけではない。</li>
+            <li><code>"normal"</code>：学習者が学習に対する credit を得るために設計どおりに動作すべきことを示す。</li>
+            <li><code>"review"</code>：学習者は教材を一度以上経験し、評価済みである。</li>
+          </ul>
+          <p>認識できない／想定外の <code>lesson_mode</code> を受信した場合、SCO は <code>normal</code> を仮定する。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO の起動モードを LMS が決定する（SCORM では指定方法を未定義のため LMS 固有実装）。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 定義済み語彙のいずれかを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> mode = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.core.lesson_mode"</span>);
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>)
+{
+    <span class="tok-k">if</span> (mode == <span class="tok-s">"browse"</span>)         { <span class="tok-c">/* ブラウズ中 */</span> }
+    <span class="tok-k">else if</span> (mode == <span class="tok-s">"review"</span>)   { <span class="tok-c">/* レビュー中（既に評価済み） */</span> }
+    <span class="tok-k">else</span>                          { <span class="tok-c">/* normal モードで起動 */</span> }
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_exit">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.exit</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIVocabulary (Exit)</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が SCO を離脱した方法または理由を示す。</p>
+
+          <h5>Usage</h5>
+          <p>SCO が最後に終了した理由を示すために使用する。</p>
+
+          <h5>Format</h5>
+          <ul>
+            <li><code>"time-out"</code>：時間が超過した、または <code>max_time_allowed</code> を超えたために SCO が終了した（<code>max_time_allowed</code> は manifest の <code>adlcp:maxtimeallowed</code>）。</li>
+            <li><code>"suspend"</code>：学習者は離脱位置から後で戻る意図で SCO を離脱した。</li>
+            <li><code>"logout"</code>：LMS に戻ってログアウトするのではなく、SCO 内からログアウトした。SCO は LMS に制御を渡し、LMS は適切なデータモデル要素を更新した上で、コースから自動ログアウトする。</li>
+            <li><code>""</code>：通常の終了状態を表す。</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 初期化不要。<code>LMSGetValue()</code> は呼ばれない。SCO が制御する。SCO が設定した値に基づき、次回起動時の <code>cmi.core.entry</code> が決まる：
+              <ul>
+                <li><code>exit="time-out"</code> または <code>"logout"</code> または未設定 → 次回 <code>entry=""</code></li>
+                <li><code>exit="suspend"</code> → 次回 <code>entry="resume"</code></li>
+                <li><code>exit=""</code> → 次回 <code>entry=""</code></li>
+                <li>加えて <code>exit="logout"</code> の場合、LMS は <code>LMSFinish()</code> 時または画面遷移時にコースから学習者をログアウトする。</li>
+              </ul>
+            </li>
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用のため、SCO が呼ぶと 404 を返し空文字列を返す。Error Code 401、404。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。Error Code 405、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.exit"</span>, <span class="tok-s">"time-out"</span>)</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_core_session_time">
+        <div class="dm-header">
+          <span class="dm-name">cmi.core.session_time</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMITimespan</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者が SCO を離脱した時点までに、当該 SCO 内で過ごした時間（時:分:秒）。すなわち、本セッションの開始から SCO の単一利用の終了までの時間を表す。</p>
+
+          <h5>Usage</h5>
+          <p>1 セッション中の SCO 滞在時間を追跡する。LMS は本値を使って <code>cmi.core.total_time</code> を算定する。</p>
+
+          <h5>Format</h5>
+          <p><code>HHHH:MM:SS.SS</code>。時は最小 2 桁・最大 4 桁、分はちょうど 2 桁、秒は 2 桁＋オプションで小数点と 1〜2 桁。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 初期化不要。SCO が制御。SCO は単一実行中に複数回 <code>session_time</code> を設定可能。<code>LMSFinish()</code> または画面遷移時、LMS は SCO が最後に設定した <code>session_time</code>（あれば）を <code>total_time</code> に加算する。複数回の <code>LMSSetValue()</code> は加算せず最新値で上書きする。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。例：<code>LMSSetValue("cmi.core.session_time", "0010:34:34.56")</code>。Error Code 405、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-f">LMSSetValue</span>(<span class="tok-s">"cmi.core.session_time"</span>, <span class="tok-s">"0000:12:30"</span>)</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_suspend_data">
+        <div class="dm-header">
+          <span class="dm-name">cmi.suspend_data</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString4096</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO の過去の利用時に生成された一意な情報で、現在の利用にも必要となるもの。起動中の SCO に固有の情報であり、通常は SCO の再起動情報として使用される。SCO が作成し、LMS が保存して、次回 SCO 実行時に SCO に返す。LMS は SCO ごと・学習者ごとに、本グループ用の領域を確保しなければならない。学習者がコース内にいる間、本データは保持される。</p>
+
+          <h5>Usage</h5>
+          <p>SCO の再開時にのみ利用可能。SCO 完了前に学習者が離脱した場合に値を設定し、再開時にこの情報を利用できる。</p>
+
+          <h5>Format</h5>
+          <p>SCO 固有。制約は次の 2 点のみ：</p>
+          <ol>
+            <li>データは ASCII 形式で送受信されなければならない。SCO は必要な形式に変換できる。</li>
+            <li>LMS の負担を避けるため、本要素は 4096 バイトに制限すべきである。</li>
+          </ol>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。SCO が値を設定する責務を持つ。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデル値を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> データ型に一致した値で設定。Error Code 405、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-c">// SCO 再起動時に suspend_data を取得</span>
+<span class="tok-k">var</span> suspendData = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.suspend_data"</span>)
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>)
+{
+    <span class="tok-c">// suspend_data を利用</span>
+}</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_launch_data">
+        <div class="dm-header">
+          <span class="dm-name">cmi.launch_data</span>
+          <div class="dm-tags">
+            <span class="dm-tag must">必須</span>
+            <span class="dm-tag">CMIString4096</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO の作成時に生成され、起動のたびに必要となる一意な情報。これがないと SCO は実行できないことがある。</p>
+
+          <h5>Usage</h5>
+          <p><code>cmi.launch_data</code> は SCO の起動を補助するために SCO に提供される。所与の SCO に対して常に同じ値となる。</p>
+
+          <h5>Format</h5>
+          <p>テキストフィールド。SCO が良好に機能するためにシステム固有の必要情報を含む。本フィールドは 4096 文字に制限される。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> manifest（<code>adlcp:datafromlms</code> 要素）から値を取得して初期化。manifest に launch data がない場合は空文字列にする。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデル値を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> launchData = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.launch_data"</span>)
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>)
+{
+    <span class="tok-c">// launch_data を利用</span>
+}</code></pre>
+
+        </div>
+      </div>
+      <h4>cmi.comments / cmi.comments_from_lms</h4>
+      <p>SCO とのコメント収集・配布の仕組み。<code>cmi.comments</code> は SCO がコメントを get/set する能力を表し、<code>cmi.comments_from_lms</code> は SCO にコメントを提供する能力（SCO 視点では読み取り専用）を表す。</p>
+
+      <div class="dm-block" id="dm-cmi_comments">
+        <div class="dm-header">
+          <span class="dm-name">cmi.comments</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString4096</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO からの自由形式フィードバック。たとえば、学習者が SCO 内の任意の地点でコメントを残したり、SCO 終了時にコメントを求められたりする。コメントには SCO 内で作成された場所や時刻を埋め込むこともできる。</p>
+
+          <h5>Usage</h5>
+          <p>SCO が SCO に関するコメントを LMS に送信する用途。学習者が入力したコメントの収集に使える。</p>
+
+          <h5>Format</h5>
+          <p>自由形式の英数字テキストおよび特殊文字。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。値の設定責務は SCO にある。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデル値を返す。コメント未提供なら空文字列。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値を設定する。コメントは連結されるべきである。Error Code 401、405。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> comments = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.comments"</span>)
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>) { <span class="tok-c">/* コメントを利用 */</span> }</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_comments_from_lms">
+        <div class="dm-header">
+          <span class="dm-name">cmi.comments_from_lms</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString4096</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS 由来のコメントを表す。たとえば講師コメントなど、学習者向けのコメントとして SCO が必要に応じて表示できる。</p>
+
+          <h5>Usage</h5>
+          <p>SCO に関連する LMS 起源のコメントを SCO が参照する用途。</p>
+
+          <h5>Format</h5>
+          <p>特定の形式は指定なし。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 提供されていれば LMS が初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> データモデル値を返す。コメントなしなら空文字列。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> commentsFromLMS = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.comments_from_lms"</span>);
+<span class="tok-k">if</span> (<span class="tok-f">LMSGetLastError</span>() == <span class="tok-s">"0"</span>) { <span class="tok-c">/* LMS からのコメントを利用 */</span> }</code></pre>
+
+        </div>
+      </div>
+      <h4>cmi.objectives 系列</h4>
+      <p>SCO 内で扱われる個別 objective に対する学習者のパフォーマンスを示す。子要素：<code>id</code>、<code>score</code>、<code>status</code></p>
+
+      <div class="dm-block" id="dm-cmi_objectives__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS がサポートする <code>cmi.objectives</code> カテゴリ内の全要素を取得するキーワード。</p>
+
+          <h5>Usage</h5>
+          <p>LMS がサポートする要素を判定する。シミュレーションなどの複雑なシナリオで、学習者のパフォーマンスについてどの詳細情報を収集できるかを示す。</p>
+
+          <h5>Format</h5>
+          <p>カンマ区切りリスト。例：<code>"id,score"</code>、<code>"id,status"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives__count">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives._count</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIInteger</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p><code>cmi.objectives</code> リスト内の現在のレコード数を取得するキーワード。</p>
+
+          <h5>Usage</h5>
+          <p>LMS が保存している objective 数を判定する。SCO はこの値から、どの objective レコードを取得・設定するかを決定できる（"3" が返れば 0〜2 のレコードが存在）。</p>
+
+          <h5>Format</h5>
+          <p>整数値。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> objective レコード総数を返す。例：<code>"0"</code>、<code>"4"</code>。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+          <h5>SCO Usage Example</h5>
+<pre><code><span class="tok-k">var</span> totalObj = <span class="tok-f">LMSGetValue</span>(<span class="tok-s">"cmi.objectives._count"</span>)
+<span class="tok-c">// 0 ベースなので -1 して新規 objective の id を設定</span>
+<span class="tok-k">var</span> request = <span class="tok-s">"cmi.objectives."</span> + (totalObj - 1) + <span class="tok-s">".id"</span>
+<span class="tok-f">LMSSetValue</span>(request, <span class="tok-s">"Obj1_110"</span>)</code></pre>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives_n_id">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.id</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIIdentifier</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>objective を識別するための、開発者が定義する SCO 固有の内部識別子。</p>
+
+          <h5>Usage</h5>
+          <p>objective を識別する手段。</p>
+
+          <h5>Format</h5>
+          <p>内部スペースのない英数字文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。値の設定責務は SCO にある。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 保存された objective id を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 値はデータ型に一致しなければならない。例：<code>LMSSetValue("cmi.objectives.0.id", "Obj1")</code>。Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h5 style="margin-top: 36px; padding-top: 0; border-top: none; color: var(--ink); font-family: 'Shippori Mincho', serif; font-size: 16px; letter-spacing: 0; text-transform: none;">cmi.objectives.n.score 系列</h5>
+      <p style="font-size: 14px;">各 objective には関連スコアを保持できる。子要素：<code>raw</code>、<code>min</code>、<code>max</code></p>
+
+      <div class="dm-block" id="dm-cmi_objectives_n_score__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.score._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS がサポートする <code>cmi.objectives.n.score</code> カテゴリ内の全要素を取得するキーワード。</p>
+
+          <h5>Format</h5>
+          <p>カンマ区切りリスト。例：<code>"raw,min,max"</code>、<code>"raw"</code>、<code>""</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives_n_score_raw">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.score.raw</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>各試行後の objective に対する学習者パフォーマンスの数値表現。0〜100 で正規化された値。</p>
+
+          <h5>Format</h5>
+          <p>小数値または空文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> objective の raw スコアを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.objectives.0.score.raw", "5")</code>。Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives_n_score_max">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.score.max</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>各 objective で達成し得た最大スコア。0〜100 で正規化された値。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives_n_score_min">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.score.min</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal / CMIBlank</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>各 objective で達成し得た最小スコア。0〜100 で正規化された値。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_objectives_n_status">
+        <div class="dm-header">
+          <span class="dm-name">cmi.objectives.n.status</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIVocabulary (Status)</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>各試行後の objective に対するステータス。<code>cmi.core.lesson_status</code> と同じ 6 種類の語彙：<code>"passed"</code>、<code>"completed"</code>、<code>"failed"</code>、<code>"incomplete"</code>、<code>"browsed"</code>、<code>"not attempted"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO が制御。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.objectives.0.status", "failed")</code>。Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h4>cmi.student_data 系列</h4>
+      <p>学習者のパフォーマンスに基づく SCO のカスタマイズを支援する情報。子要素：<code>mastery_score</code>、<code>max_time_allowed</code>、<code>time_limit_action</code></p>
+
+      <div class="dm-block" id="dm-cmi_student_data__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_data._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS がサポートする <code>student_data</code> カテゴリ内の全要素を取得するキーワード。</p>
+
+          <h5>Format</h5>
+          <p>カンマ区切りリスト。例：<code>"mastery_score,time_limit_action,max_time_allowed"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_data_mastery_score">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_data.mastery_score</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>合格スコア。SCO 外で決定される。SCO のスコアが mastery score 以上のとき、学習者はコンテンツに合格／習熟したとみなされる。SCO によっては、合格スコアが LMS により決定されるため、SCO 自身ではこれを把握しない場合がある。</p>
+
+          <h5>Usage</h5>
+          <p>LMS が <code>mastery_score</code> をサポートするには、SCO から渡されたスコアに基づいて <code>lesson_status</code> を変更できる必要がある。SCO に <code>mastery_score</code> を渡すだけでは、本機能の完全サポートにはならない。</p>
+
+          <h5>Format</h5>
+          <p>小数値。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> manifest の <code>adlcp:masteryscore</code> から値を取得。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 現在値を返す。例：<code>"75"</code>、<code>"100"</code>、<code>"5"</code>。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_data_max_time_allowed">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_data.max_time_allowed</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMITimespan</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>当該 SCO の現在の試行において、学習者が利用可能な最大時間。制限超過時の SCO の挙動は <code>time_limit_action</code> を参照。</p>
+
+          <h5>Format</h5>
+          <p><code>HHHH:MM:SS.SS</code>。例：<code>"00:14:30"</code>、<code>"02:03:00"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> manifest の <code>adlcp:maxtimeallowed</code> から値を取得。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_data_time_limit_action">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_data.time_limit_action</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIVocabulary (Time Limit Action)</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p><code>max_time_allowed</code> 超過時に SCO が取るべき動作を指示する。SCO が「終了するか継続するか」「学習者にメッセージを表示するか」の 2 軸で指定する。</p>
+
+          <h5>Format</h5>
+          <p>定義済み語彙のいずれか：</p>
+          <ul>
+            <li><code>"exit,message"</code></li>
+            <li><code>"exit,no message"</code></li>
+            <li><code>"continue,message"</code></li>
+            <li><code>"continue,no message"</code></li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> manifest の <code>adlcp:timelimitaction</code> から値を取得。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 読み取り専用。403、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h4>cmi.student_preference 系列</h4>
+      <p>後続の SCO に適用すべき学習者選好情報。子要素：<code>audio</code>、<code>language</code>、<code>speed</code>、<code>text</code></p>
+
+      <div class="dm-block" id="dm-cmi_student_preference__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_preference._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS がサポートする <code>student_preference</code> カテゴリ内の全要素を取得するキーワード。</p>
+
+          <h5>Format</h5>
+          <p>カンマ区切りリスト。例：<code>"audio,language,speed"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_preference_audio">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_preference.audio</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMISInteger</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>音声のオン／オフおよび音量レベルを示す。</p>
+
+          <h5>Format</h5>
+          <p>−1 から 100 までの整数：</p>
+          <ul>
+            <li>−1：オフ（負数すべてオフを意味する）</li>
+            <li>0：変更なし（SCO のデフォルト、または前 SCO のステータス継続）</li>
+            <li>1〜100：音量（1 が最弱、100 が最大）</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> サポート時は 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_preference_language">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_preference.language</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>多言語対応 SCO の場合、配信言語を識別する。</p>
+
+          <h5>Format</h5>
+          <p>空白を含み得る英字文字列。例：<code>"English"</code>、<code>"French"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 空文字列で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_preference_speed">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_preference.speed</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMISInteger</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>SCO のコンテンツ配信速度を制御する。</p>
+
+          <h5>Format</h5>
+          <p>−100 から 100 までの整数：</p>
+          <ul>
+            <li>−100：システム上の最も遅い速度</li>
+            <li>0：変更なし（SCO のデフォルト、通常速度）</li>
+            <li>100：システム上の最大速度</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_student_preference_text">
+        <div class="dm-header">
+          <span class="dm-name">cmi.student_preference.text</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMISInteger</span>
+            <span class="dm-tag">Read / Write</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue() / LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>音声向けに設計された SCO で、音声テキストを画面に表示するかを示す（音声のみ／テキスト併記／テキスト消し）。</p>
+
+          <h5>Format</h5>
+          <p>3 値整数：</p>
+          <ul>
+            <li>−1：テキスト非表示</li>
+            <li>0：変更なし（デフォルト）</li>
+            <li>1：テキスト表示</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> Error Code 405、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h4>cmi.interactions 系列</h4>
+      <p>学習者がコンピュータに対して行う、認識・記録可能な単一またはグループの入力に関する情報。本カテゴリは、SCO 受講中の各インタラクションについて詳細な情報を収集する。子要素：<code>id</code>、<code>objectives</code>、<code>time</code>、<code>type</code>、<code>correct_responses</code>、<code>weighting</code>、<code>student_response</code>、<code>result</code>、<code>latency</code></p>
+      <p style="background:#fcf3e1; border-left:3px solid #cdb676; padding:8px 14px; font-size:13px; line-height:1.7;"><span style="font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:#8a6d2e; display:block; margin-bottom:4px;">※ 訳注</span>原文 PDF では本系列の <code>LMSSetValue()</code> エラーコード欄に <code>205</code> と記載されているが、これはタイポであり、正しくは <code>405 - Incorrect Data Type</code> である。SCORM 1.2 Addendums の <a href="scorm_addendums_ja.html#sec-1-5">Addendum 4</a> で訂正済み。本翻訳では原文の表記をそのまま再現するが、実装時は <code>405</code> を返すこと。</p>
+
+      <div class="dm-block" id="dm-cmi_interactions__children">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions._children</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIString255</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>LMS がサポートする <code>cmi.interactions</code> カテゴリ内の全要素を取得するキーワード。</p>
+
+          <h5>Format</h5>
+          <p>カンマ区切りリスト。例：<code>"id,time,type,correct_responses,student_response"</code>。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> サポート要素のカンマ区切りリストを返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions__count">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions._count</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIInteger</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p><code>cmi.interactions</code> リスト内の現在のレコード数を取得するキーワード。</p>
+
+          <h5>Usage</h5>
+          <p>SCO はこの値から、次に設定するインタラクションレコードのインデックスを判定できる。"3" が返れば 0〜2 が使用済み、次の利用可能インデックスは 3。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 整数を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_id">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.id</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIIdentifier</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>インタラクションの一意識別子。</p>
+
+          <h5>Format</h5>
+          <p>内部スペースのない英数字文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO が制御。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.id", "I_001")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h5 style="margin-top: 36px; padding-top: 0; border-top: none; color: var(--ink); font-family: 'Shippori Mincho', serif; font-size: 16px; letter-spacing: 0; text-transform: none;">cmi.interactions.n.objectives 系列</h5>
+
+      <div class="dm-block" id="dm-cmi_interactions_n_objectives__count">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.objectives._count</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIInteger</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>あるインタラクションに紐づく objective id リストの現在のレコード数を取得するキーワード。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 整数を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_objectives_n_id">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.objectives.n.id</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIIdentifier</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>インタラクションが紐づく objective を識別するための、開発者が定義した識別子。</p>
+
+          <h5>Format</h5>
+          <p>内部スペースのない英数字文字列。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO が制御。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.objectives.0.id", "A1333")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_time">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.time</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMITime</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者インタラクションが完了した時刻の識別。</p>
+
+          <h5>Format</h5>
+          <p>24 時間制の時刻：<code>HH:MM:SS.S</code>。時・分はちょうど 2 桁、秒は 2 桁＋オプションで小数点と 1〜2 桁。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.time", "12:33:35.5")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_type">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.type</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIVocabulary (Interaction)</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>記録されるインタラクションのカテゴリ。インタラクションのタイプによって、応答の解釈方法が決まる。</p>
+
+          <h5>Format</h5>
+          <p>定義済み語彙のいずれか：</p>
+          <ul>
+            <li><code>"true-false"</code>：応答が 2 種類のみの設問</li>
+            <li><code>"choice"</code>：限られた事前定義の応答から学習者が選ぶ設問。各応答に番号や文字を割り当てる。1 つ以上が正解になり得る</li>
+            <li><code>"fill-in"</code>：単純な数語の回答が必要な設問。応答は事前定義されず、学習者が作成する</li>
+            <li><code>"matching"</code>：1 つまたは 2 つの集合の項目を組み合わせる設問</li>
+            <li><code>"performance"</code>：選択式と似ているが、書かれた応答を選ぶ代わりにタスクや動作を実行する</li>
+            <li><code>"sequencing"</code>：リストのメンバーを論理的順序に並べる設問</li>
+            <li><code>"likert"</code>：連続体上の選択肢を提示する設問。意見・態度に基づく</li>
+            <li><code>"numeric"</code>：1 つの数値で答える設問。正解は数値範囲内の単一値となる場合もある</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.type", "choice")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_correct_responses__count">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.correct_responses._count</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIInteger</span>
+            <span class="dm-tag">Read Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSGetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>あるインタラクションの正答リストの現在のレコード数を取得するキーワード。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">Initialization:</span> SCO 起動時に 0 で初期化。</li>
+            <li><span class="behavior-label">LMSGetValue():</span> 整数を返す。Error Code 401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> キーワードのため設定不可。402、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_correct_responses_n_pattern">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.correct_responses.n.pattern</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIFeedback</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>インタラクションに対するあり得る応答のうち、正答とみなされるものを記述する。複数の正答があり得るし、より正解に近い応答もあり得る。</p>
+
+          <h5>Format</h5>
+          <p><code>cmi.interactions.n.type</code> によりフォーマットが異なる：</p>
+          <ul>
+            <li><code>true-false</code>：単一文字／数字。<code>0,1,t,f</code> が有効。<code>0</code> は false。完全な単語（例：<code>"true"</code>）の場合、最初の 1 文字のみ意味を持つ。</li>
+            <li><code>choice</code>：カンマ区切りで 1 つ以上の文字。整数 (0–9) または英字 (a–z) を使用。各応答は 1 文字に制限。可能性が 26 を超える場合は <code>performance</code> 型を使用。</li>
+            <li><code>fill-in</code>：英数字文字列。最初の印字可能文字以降のスペースは有意。</li>
+            <li><code>numeric</code>：単一の数値。小数点はあってもなくてもよい。</li>
+            <li><code>likert</code>：likert に正答はない。空白でよい。</li>
+            <li><code>matching</code>：ピリオドで区切られた識別子のペア。各マッチング候補はソースとターゲットからなる。</li>
+            <li><code>performance</code>：255 文字以下の英数字フィールド。</li>
+            <li><code>sequencing</code>：任意の順序で識別された要素群。最終的な配置位置で正誤を判定する。</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例（matching の場合）：<code>LMSSetValue("cmi.interactions.0.correct_responses.0.pattern", "1.c,2.b,3.a,4.d")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_weighting">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.weighting</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIDecimal</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>インタラクションの相対的重要度を識別する係数。たとえば 1 つ目に重み 15、2 つ目に重み 25 を付ければ、重み付け合計スコアは 2 つ目により強く影響される。すべて同じ重要度なら同じ重みを付ける。重み 0 は重み付け最終スコアにカウントしないことを示す。</p>
+
+          <h5>Format</h5>
+          <p>単一の浮動小数点数。小数点はオプション。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.weighting", "0.66")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_student_response">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.student_response</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIFeedback</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>学習者の実際の応答。<code>correct_responses.n.pattern</code> と比較できる。</p>
+
+          <h5>Format</h5>
+          <p><code>correct_responses.n.pattern</code> と同じ形式（<code>cmi.interactions.n.type</code> に応じる）。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.student_response", "f")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_result">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.result</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMIVocabulary (Result)</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>システムが応答をどう判定したか。</p>
+
+          <h5>Format</h5>
+          <p>定義済み語彙のいずれか：</p>
+          <ul>
+            <li><code>"correct"</code></li>
+            <li><code>"wrong"</code></li>
+            <li><code>"unanticipated"</code></li>
+            <li><code>"neutral"</code></li>
+            <li><code>"x.x"</code>（<code>CMIDecimal</code>）</li>
+          </ul>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.result", "correct")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="dm-block" id="dm-cmi_interactions_n_latency">
+        <div class="dm-header">
+          <span class="dm-name">cmi.interactions.n.latency</span>
+          <div class="dm-tags">
+            <span class="dm-tag">任意</span>
+            <span class="dm-tag">CMITimespan</span>
+            <span class="dm-tag">Write Only</span>
+          </div>
+        </div>
+        <div class="dm-meta-row">対応 API: LMSSetValue()</div>
+        <div class="dm-body">
+          <h5>Definition</h5>
+          <p>刺激の提示から測定可能な応答の完了までの時間。</p>
+
+          <h5>Format</h5>
+          <p><code>HHHH:MM:SS.SS</code>。時は最小 2・最大 4 桁、分は 2 桁、秒は 2 桁＋オプション小数点 1〜2 桁。</p>
+
+          <h5>LMS Behavior</h5>
+          <ul class="behavior-list">
+            <li><span class="behavior-label">LMSGetValue():</span> 書き込み専用。404、401。</li>
+            <li><span class="behavior-label">LMSSetValue():</span> 例：<code>LMSSetValue("cmi.interactions.0.latency", "00:20:00")</code>。Error Code 205、401。</li>
+          </ul>
+
+        </div>
+      </div>
+      <h3 id="sec-3-4-5">3.4.5 データ型と制御語彙</h3>
+
+      <p>AICC CMI Data Model<sup>4</sup> の各要素には、データ型の定義が存在する。以下では、データモデル要素に指定された各データ型の詳細を示す。これらの定義はさらに、API およびデータモデルがどのように実装されなければならないかを規定する。</p>
+
+      <p>各データ型の定義は次のとおり。すべて <code>"CMI"</code> で始まる名前を持ち、AICC CMI Data Model<sup>4</sup> に固有の型であることを明示している。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 180px;">データ型</th>
+            <th>説明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CMIBlank</td>
+            <td><p>空文字列 (<code>""</code>)。</p></td>
+          </tr>
+          <tr>
+            <td>CMIBoolean</td>
+            <td><p>2 語の語彙。<code>"true"</code> または <code>"false"</code>。</p></td>
+          </tr>
+          <tr>
+            <td>CMIDecimal</td>
+            <td><p>小数点を含み得る数値。マイナス符号なしなら正の数とみなす。例：<code>"2"</code>、<code>"2.2"</code>、<code>"-2.2"</code>。</p></td>
+          </tr>
+          <tr>
+            <td>CMIFeedback</td>
+            <td>
+              <p>インタラクションにおける学習者の応答を構造化して記述する。構造と内容はインタラクションのタイプに依存する：</p>
+              <p><strong>true-false</strong>：単一文字 <code>"0"</code>、<code>"1"</code>、<code>"t"</code>、<code>"f"</code> のいずれか。</p>
+              <p><strong>choice</strong>：カンマ区切りで 1 つ以上の単一文字（<code>0–9</code>、<code>a–z</code>）。すべての文字を選んだ場合に正解とみなすなら、リスト全体を中括弧 <code>{ }</code> で囲む。</p>
+              <p><strong>fill-in</strong>：最大 255 文字の英数字。最初の文字以降のスペースは有意。</p>
+              <p><strong>numeric</strong>：<code>CMIDecimal</code>。</p>
+              <p><strong>likert</strong>：単一文字（<code>0–9</code>、<code>a–z</code>）。</p>
+              <p><strong>matching</strong>：識別子のペアを 1 つ以上。各識別子は単一の英数字文字。ペアはピリオドで区切り、ペア間はカンマで区切る。すべて正解で正答とみなすなら全体を <code>{ }</code> で囲む。</p>
+              <p><strong>performance</strong>：255 文字以下の英数字文字列。</p>
+              <p><strong>sequencing</strong>：カンマ区切りの単一文字列。文字の順序が正誤を決める。</p>
+            </td>
+          </tr>
+          <tr>
+            <td>CMIIdentifier</td>
+            <td><p>空白や非印字文字を含まない英数字グループ。最大 255 文字。</p></td>
+          </tr>
+          <tr>
+            <td>CMIInteger</td>
+            <td><p>0 から 65536 までの整数。</p></td>
+          </tr>
+          <tr>
+            <td>CMISInteger</td>
+            <td><p>−32768 から +32768 までの符号付き整数。</p></td>
+          </tr>
+          <tr>
+            <td>CMIString255</td>
+            <td><p>最大 255 文字の ASCII 文字列。</p></td>
+          </tr>
+          <tr>
+            <td>CMIString4096</td>
+            <td><p>最大 4096 文字の ASCII 文字列。</p></td>
+          </tr>
+          <tr>
+            <td>CMITime</td>
+            <td><p>24 時間制の時刻：<code>HH:MM:SS.SS</code>。時・分はちょうど 2 桁、秒は 2 桁＋オプションで小数点と 1〜2 桁。</p></td>
+          </tr>
+          <tr>
+            <td>CMITimespan</td>
+            <td><p>時間長：<code>HHHH:MM:SS.SS</code>。時は最小 2・最大 4 桁、分はちょうど 2 桁、秒は 2 桁＋オプションで小数点と 1〜2 桁。</p></td>
+          </tr>
+          <tr>
+            <td>CMIVocabulary</td>
+            <td><p>スキーマ内の特定コンテキストに、特定の語彙を関連付けるために使用する。語彙は完全一致でなければならない。略語や単一文字は API 通信で使用してはならない。語彙の一覧は次表を参照。</p></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>データ型に加えて、いくつかのデータモデル要素は取り得る値の語彙が限定されている。次表に、要素ごとの語彙タイプと値を示す（AICC CMI001 Guidelines for Interoperability<sup>4</sup> による）。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 220px;">語彙タイプ</th>
+            <th>語彙値</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mode<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.core.lesson_mode</span></td>
+            <td><p><code>"normal"</code>、<code>"review"</code>、<code>"browse"</code></p></td>
+          </tr>
+          <tr>
+            <td>Status<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.core.lesson_status<br>cmi.objectives.n.status</span></td>
+            <td><p><code>"passed"</code>、<code>"completed"</code>、<code>"failed"</code>、<code>"incomplete"</code>、<code>"browsed"</code>、<code>"not attempted"</code></p></td>
+          </tr>
+          <tr>
+            <td>Exit<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.core.exit</span></td>
+            <td><p><code>"time-out"</code>、<code>"suspend"</code>、<code>"logout"</code>、<code>""</code>（空文字列）</p></td>
+          </tr>
+          <tr>
+            <td>Credit<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.core.credit</span></td>
+            <td><p><code>"credit"</code>、<code>"no-credit"</code></p></td>
+          </tr>
+          <tr>
+            <td>Entry<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.core.entry</span></td>
+            <td><p><code>"ab-initio"</code>、<code>"resume"</code>、<code>""</code>（空文字列）</p></td>
+          </tr>
+          <tr>
+            <td>Interaction<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.interactions.n.type</span></td>
+            <td><p><code>"true-false"</code>、<code>"choice"</code>、<code>"fill-in"</code>、<code>"matching"</code>、<code>"performance"</code>、<code>"likert"</code>、<code>"sequencing"</code>、<code>"numeric"</code></p></td>
+          </tr>
+          <tr>
+            <td>Result<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.interactions.n.result</span></td>
+            <td><p><code>"correct"</code>、<code>"wrong"</code>、<code>"unanticipated"</code>、<code>"neutral"</code>、<code>X.X</code>（<code>CMIDecimal</code>）</p></td>
+          </tr>
+          <tr>
+            <td>Time Limit Action<br><span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);">cmi.student_data.time_limit_action</span></td>
+            <td><p><code>"exit,message"</code>、<code>"exit,no message"</code>、<code>"continue,message"</code>、<code>"continue,no message"</code></p></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── 3.5 ─── -->
+    <section id="sec-3-5">
+      <h2><span class="section-num">SECTION 3.5</span>Run-Time Environment 動作</h2>
+
+      <p>以下の図は、LMS と Sharable Content Object の間で起こりうる run-time 通信シナリオの一例を示す。LMS と SCO が示しうる典型的な run-time 動作を表したもので、必須の実装ではなくあくまで一例である。</p>
+
+      <div class="figure" style="background: white;">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 920" font-family="'Noto Sans JP', 'Noto Sans CJK JP', 'Helvetica Neue', sans-serif">
+  <defs>
+    <marker id="ar-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1c1e2a"/>
+    </marker>
+    <marker id="ar-launch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1c1e2a"/>
+    </marker>
+    <!-- Arrow body (thick gray) for cross-column flows -->
+    <linearGradient id="bigArrow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#cdc8b8"/>
+      <stop offset="100%" stop-color="#aaa493"/>
+    </linearGradient>
+  </defs>
+
+  <!-- LMS column header -->
+  <rect x="20" y="20" width="350" height="34" fill="#b8aec8" opacity="0.7" stroke="#7a6f8c" stroke-width="0.8"/>
+  <text x="195" y="43" text-anchor="middle" font-size="15" font-weight="700" font-style="italic" fill="#1c1e2a">Learning Management System</text>
+
+  <!-- SCO column header -->
+  <rect x="410" y="20" width="350" height="34" fill="#b8aec8" opacity="0.7" stroke="#7a6f8c" stroke-width="0.8"/>
+  <text x="585" y="43" text-anchor="middle" font-size="15" font-weight="700" font-style="italic" fill="#1c1e2a">Sharable Content Object (SCO)</text>
+
+  <!-- LMS column body bg -->
+  <rect x="20" y="54" width="350" height="850" fill="#dfdcd0" opacity="0.45"/>
+  <!-- SCO column body bg -->
+  <rect x="410" y="54" width="350" height="850" fill="#cdc7b6" opacity="0.45"/>
+
+  <!-- ─── LMS Step 1 ─── -->
+  <rect x="40" y="70" width="310" height="148" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="50" y="90" font-size="12.5" font-weight="700" fill="#1c1e2a">1. 起動する SCO の決定:</text>
+  <text x="62" y="108" font-size="11.5" fill="#1c1e2a">・ ユーザーが選択</text>
+  <text x="62" y="124" font-size="11.5" fill="#1c1e2a">・ アダプティブ方式（前提条件）による自動決定</text>
+  <text x="62" y="140" font-size="11.5" fill="#1c1e2a">・ シーケンシャル順</text>
+  <text x="50" y="160" font-size="11.5" fill="#1c1e2a">content package で定義された</text>
+  <text x="50" y="176" font-size="11.5" fill="#1c1e2a">Content Structure の情報に基づいて決定する。</text>
+  <text x="50" y="200" font-size="11.5" fill="#1c1e2a">起動する SCO がなければ、finish または exit。</text>
+
+  <!-- ─── LMS Step 2 ─── -->
+  <rect x="40" y="232" width="310" height="116" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="50" y="252" font-size="12.5" font-weight="700" fill="#1c1e2a">2. SCO の <tspan font-family="'JetBrains Mono', monospace" font-size="11.5">cmi.core.lesson_mode</tspan> を</text>
+  <text x="50" y="268" font-size="12.5" font-weight="700" fill="#1c1e2a">　 決定し初期化する。</text>
+  <text x="62" y="288" font-size="11.5" fill="#1c1e2a">a. LMS はユーザーが選択可能なモードを</text>
+  <text x="62" y="302" font-size="11.5" fill="#1c1e2a">　 サポートしているか？</text>
+  <text x="62" y="318" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">b. lesson_mode="normal" かつ credit="no-credit"</text>
+  <text x="62" y="332" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 なら lesson_mode を "browse" に変更。</text>
+
+  <!-- ─── LMS Step 3 ─── -->
+  <rect x="40" y="362" width="310" height="76" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="50" y="382" font-size="12.5" font-weight="700" fill="#1c1e2a">3. SCO の <tspan font-family="'JetBrains Mono', monospace" font-size="11.5">cmi.core.entry</tspan> を決定・初期化する。</text>
+  <text x="50" y="402" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">  lesson_status="browsed" or "not attempted" なら</text>
+  <text x="50" y="416" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">  entry="ab-initio"、それ以外は "resume" に設定。</text>
+
+  <!-- ─── LMS Step 4: Launch the SCO (cross-column big arrow) ─── -->
+  <path d="M 40 460 L 380 460 L 380 450 L 410 478 L 380 506 L 380 496 L 40 496 Z"
+        fill="url(#bigArrow)" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="100" y="485" font-size="13" font-weight="700" fill="#1c1e2a">4. SCO を起動</text>
+  <text x="345" y="473" text-anchor="end" font-size="13" font-weight="700" font-style="italic" fill="#1c1e2a">Launch</text>
+
+  <!-- ─── LMS Step 4 (Service API Calls) ─── -->
+  <rect x="40" y="528" width="310" height="174" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="50" y="548" font-size="12.5" font-weight="700" fill="#1c1e2a">4. SCO からの API 呼び出しに応答</text>
+  <text x="62" y="568" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSInitialize("")</text>
+  <text x="62" y="583" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSGetValue(element)</text>
+  <text x="62" y="598" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSSetValue(element, value)</text>
+  <text x="62" y="613" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSGetLastError()</text>
+  <text x="62" y="628" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSGetErrorString(errorCode)</text>
+  <text x="62" y="643" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSGetDiagnostic(errorCode)</text>
+  <text x="62" y="658" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSCommit("")</text>
+  <text x="62" y="673" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">LMSFinish("")</text>
+
+  <!-- API and Datamodel cross-column arrow (LMS Step 4 ↔ SCO cloud) -->
+  <path d="M 350 595 L 380 595 L 380 585 L 410 612 L 380 640 L 380 630 L 350 630 Z"
+        fill="url(#bigArrow)" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="395" y="608" font-size="11.5" font-weight="700" font-style="italic" fill="#1c1e2a">API と Data Model</text>
+
+  <!-- ─── LMS Step 5 ─── -->
+  <rect x="40" y="724" width="310" height="160" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="50" y="744" font-size="11.5" fill="#1c1e2a">5. SCO の content structure に mastery score</text>
+  <text x="50" y="758" font-size="11.5" fill="#1c1e2a">　が定義されている場合、LMS は</text>
+  <text x="50" y="772" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 cmi.core.score.raw と mastery score を比較し、</text>
+  <text x="50" y="786" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 lesson_status を "passed" / "failed" に変更可。</text>
+  <text x="50" y="804" font-size="11.5" fill="#1c1e2a">　mastery score が未定義の場合、LMS は SCO が</text>
+  <text x="50" y="818" font-size="11.5" fill="#1c1e2a">　設定した lesson_status を上書きできない。</text>
+  <text x="50" y="836" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 credit="no-credit" なら、LMS は lesson_status を</text>
+  <text x="50" y="850" font-size="11.5" fill="#1c1e2a">　変更してはならない。ただし SCO の </text>
+  <text x="50" y="864" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 lesson_mode="browse" の場合に限り、LMS は</text>
+  <text x="50" y="878" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　 lesson_status="browsed" に設定してよい。</text>
+
+  <!-- ─── SCO Step 1 ─── -->
+  <rect x="430" y="80" width="310" height="38" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="440" y="103" font-size="12.5" font-weight="700" fill="#1c1e2a">1. API Adapter オブジェクトを探索</text>
+
+  <!-- ─── SCO Step 2 ─── -->
+  <rect x="430" y="130" width="310" height="38" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="440" y="153" font-size="12" fill="#1c1e2a">2. <tspan font-family="'JetBrains Mono', monospace">API.LMSInitialize("")</tspan> を呼び出し</text>
+
+  <!-- Arrow: Step 2 -> Cloud -->
+  <line x1="585" y1="170" x2="585" y2="195" stroke="#1c1e2a" stroke-width="1.4" marker-end="url(#ar-flow)"/>
+
+  <!-- ─── SCO Cloud (3. SCO Specific Implementation Behavior) ─── -->
+  <path d="M 470 200
+           Q 440 200 438 230
+           Q 420 240 425 270
+           Q 415 290 425 310
+           Q 415 340 430 360
+           Q 420 390 435 410
+           Q 420 440 435 460
+           Q 420 490 440 510
+           Q 425 540 445 555
+           Q 440 580 470 585
+           Q 490 600 530 595
+           Q 565 605 595 595
+           Q 630 605 660 590
+           Q 695 595 705 565
+           Q 720 540 705 510
+           Q 720 480 705 450
+           Q 720 420 705 390
+           Q 720 360 705 330
+           Q 720 300 705 270
+           Q 720 240 695 225
+           Q 695 200 660 198
+           Q 620 188 580 198
+           Q 540 188 510 198
+           Q 485 192 470 200 Z"
+        fill="#7a7468" stroke="#3a352d" stroke-width="1.2"/>
+
+  <text x="585" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="#fdfcf7">3. SCO 固有の実装動作</text>
+  <text x="585" y="240" text-anchor="middle" font-size="11" fill="#fdfcf7">（すべて任意）</text>
+
+  <!-- 3a -->
+  <rect x="455" y="255" width="260" height="38" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="465" y="271" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">3a. API.LMSGetValue("cmi.launch_data")</text>
+  <text x="465" y="285" font-size="10.5" fill="#1c1e2a">　   を呼び出し（SCO が利用する場合）</text>
+
+  <!-- 3b -->
+  <rect x="455" y="303" width="260" height="56" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="465" y="319" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">3b. API.LMSGetValue("cmi.core.entry")</text>
+  <text x="465" y="333" font-size="10.5" fill="#1c1e2a">　   を呼び出し。entry が "resume" なら</text>
+  <text x="465" y="347" font-size="10.5" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　   lesson_location, suspend_data を取得し</text>
+  <text x="465" y="361" font-size="10.5" fill="#1c1e2a">　   SCO 内の適切な位置から再開</text>
+
+  <!-- 3c -->
+  <rect x="455" y="370" width="260" height="42" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="465" y="386" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">3c. API.LMSGetValue</text>
+  <text x="465" y="400" font-size="10.5" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">　   ("cmi.core.lesson_mode") を呼び出し、</text>
+  <text x="465" y="414" font-size="10.5" fill="#1c1e2a">　   モードに応じた動作を行う</text>
+
+  <!-- 3e -->
+  <rect x="455" y="425" width="260" height="56" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="465" y="441" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">3e. API.LMSSetValue を呼び出し、</text>
+  <text x="465" y="455" font-size="10.5" fill="#1c1e2a">　   必要に応じて任意情報を記録</text>
+  <text x="465" y="469" font-size="10.5" fill="#1c1e2a">　   （スコア、状態、目標、インタラクション</text>
+  <text x="465" y="481" font-size="10.5" fill="#1c1e2a">　   など）</text>
+
+  <!-- 3f -->
+  <rect x="455" y="495" width="260" height="32" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1"/>
+  <text x="465" y="515" font-size="11" font-family="'JetBrains Mono', monospace" fill="#1c1e2a">3f. API.LMSCommit("") を呼び出し</text>
+
+  <!-- "Learner Interacts with SCO" vertical label on left side of cloud -->
+  <text x="453" y="430" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fdfcf7" transform="rotate(-90, 453, 430)">学習者と SCO のインタラクション</text>
+
+  <!-- Arrow: cloud bottom -> Step 4 -->
+  <line x1="585" y1="610" x2="585" y2="640" stroke="#1c1e2a" stroke-width="1.4" marker-end="url(#ar-flow)"/>
+
+  <!-- ─── SCO Step 4 ─── -->
+  <rect x="430" y="650" width="310" height="38" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.2"/>
+  <text x="440" y="673" font-size="12" fill="#1c1e2a">4. <tspan font-family="'JetBrains Mono', monospace">API.LMSFinish("")</tspan> を呼び出し</text>
+
+  <!-- Loop arrow from SCO Step 4 back to LMS Step 1 (small) -->
+  <text x="445" y="710" font-size="10.5" fill="#666056" font-style="italic">※ 終了後、LMS は次の SCO を決定するために 1. に戻る</text>
+
+</svg></div>
+        <div class="figure-caption">図 3.5: LMS と SCO の間で起こりうる典型的な run-time 通信シナリオ</div>
+      </div>
+    </section>
+
+    <!-- ─── Appendix A ─── -->
+    <section id="sec-appendix-a">
+      <h2><span class="section-num">APPENDIX A</span>略語一覧</h2>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 130px;">略語</th>
+            <th>原語</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ADL</td><td>Advanced Distributed Learning</td></tr>
+          <tr><td>AICC</td><td>Aviation Industry CBT Committee</td></tr>
+          <tr><td>API</td><td>Application Program Interface</td></tr>
+          <tr><td>ARIADNE</td><td>Alliance of Remote Instructional Authoring &amp; Distribution Networks for Europe</td></tr>
+          <tr><td>ASCII</td><td>American Standard Code for Information Interchange</td></tr>
+          <tr><td>AU</td><td>Assignable Unit</td></tr>
+          <tr><td>AWT</td><td>Abstract Window Toolkit</td></tr>
+          <tr><td>CBI</td><td>Computer-Based Instruction</td></tr>
+          <tr><td>CBT</td><td>Computer-Based Training</td></tr>
+          <tr><td>CDATA</td><td>Character Data</td></tr>
+          <tr><td>CMI</td><td>Computer Managed Instructions</td></tr>
+          <tr><td>COTS</td><td>Commercial Off-The-Shelf</td></tr>
+          <tr><td>CSF</td><td>Content Structure Format</td></tr>
+          <tr><td>DC</td><td>Dublin Core</td></tr>
+          <tr><td>DoD</td><td>Department of Defense</td></tr>
+          <tr><td>DOL</td><td>Department of Labor</td></tr>
+          <tr><td>DTD</td><td>Document Type Definition</td></tr>
+          <tr><td>HTML</td><td>HyperText Markup Language</td></tr>
+          <tr><td>HTTP</td><td>Hypertext Transfer Protocol</td></tr>
+          <tr><td>IDA</td><td>Institute for Defense Analyses</td></tr>
+          <tr><td>IEEE</td><td>Institute of Electrical and Electronics Engineers</td></tr>
+          <tr><td>ISO</td><td>International Organization for Standardization</td></tr>
+          <tr><td>ITS</td><td>Intelligent Tutoring Systems</td></tr>
+          <tr><td>LMS</td><td>Learning Management System</td></tr>
+          <tr><td>LOM</td><td>Learning Objects Metadata</td></tr>
+          <tr><td>LTSC</td><td>Learning Technology Standards Committee</td></tr>
+          <tr><td>MIME</td><td>Multipurpose Internet Mail Extensions</td></tr>
+          <tr><td>NGB</td><td>National Guard Bureau</td></tr>
+          <tr><td>OSTP</td><td>Office of Science and Technology Policy</td></tr>
+          <tr><td>PCDATA</td><td>Parsable Character Data</td></tr>
+          <tr><td>SCO</td><td>Sharable Content Object</td></tr>
+          <tr><td>SCORM</td><td>Sharable Content Object Reference Model</td></tr>
+          <tr><td>URI</td><td>Universal Resource Identifier</td></tr>
+          <tr><td>URL</td><td>Universal Resource Locator</td></tr>
+          <tr><td>W3C</td><td>World Wide Web Consortium</td></tr>
+          <tr><td>WWW</td><td>World Wide Web</td></tr>
+          <tr><td>XML</td><td>eXtensible Markup Language</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── Appendix B ─── -->
+    <section id="sec-appendix-b">
+      <h2><span class="section-num">APPENDIX B</span>参考文献</h2>
+
+      <ol style="font-size: 14px; line-height: 1.85;">
+        <li>Aviation Industry CBT (Computer-Based Training) Committee. <a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>Institute of Electrical and Electronics Engineers (IEEE) Learning Technology Standards Committee (LTSC). <a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS Global Learning Consortium, Inc. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>AICC/CMI <em>CMI001 Guidelines for Interoperability Version 3.4</em>. October 23, 2000. AICC Course Structure Format、AICC CMI Data Model を含む。<a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>ADL Co-Laboratories. <a href="http://www.adlnet.org/">http://www.adlnet.org/</a></li>
+        <li>Institute for Defense Analyses (IDA). <a href="http://www.ida.org/">http://www.ida.org/</a></li>
+        <li>Executive Order 13111: <em>Using Technology To Improve Training Opportunities for Federal Government Employees</em>.</li>
+        <li>Gettinger, M. (1984) "Individual differences in time needed for learning: A review of the literature." <em>Educational Psychologist</em>, 19, 15-29.</li>
+        <li>Graesser, A. C., &amp; Person, N. K. (1994). "Question asking during tutoring." <em>American Educational Research Journal</em>, 31, 104-137.</li>
+        <li>Bloom, B.S. (1984). "The 2 sigma problem: The search for methods of group instruction as effective as one-to-one tutoring." <em>Educational Researcher</em>, 13, 4-16.</li>
+        <li>Fletcher, J. D. (2001) "Evidence for Learning from Technology-Assisted Instruction." In H. F. O'Neil Jr. and R. Perez (Eds.) <em>Technology Applications in Education: A Learning View</em>. Hillsdale, NJ: Lawrence Erlbaum Associates.</li>
+        <li>Alliance of Remote Instructional Authoring and Distribution Networks for Europe (ARIADNE). <a href="http://www.ariadne-eu.org/">http://www.ariadne-eu.org/</a></li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. "Computer-based Instruction." (2000) In, S. Tobias and J.D. Fletcher (Eds.), <em>Training and Retraining: A Handbook for Business, Industry, Government, and the Military</em>. New York: Macmillan Gale Group.</li>
+        <li>Suppes, P. (1964) "Modern learning theory and the elementary-school curriculum." <em>American Educational Research Journal</em>, 1, 79-93.</li>
+        <li>Carbonell, J. R. (1970) "AI in CAI: An Artificial Intelligence Approach to Computer-Assisted Instruction." <em>IEEE Transactions on Man-Machine Systems</em>, Vol. 11, pp. 190-202.</li>
+        <li>Sleeman, D, &amp; Brown, J. S. (Eds.) (1982) <em>Intelligent Tutoring Systems</em>. New York, NY: Academic Press.</li>
+        <li>Woolf, B.P., &amp; Regian, J.W. (2000). "Knowledge-based training systems and the engineering of instruction." In S. Tobias and J. D. Fletcher (Eds.), <em>Training and retraining: A handbook for business, industry, government, and the military</em> (339-356). New York: Macmillan Reference.</li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. (1998) <em>Computer-based Instruction: Design and Development</em>. Englewood-Cliffs, NJ: Educational Technology Publications.</li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. (2000) op. cit.</li>
+        <li>IMS <em>Content Packaging Specification Version 1.1.2</em>. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>IEEE <em>Information Technology — Learning Technology — Learning Objects Metadata LOM: Working Draft 6.1</em> (2001-04-18). IMS Learning Resource Meta-data Specification Version 1.2 から参照。<a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS <em>Learning Resource Meta-data Specification Version 1.2</em>. Information Model、XML Binding、Best Practice and Implementation Guide を含む。<a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>ISO 639：言語表記の国際標準。Version 1 は 2 文字言語コード（例：'en'=英語、'fr'=フランス語、'nl'=オランダ語）を使用。これらは IETF の RFC 1766: "Tags for the identification of languages" の言語タグレジストリの基礎となっている。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>ISO 3166：国名表記の国際標準（例：'BE'=ベルギー、'CA'=カナダ、'FR'=フランス、'GB'=英国、'US'=米国 など）。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>vCard：個人・組織の連絡先情報の表現方法を定める標準。<a href="http://www.imc.org/pdi/">http://www.imc.org/pdi/</a></li>
+        <li>ISO 8601：日付と時刻の数値表現を規定する国際標準。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>World Wide Web Consortium (W3C). <a href="http://www.w3c.org/">http://www.w3c.org/</a><br>URL、URI、XML 1.0、DOM 仕様などを含む。</li>
+        <li>Dublin Core Metadata Initiative. <a href="http://www.dublincore.org/">http://www.dublincore.org/</a></li>
+      </ol>
+    </section>
+
+    <!-- ─── Appendix C ─── -->
+    <section id="sec-appendix-c">
+      <h2><span class="section-num">APPENDIX C</span>改訂履歴</h2>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 110px;">SCORM Version</th>
+            <th style="width: 150px;">リリース日</th>
+            <th>変更内容の説明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.1</td>
+            <td>2001 年 1 月 16 日</td>
+            <td>
+              <p>Run-Time Environment セクションの各サブセクション（Launch、API、Data Model）に詳細を追加。</p>
+              <p><strong>Launch の変更</strong>：SCO 起動の記述に詳細を追加。</p>
+              <p><strong>API の変更</strong>：</p>
+              <ul style="margin: 8px 0; padding-left: 22px;">
+                <li><code>LMSInitialize("")</code>、<code>LMSFinish("")</code>、<code>LMSCommit("")</code> はすべて空文字列をパラメータに取るよう変更。</li>
+                <li><code>LMSInitialize("")</code>、<code>LMSFinish("")</code>、<code>LMSCommit("")</code>、<code>LMSSetValue()</code> は <code>CMIBoolean</code>（<code>"true"</code> または <code>"false"</code>）に変換可能な文字列を返すよう変更。</li>
+                <li>各 API 呼び出しの説明をより詳細化。</li>
+                <li>API エラーコード使用法のセクションを追加。エラーコードを使用する場面を定義。新たなエラーコードを追加。</li>
+                <li><code>findAPI()</code> アルゴリズムを変更し、兄弟フレームを探索しないようにした。</li>
+              </ul>
+              <p><strong>Data Model の変更</strong>：</p>
+              <ul style="margin: 8px 0; padding-left: 22px;">
+                <li>すべてのデータモデル要素を詳細に記述する新しい表を追加。</li>
+                <li>要素の変更は表 C-1a を参照。</li>
+                <li>データ型の変更は表 C-1b を参照。</li>
+                <li>語彙の変更は表 C-1c を参照。</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td>
+              <p>図 3.1a を変更し、SCO と Asset の双方が起動可能であることを示すようにした。</p>
+              <p>Launch セクションに詳細を追加し、SCO 以外の起動も記述。</p>
+              <p>SCO–LMS 通信 API 状態遷移図と説明を追加。</p>
+              <p>API エラーコード使用法の表に詳細を追加し、特定のエラーコードを使用すべき場面を示した。</p>
+              <p>以下のデータモデル要素に明確化を追加：</p>
+              <ul style="margin: 8px 0; padding-left: 22px;">
+                <li><code>cmi.core.lesson_status</code></li>
+                <li><code>cmi.core.entry</code></li>
+                <li><code>cmi.core.exit</code></li>
+                <li><code>cmi.core.session_time</code></li>
+              </ul>
+              <p>スコア要素（<code>cmi.core.score.raw</code>、<code>cmi.core.score.min</code>、<code>cmi.core.score.max</code>、<code>cmi.objectives.n.score.raw</code>、<code>cmi.objectives.n.score.min</code>、<code>cmi.objectives.n.score.max</code>）について、より具体的な定義を追加：「0〜100 で正規化された値でなければならない」。</p>
+              <p>表のフォーマットを全般的に整理。</p>
+              <p>3.5 Run-Time Environment Behavior セクションを追加。</p>
+              <p>文法的な整理を全般的に実施。</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="table-c-1a" style="margin-top: 56px;">表 C-1a: Run-Time Environment Data Model 要素の変更</h3>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 320px;">Data Model 要素</th>
+            <th>SCORM 1.0 からの変更</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>cmi.core._children</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.core.student_id</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.student_name</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.core.lesson_location</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.core.credit</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.lesson_status</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.entry</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.score._children</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.core.score.raw / min / max</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.total_time</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.core.lesson_mode / exit / session_time</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.suspend_data / launch_data</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.comments</td><td><p>SCO／学習者からのコメントを保持する要素となった。SCO は本要素に対して <code>LMSGetValue()</code> および <code>LMSSetValue()</code> を呼び出せるようになった。</p></td></tr>
+          <tr><td>cmi.comments_from_lms</td><td><p>新規追加。LMS や講師からのコメントを SCO で利用できる場所として追加された。</p></td></tr>
+          <tr><td>cmi.objectives._count</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.objectives._children</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.objectives.n.id</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.objectives.n.score._children</td><td><p><code>scores</code> を <code>score</code> に名称変更。データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更。</p></td></tr>
+          <tr><td>cmi.objectives.n.score._count</td><td><p>削除。objective に対する複数 score のリストサポートを廃止。</p></td></tr>
+          <tr><td>cmi.objectives.n.score.raw / min / max</td><td><p>score のリストサポートを廃止。各 objective は 1 つの score のみを持つ。<code>scores</code> を <code>score</code> に名称変更。</p></td></tr>
+          <tr><td>cmi.objectives.n.status</td><td><p>score のリストサポートを廃止。<code>scores</code> を <code>score</code> に名称変更。</p></td></tr>
+          <tr><td>cmi.objectives.n.mastery_time</td><td><p>削除</p></td></tr>
+          <tr><td>cmi.evaluation.* 系列</td><td><p>すべて削除（<code>course_id</code>、<code>comments</code>、<code>interactions</code>、<code>objectives_status</code>、<code>paths</code>、<code>performance</code>、<code>lesson_id</code>、<code>date</code> など）</p></td></tr>
+          <tr><td>cmi.interactions._children / _count</td><td><p>追加</p></td></tr>
+          <tr><td>cmi.interactions.n.id</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.interactions.n.objectives._count</td><td><p>追加</p></td></tr>
+          <tr><td>cmi.interactions.n.objectives.n.id</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.interactions.n.time / type / weighting / student_response / result / latency</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.interactions.n.correct_responses._count</td><td><p>追加</p></td></tr>
+          <tr><td>cmi.interactions.n.correct_responses.n.pattern</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.student_data._children</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.student_data.attempt_number</td><td><p>削除</p></td></tr>
+          <tr><td>cmi.student_data.mastery_score / max_time_allowed / time_limit_action</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.student_data.attempt_records.* 系列</td><td><p>すべて削除</p></td></tr>
+          <tr><td>cmi.student_data.tries.* 系列</td><td><p>すべて削除</p></td></tr>
+          <tr><td>cmi.student_demographics.* 系列</td><td><p>すべて削除（<code>city</code>、<code>class</code>、<code>company</code>、<code>country</code>、<code>experience</code>、<code>familiar_name</code>、<code>instructor_name</code>、<code>title</code>、<code>native_language</code>、<code>state</code>、<code>street_address</code>、<code>telephone</code>、<code>years_experience</code> など）</p></td></tr>
+          <tr><td>cmi.student_preference._children</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.student_preference.audio</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.student_preference.language</td><td><p>データ型を <code>CMIString256</code> から <code>CMIString255</code> に変更</p></td></tr>
+          <tr><td>cmi.student_preference.lesson_type</td><td><p>削除</p></td></tr>
+          <tr><td>cmi.student_preference.speed / text</td><td><p>変更なし</p></td></tr>
+          <tr><td>cmi.student_preference.text_color / text_location / text_size / video / windows.n</td><td><p>すべて削除</p></td></tr>
+          <tr><td>cmi.paths.* 系列</td><td><p>すべて削除（<code>location_id</code>、<code>time</code>、<code>status</code>、<code>why_left</code>、<code>time_in_element</code>）</p></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="table-c-1b" style="margin-top: 56px;">表 C-1b: Run-Time Environment データ型の変更</h3>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 180px;">データ型</th>
+            <th>変更</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>CMIDate</td><td><p>削除</p></td></tr>
+          <tr><td>CMIBoolean</td><td><p>すべて小文字（<code>"true"</code>、<code>"false"</code>）に変更</p></td></tr>
+          <tr><td>CMIFeedback</td><td><p><code>CMIFeedback</code> データ型の使用法を定義する情報を追加</p></td></tr>
+          <tr><td>CMILocale</td><td><p>削除</p></td></tr>
+          <tr><td>CMISIdentifier</td><td><p>削除</p></td></tr>
+          <tr><td>CMIString255</td><td><p><code>CMIString255</code> に変更（最大 255 文字）</p></td></tr>
+          <tr><td>CMITime</td><td><p>小数点以下の桁数を最大 2 桁までに変更（例：<code>34.43</code>）</p></td></tr>
+          <tr><td>CMITimespan</td><td><p>小数点以下の桁数を最大 2 桁までに変更（例：<code>34.43</code>）</p></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="table-c-1c" style="margin-top: 56px;">表 C-1c: Run-Time Environment CMIVocabulary の変更</h3>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 180px;">語彙タイプ</th>
+            <th>変更</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Exit</td><td><p><code>""</code>（空文字列）の語彙を追加</p></td></tr>
+          <tr><td>Why Left</td><td><p>削除</p></td></tr>
+          <tr><td>Credit</td><td><p><code>"no credit"</code> を <code>"no-credit"</code> に変更</p></td></tr>
+          <tr><td>Entry</td><td><p><code>""</code>（空文字列）の語彙を追加</p></td></tr>
+          <tr><td>Time Limit Action</td><td><p>すべての語彙選択肢を変更</p></td></tr>
+          <tr><td>Interaction</td><td><p><code>"multiple choice"</code> を <code>"choice"</code> に変更<br><code>"fill in the blank"</code> を <code>"fill-in"</code> に変更<br><code>"simple performance"</code> を <code>"performance"</code> に変更</p></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="doc-footer">
+      <p>
+        <span class="brand">SCORM 1.2 The Run-Time Environment</span> ／ 日本語訳<br>
+        Original document © 2001 Advanced Distributed Learning Initiative — All Rights Reserved.<br>
+        翻訳: 株式会社エレファンキューブ ／ 翻訳支援: Anthropic Claude<br>
+        Translation © 2026 Elephancube Inc. — Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br>
+        本翻訳は規格仕様書を技術者向けに参照しやすくする目的で作成された非公式の日本語訳です。実装にあたっては必ず Original を参照してください。
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

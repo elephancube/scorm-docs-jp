@@ -1,0 +1,49 @@
+scorm-docs-jp — SCORM 1.2 Japanese Translation
+================================================
+
+[ Original Specifications ]
+
+The original SCORM specifications translated in this repository are
+Copyright (c) 2001-2002 Advanced Distributed Learning (ADL) Initiative.
+All rights to the originals are reserved by ADL.
+
+The PDF files included under each version directory's source/ subfolder
+are reproductions of the original ADL publications, included for reference
+and verification purposes only. Use of the original PDFs is subject to
+ADL's terms.
+
+  SCORM 1.2:
+    scorm-1.2/source/SCORM_1.2_Overview.pdf        (ADL, October 2001)
+    scorm-1.2/source/SCORM_1.2_CAM.pdf             (ADL, October 2001)
+    scorm-1.2/source/SCORM_1.2_RunTimeEnv.pdf      (ADL, October 2001)
+    scorm-1.2/source/SCORM_1.2_Addendums.pdf       (ADL, January 2002)
+
+
+[ Japanese Translation ]
+
+The Japanese translation in this repository is
+Copyright (c) 2026 Elephancube Inc. (株式会社エレファンキューブ)
+and is licensed under Creative Commons Attribution 4.0 International
+(CC BY 4.0). See LICENSE for details.
+
+  Translation:             Elephancube Inc. (media@elephancube.co.jp)
+  Translation assistance:  Anthropic Claude
+
+
+[ Trademarks ]
+
+"SCORM" and "Sharable Content Object Reference Model" are trademarks of
+Advanced Distributed Learning (ADL). This translation is an unofficial work
+and is not endorsed by, affiliated with, or sponsored by ADL or the U.S.
+Department of Defense.
+
+
+[ Disclaimer ]
+
+This translation is provided "AS IS" without warranty of any kind.
+For implementation, always refer to the original ADL specification.
+In case of any discrepancy between this translation and the original,
+the original specification takes precedence.
+
+If ADL requests removal or modification of any content in this repository,
+the maintainer (Elephancube Inc.) will respond promptly.

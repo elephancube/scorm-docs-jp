@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCORM 1.2 The SCORM Overview（日本語訳）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ec;
+    --bg-tint: #efeadd;
+    --ink: #1c1e2a;
+    --ink-soft: #444759;
+    --muted: #7a7565;
+    --rule: #d4ccb8;
+    --rule-soft: #e6dfcd;
+    --accent: #6b2c39;
+    --accent-soft: #8a4452;
+    --code-bg: #1f2230;
+    --code-text: #e8e3d3;
+    --code-comment: #8a8676;
+    --code-string: #c9a76a;
+    --code-keyword: #d68a7a;
+    --code-fn: #8eb4c9;
+    --warn-bg: #fbf3df;
+    --warn-rule: #cdb676;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.85;
+    font-feature-settings: "palt" 1;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  .toc {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow-y: auto;
+    padding: 48px 28px 48px 36px;
+    border-right: 1px solid var(--rule);
+    font-size: 13px; line-height: 1.7;
+  }
+  .toc-mark {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .toc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 17px; line-height: 1.4; color: var(--ink);
+    margin-bottom: 28px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc > ul > li { margin-bottom: 14px; }
+  .toc ul ul {
+    margin-top: 6px; padding-left: 14px;
+    border-left: 1px solid var(--rule-soft);
+  }
+  .toc ul ul li { margin-bottom: 4px; }
+  .toc a {
+    color: var(--ink-soft); text-decoration: none;
+    transition: color 0.15s; display: block; padding: 2px 0;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-right: 6px;
+  }
+
+  main { padding: 56px 64px 120px; max-width: 880px; }
+
+  .doc-header {
+    margin-bottom: 56px; padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink); position: relative;
+  }
+  .doc-header::after {
+    content: ""; position: absolute; left: 0; bottom: -6px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .doc-org {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .doc-title {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 38px; line-height: 1.25; margin: 0 0 12px;
+    letter-spacing: -0.005em;
+  }
+  .doc-subtitle { font-size: 16px; color: var(--ink-soft); margin: 0 0 24px; }
+  .doc-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .doc-meta span strong { color: var(--ink); font-weight: 500; margin-left: 6px; }
+
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn-rule);
+    padding: 16px 22px; margin: 0 0 56px;
+    font-size: 14px; line-height: 1.75;
+  }
+  .notice .label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.15em;
+    color: #8a6d2e; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 28px; margin: 80px 0 24px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em; line-height: 1.35;
+  }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 {
+    font-family: 'Shippori Mincho', serif; font-weight: 700;
+    font-size: 21px; margin: 56px 0 18px; line-height: 1.4;
+  }
+  h4 {
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+    font-size: 16px; margin: 36px 0 14px;
+    padding-left: 12px; border-left: 3px solid var(--accent);
+  }
+  .section-num {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent); font-weight: 500;
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+
+  p { margin: 0 0 18px; }
+  p + p { margin-top: -2px; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em; background: var(--bg-tint);
+    color: var(--accent); padding: 1px 6px;
+    border-radius: 3px; border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+
+  ul, ol { margin: 0 0 18px; padding-left: 26px; }
+  li { margin-bottom: 6px; }
+
+  blockquote {
+    border-left: 3px solid var(--accent-soft);
+    background: var(--bg-tint);
+    padding: 14px 22px;
+    margin: 18px 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  .figure {
+    margin: 32px 0; padding: 24px;
+    background: white; border: 1px solid var(--rule);
+    border-radius: 4px; text-align: center;
+  }
+  .figure-caption {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px; color: var(--ink-soft);
+    margin-top: 14px; font-style: italic;
+  }
+  .figure-svg { margin: 0 auto; max-width: 100%; }
+  .figure-svg svg { width: 100%; height: auto; display: block; }
+
+  .doc-footer {
+    margin-top: 96px; padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px; color: var(--muted); line-height: 1.8;
+  }
+  .doc-footer .brand {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--ink); font-weight: 700;
+  }
+
+  table.spec-table {
+    width: 100%; border-collapse: collapse;
+    margin: 18px 0; font-size: 13.5px;
+    background: white; border: 1px solid var(--rule);
+  }
+  table.spec-table th {
+    background: var(--ink); color: var(--bg);
+    text-align: left; padding: 10px 14px;
+    font-weight: 600; font-size: 12px;
+    letter-spacing: 0.04em; border: 1px solid var(--ink);
+  }
+  table.spec-table td {
+    padding: 10px 14px; border: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.65;
+  }
+  table.spec-table td p { margin: 0 0 8px; }
+  table.spec-table td p:last-child { margin-bottom: 0; }
+  table.spec-table.acronym td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); font-weight: 500;
+    width: 110px; white-space: nowrap;
+  }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc {
+      position: static; height: auto;
+      border-right: none; border-bottom: 1px solid var(--rule);
+      padding: 32px 24px;
+    }
+    main { padding: 40px 24px 80px; }
+    .doc-title { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ═══ Sidebar TOC ═══ -->
+  <nav class="toc">
+    <div class="toc-mark">Contents</div>
+    <div class="toc-title">SCORM 1.2<br>Overview</div>
+    <ul>
+      <li>
+        <a href="#sec-1-1"><span class="num">1.1</span>本書について</a>
+        <ul>
+          <li><a href="#sec-1-1-1"><span class="num">1.1.1</span>SCORM の概要</a></li>
+          <li><a href="#sec-1-1-2"><span class="num">1.1.2</span>本書のステータス</a></li>
+          <li><a href="#sec-1-1-3"><span class="num">1.1.3</span>SCORM の構成</a></li>
+          <li><a href="#sec-1-1-4"><span class="num">1.1.4</span>SCORM と関連標準化活動</a></li>
+          <li><a href="#sec-1-1-5"><span class="num">1.1.5</span>主要貢献者への謝辞</a></li>
+          <li><a href="#sec-1-1-6"><span class="num">1.1.6</span>SCORM バージョン変更の概要</a></li>
+          <li><a href="#sec-1-1-7"><span class="num">1.1.7</span>付属サンプルソフトウェア</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-1-2"><span class="num">1.2</span>ADL イニシアチブ</a>
+        <ul>
+          <li><a href="#sec-1-2-1"><span class="num">1.2.1</span>ADL イニシアチブについて</a></li>
+          <li><a href="#sec-1-2-2"><span class="num">1.2.2</span>ADL のミッション</a></li>
+          <li><a href="#sec-1-2-3"><span class="num">1.2.3</span>ADL のビジョン</a></li>
+          <li><a href="#sec-1-2-4"><span class="num">1.2.4</span>ADL ビジョン実現における SCORM の役割</a></li>
+          <li><a href="#sec-1-2-5"><span class="num">1.2.5</span>ADL Co-Laboratory</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-1-3"><span class="num">1.3</span>共通リファレンスモデルの根拠</a>
+        <ul>
+          <li><a href="#sec-1-3-1"><span class="num">1.3.1</span>能力の必要性</a></li>
+          <li><a href="#sec-1-3-2"><span class="num">1.3.2</span>個別最適化された教育の価値</a></li>
+          <li><a href="#sec-1-3-3"><span class="num">1.3.3</span>技術ベース教育の有効性</a></li>
+          <li><a href="#sec-1-3-4"><span class="num">1.3.4</span>Distance Learning と Advanced Distributed Learning</a></li>
+          <li><a href="#sec-1-3-5"><span class="num">1.3.5</span>技術ベース教育の利用促進</a></li>
+          <li><a href="#sec-1-3-6"><span class="num">1.3.6</span>リファレンスモデルの必要性</a></li>
+          <li><a href="#sec-1-3-7"><span class="num">1.3.7</span>リファレンスモデルの要件</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-1-4"><span class="num">1.4</span>変革を推進する諸力</a>
+        <ul>
+          <li><a href="#sec-1-4-1"><span class="num">1.4.1</span>CBI の初期段階</a></li>
+          <li><a href="#sec-1-4-2"><span class="num">1.4.2</span>ITS の出現</a></li>
+          <li><a href="#sec-1-4-3"><span class="num">1.4.3</span>発展経路の分岐</a></li>
+          <li><a href="#sec-1-4-4"><span class="num">1.4.4</span>インターネットと WWW の影響</a></li>
+          <li><a href="#sec-1-4-5"><span class="num">1.4.5</span>新たな技術要件</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-1-5"><span class="num">1.5</span>SCORM 序論</a>
+        <ul>
+          <li><a href="#sec-1-5-1"><span class="num">1.5.1</span>上位要件</a></li>
+          <li><a href="#sec-1-5-2"><span class="num">1.5.2</span>Web ベースの設計前提</a></li>
+          <li><a href="#sec-1-5-3"><span class="num">1.5.3</span>LMS の説明</a></li>
+          <li><a href="#sec-1-5-4"><span class="num">1.5.4</span>学習者の追跡</a></li>
+          <li><a href="#sec-1-5-5"><span class="num">1.5.5</span>適応型・知的指導への展望</a></li>
+          <li><a href="#sec-1-5-6"><span class="num">1.5.6</span>SCORM の概要</a></li>
+          <li><a href="#sec-1-5-7"><span class="num">1.5.7</span>SCORM の将来スコープ</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#sec-1-6"><span class="num">1.6</span>準拠性テスト</a>
+      </li>
+      <li style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--rule);">
+        <a href="#sec-appendix-a"><span class="num">A</span>略語一覧</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-b"><span class="num">B</span>参考文献</a>
+      </li>
+      <li>
+        <a href="#sec-appendix-c"><span class="num">C</span>改訂履歴</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ═══ Main Content ═══ -->
+  <main>
+
+    <header class="doc-header">
+      <div class="doc-org">Advanced Distributed Learning Initiative</div>
+      <h1 class="doc-title">The SCORM Overview</h1>
+      <p class="doc-subtitle">Sharable Content Object Reference Model (SCORM&trade;) Version 1.2</p>
+      <div class="doc-meta">
+        <span>Version<strong>1.2</strong></span>
+        <span>Original<strong>October 1, 2001</strong></span>
+        <span>Translation<strong>日本語訳</strong></span>
+      </div>
+    </header>
+
+    <div class="notice" style="background: #f0ebd8; border-left-color: var(--accent);">
+      <div class="label" style="color: var(--accent);">日本語訳・全文</div>
+      本ドキュメントは ADL Initiative 発行の SCORM 1.2「The SCORM Overview」(October 1, 2001) を日本語に翻訳したものである。SCORM の理念・歴史的背景・技術的位置づけを概観する第 1 巻にあたり、Content Aggregation Model（第 2 巻）および Run-Time Environment（第 3 巻）の総論として読まれる。規格用語（SCO、API、LMS、CMI などの略語、データモデル要素名）は原文どおり英語表記を維持している。
+    </div>
+
+    <!-- ═══════════ 1.1 ═══════════ -->
+    <section id="sec-1-1">
+      <h2><span class="section-num">SECTION 1.1</span>本書について</h2>
+
+      <p>米国国防総省 (Department of Defense; DoD) は 1997 年に Advanced Distributed Learning (ADL) イニシアチブを設立した。教育・訓練の現代化に向けて学習・情報技術を活用する DoD 全体戦略を策定するとともに、e ラーニングの標準化に向けて政府・学術・産業の協力を促進することが目的である。ADL は学習コンテンツに関する上位要件（再利用性、アクセシビリティ、耐久性、相互運用性などの「-ility」群）を定義し、既存の実践を活用しつつ技術ベース学習を推進し、投資の経済的根拠を提供することを目指してきた。</p>
+
+      <p>本書は、これらの上位要件を満たす sharable な学習コンテンツオブジェクトのリファレンスモデルを定義する。</p>
+
+      <h3 id="sec-1-1-1">1.1.1 SCORM の概要</h3>
+
+      <p>Sharable Content Object Reference Model (SCORM&trade;) は、learning object に対する Web ベース学習の「Content Aggregation Model」と「Run-Time Environment」を定義する。最も簡潔に述べれば、SCORM は DoD の Web ベース学習コンテンツに対する上位要件を満たすために設計された、相互に関連する一連の技術仕様とガイドラインを参照するモデルである。</p>
+
+      <p>SCORM の策定は、異なるグループや関心事を結びつけるプロセスでもある。本リファレンスモデルは新興技術と商用・公的実装の調整を目的とする。</p>
+
+      <p>多くの組織が Web ベース学習技術の異なる、しかし密接に関連した側面に取り組んでおり、各分野は近年大きな進歩を遂げているが、互いに十分「接続」されていない。一部の出現しつつある仕様は、Web、CD-ROM、対話型マルチメディア教育などの多様な実装を想定して非常に汎用的である。一方、別の仕様は古くからの Computer Managed Instruction (CMI) の慣行に根ざしており、Web ベースアプリケーションへの適応を必要とする。</p>
+
+      <p>SCORM は、IMS Global Learning Consortium, Inc.<sup>3</sup>、Aviation Industry CBT (Computer-Based Training) Committee (AICC)<sup>1</sup>、Alliance of Remote Instructional Authoring &amp; Distribution Networks for Europe (ARIADNE)<sup>12</sup>、IEEE Learning Technology Standards Committee (LTSC)<sup>2</sup> などのグループによる現在の技術発展を、特定の content model に適用し、ベンダーコミュニティが一貫した実装を行えるようガイダンスを示す。</p>
+
+      <p>図 1.1.3a に示すように、本書に含まれる、または参照されるすべての仕様とガイドラインは、成長する書架に集められた個別の「ブック」として捉えられる。これらの技術書のほぼすべては他組織によるものである。現在は「Content Aggregation Model」と「Run-Time Environment」の 2 つの主題のもとにグループ化されているが、編者らは将来の SCORM リリースでさらなる仕様を追加することを想定している。</p>
+
+      <p>なお、SCORM のスコープはすべてを網羅するものではない。本バージョンで扱われていない事項も多く存在する。著者らは実装・運用を通じて得られる経験と教訓を反映させながら、本リファレンスモデルのスコープを段階的に拡張していく。</p>
+
+      <h3 id="sec-1-1-2">1.1.2 本書のステータス</h3>
+
+      <p>本リリースでは content packaging の概念を導入する。content package は SCORM の総合要件の 1 つである「相互運用性 (interoperability)」を満たすうえで不可欠な構成要素である。本リリースではまた、学習コンテンツを記述する meta-data を更新し、IMS Global Learning Consortium, Inc.<sup>3</sup> および IEEE LTSC<sup>2</sup> による最新の meta-data 仕様を反映させた。SCORM Version 1.1 のリリース以降、研究者および早期採用者から多数の修正・改善・明確化の提案が寄せられており、これらと他の変更は 1.1.6 に整理し、変更内容の詳細は付録 C にまとめている。</p>
+
+      <p>本バージョンの SCORM は<strong>安定版</strong>と位置づける。すなわち、本モデルに基づくアプリケーションが実装可能であり準拠性テストを実施できることに十分な確信が得られる程度に、実証実験とテストが行われたという意味である。ただし SCORM の重要部分は今後の業界全体の発展に応じて進化・変更される可能性がある。これは、新しい改良された機能に置き換えるために、モデルの一部を「deprecated（近い将来廃止予定）」と指定する場合があることを意味する。deprecated と指定された機能は十分な事前告知をもって新機能に置き換えられ、後続バージョンへの明確で管理可能な移行を保証する。<strong>本バージョンの SCORM では deprecated と指定された機能・項目は存在しない。</strong></p>
+
+      <h3 id="sec-1-1-3">1.1.3 SCORM の構成</h3>
+
+      <p>図 1.1.3a に示すように、SCORM は個別に参照される各仕様を独立した「ブック」として扱う。将来のバージョンでは新たな仕様ブックが追加される見込みである。本リリースでは、SCORM は前バージョンの第 1〜3 章に対応する 3 冊のブックに分割された。</p>
+
+      <ul>
+        <li><strong>Book 1（本書）</strong>：ADL イニシアチブの概観、SCORM の根拠、および後続のブックに含まれる技術仕様とガイドラインの要約。</li>
+        <li><strong>Book 2（The SCORM Content Aggregation Model）</strong>：リソースを識別し、構造化された学習コンテンツに集約するためのガイダンス。学習コンテンツの命名法、SCORM Content Packaging を記述し、IEEE LTSC の Learning Objects Metadata (LOM) Specification<sup>21</sup>（IMS と ARIADNE の共同作業の成果）を基礎とする IMS Learning Resource Meta-data Information Model<sup>22</sup> を参照する。これらをあわせて SCORM Content Aggregation Model を構成する。</li>
+        <li><strong>Book 3（The SCORM Run-Time Environment）</strong>：Web ベース環境におけるコンテンツの起動・通信・追跡に関するガイダンスを含む。AICC の <em>CMI001 Guidelines for Interoperability</em><sup>4</sup> で定義された run-time environment 機能から派生している。ADL は AICC のメンバーおよび参加者と連携し、共通の Launch および API 仕様を策定し、Web ベースのデータ要素として AICC Data Model を採用した。</li>
+      </ul>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="456" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="40" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#1c1e2a">SCORM</text>
+          <text x="380" y="60" text-anchor="middle" font-size="11" fill="#7a7565">仕様とガイドラインの集合</text>
+
+          <!-- Book 1 -->
+          <rect x="40" y="100" width="200" height="320" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <rect x="40" y="100" width="200" height="44" fill="#6b2c39"/>
+          <text x="140" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#fdfcf7">BOOK 1</text>
+          <text x="140" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">The SCORM Overview</text>
+          <line x1="60" y1="200" x2="220" y2="200" stroke="#d4ccb8" stroke-width="1"/>
+          <text x="140" y="230" text-anchor="middle" font-size="11" fill="#444759">ADL イニシアチブ</text>
+          <text x="140" y="250" text-anchor="middle" font-size="11" fill="#444759">SCORM の根拠</text>
+          <text x="140" y="270" text-anchor="middle" font-size="11" fill="#444759">技術仕様の要約</text>
+
+          <!-- Book 2 -->
+          <rect x="280" y="100" width="200" height="320" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <rect x="280" y="100" width="200" height="44" fill="#6b2c39"/>
+          <text x="380" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#fdfcf7">BOOK 2</text>
+          <text x="380" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">The SCORM</text>
+          <text x="380" y="187" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">Content Aggregation Model</text>
+          <line x1="300" y1="210" x2="460" y2="210" stroke="#d4ccb8" stroke-width="1"/>
+          <text x="380" y="240" text-anchor="middle" font-size="11" fill="#444759">Content Structure</text>
+          <text x="380" y="258" text-anchor="middle" font-size="10" fill="#7a7565">(AICC 由来)</text>
+          <text x="380" y="285" text-anchor="middle" font-size="11" fill="#444759">Content Packaging</text>
+          <text x="380" y="303" text-anchor="middle" font-size="10" fill="#7a7565">(IMS 由来)</text>
+          <text x="380" y="330" text-anchor="middle" font-size="11" fill="#444759">Meta-data Dictionary</text>
+          <text x="380" y="348" text-anchor="middle" font-size="10" fill="#7a7565">(IEEE 由来)</text>
+          <text x="380" y="375" text-anchor="middle" font-size="11" fill="#444759">Meta-data XML Binding</text>
+          <text x="380" y="393" text-anchor="middle" font-size="10" fill="#7a7565">(IMS 由来)</text>
+
+          <!-- Book 3 -->
+          <rect x="520" y="100" width="200" height="320" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <rect x="520" y="100" width="200" height="44" fill="#6b2c39"/>
+          <text x="620" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#fdfcf7">BOOK 3</text>
+          <text x="620" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">The SCORM</text>
+          <text x="620" y="187" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">Run-Time Environment</text>
+          <line x1="540" y1="210" x2="700" y2="210" stroke="#d4ccb8" stroke-width="1"/>
+          <text x="620" y="240" text-anchor="middle" font-size="11" fill="#444759">Launch</text>
+          <text x="620" y="258" text-anchor="middle" font-size="10" fill="#7a7565">(AICC 由来)</text>
+          <text x="620" y="285" text-anchor="middle" font-size="11" fill="#444759">Communication API</text>
+          <text x="620" y="303" text-anchor="middle" font-size="10" fill="#7a7565">(AICC 由来)</text>
+          <text x="620" y="330" text-anchor="middle" font-size="11" fill="#444759">Data Model</text>
+          <text x="620" y="348" text-anchor="middle" font-size="10" fill="#7a7565">(AICC 由来)</text>
+        </svg></div>
+        <div class="figure-caption">図 1.1.3a: 仕様の集合体としての SCORM</div>
+      </div>
+
+      <h3 id="sec-1-1-4">1.1.4 SCORM と関連標準化活動</h3>
+
+      <p>本書を通じて述べているとおり、SCORM は他組織が策定した仕様とガイドラインを参照し、それらを統合・調整してより完全で実装しやすいモデルを形成する。ADL はこれらの組織と連携を続けており、仕様策定および業界承認のプロセスは各組織に委ねている。ADL の役割は仕様の統合とテスト、初期開発と仕様採用の橋渡しである。</p>
+
+      <p>e ラーニングに関連する仕様策定組織は多数あるが、特に重要なのは次の 4 組織である。ADL は必ずしもすべての成果を取り入れるわけではない（一部は本書のスコープ外である）が、これらの組織は次世代学習技術の形成において不可欠な役割を担う。ADL は将来の仕様策定への参加を奨励する。連絡先は表 1.1.4a に示す。</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th style="width: 35%;">組織</th><th>連絡先</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Alliance of Remote Instructional Authoring &amp; Distribution Networks for Europe (ARIADNE)<sup>12</sup></td>
+            <td>M. Rittmeyer / E. Forte<br>Tel: +41-21 693 6658 / 4755<br>Fax: +41-21 693 4770<br>ariadne@ariadne-eu.org<br><a href="http://www.ariadne-eu.org/">http://www.ariadne-eu.org/</a></td>
+          </tr>
+          <tr>
+            <td>Aviation Industry CBT (Computer-Based Training) Committee (AICC)<sup>1</sup></td>
+            <td>Dr. Scott Bergstrom, AICC Administrator<br>Tel: +1-208-356-1136<br>admin@aicc.org<br><a href="http://www.aicc.org/">http://www.aicc.org/</a></td>
+          </tr>
+          <tr>
+            <td>IEEE Learning Technology Standards Committee (LTSC)<sup>2</sup></td>
+            <td>Robby Robson, Chair, IEEE LTSC<br>Tel: +1-541-754-1215<br>rrobson@saba.com<br><a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></td>
+          </tr>
+          <tr>
+            <td>IMS Global Learning Consortium, Inc.<sup>3</sup></td>
+            <td>Marcia Rockwood, Director Operations（Developers Network 関連）<br>mrockwood@imsproject.org / Tel: +1-617-571-7274<br>Edward Walker, Ph.D., CEO（Contributing Membership 関連）<br>ewalker@imsproject.org / Tel: +1-978-312-1082<br><a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12.5px; color: var(--muted); margin-top: -8px; font-style: italic;">表 1.1.4a: ARIADNE、AICC、IEEE、IMS の連絡先</p>
+
+      <h3 id="sec-1-1-5">1.1.5 主要貢献者への謝辞</h3>
+
+      <p>SCORM の発展には、AICC、IMS、IEEE、ADL 内で活動する産業・政府・学術界の数多くの人々が重要な貢献を行ってきた。編者らはすべての貢献者を挙げることはできないが、特に発展プロセスに重要な役割を果たした下記の方々に謝意を表する。</p>
+
+      <ul>
+        <li><strong>Eddy Forte / Eric Duval (ARIADNE)</strong>：1997 年以降、ARIADNE から IEEE への Learning Object Metadata (LOM) 仕様の継続的な貢献。</li>
+        <li><strong>Wayne Hodgins (Autodesk)</strong>：IEEE LTSC Learning Objects Metadata Working Group の議長として、meta-data 仕様の成熟に尽力。</li>
+        <li><strong>Jack Hyde (AICC / FlightSafety Boeing Training International)</strong>：AICC CMI ガイドラインの Web ベース要件への進化と、その調和結果の IEEE への提出。</li>
+        <li><strong>Claude Ostyn (Click2learn, Inc.)</strong>：SCORM/AICC Run-Time Environment の基礎となる共通の launch および API Adapter 提案の策定。</li>
+        <li><strong>Tyde Richards (IBM Mindspan Solutions)</strong>：SCORM CSF の基礎となるプロトタイプ XML Course Structure Format (CSF) の設計と、AICC CMI ガイドラインの Web 環境への移行作業。</li>
+        <li><strong>Robby Robson (IEEE LTSC Chair / Saba)</strong>：IEEE と IMS、ARIADNE、ADL ほかの作業の調和。</li>
+        <li><strong>Ed Walker (IMS Global Learning Consortium, Inc.)</strong>：他団体の参加と作業の包摂、IMS 内での協働環境の構築。</li>
+        <li><strong>Kenny Young (Microsoft)</strong>：ADL、AICC、IMS と協働し、すべてのグループの要件を調和させた業界共通の content packaging 方式を策定。</li>
+      </ul>
+
+      <p>これら主要な氏名は SCORM の貢献者のごく一部にすぎない。すべての参加者は合意形成と困難な課題への解決策の策定に尽力してきた。日々の地道な作業と会議の積み重ねが、増え続ける実質的成果物を生み出している。</p>
+
+      <h3 id="sec-1-1-6">1.1.6 SCORM バージョン変更の概要</h3>
+
+      <h4 id="sec-1-1-6-1">1.1.6.1 SCORM Version 1.0 から Version 1.1 へ</h4>
+
+      <p>SCORM は 2000 年 1 月にテスト・評価フェーズに入った。予想どおり、参加者は Version 1.0 の実装にあたって多くの疑問と課題を提起した。Version 1.1 では、Version 1.0 のスコープを変更・拡張せずに、これら早期参加者からの教訓に基づいた修正と改善を取り入れた。</p>
+
+      <p>最も顕著な変更はタイトルそのものの変更である：<em>Sharable Courseware Object Reference Model</em> から <em>Sharable Content Object Reference Model</em> へ。これは SCORM が含み参照する仕様が、コース全体だけでなく、さまざまなレベルのコース構成要素（コンテンツ）にも適用されるという事実をより正確に反映するための変更である。</p>
+
+      <p>Version 1.1 では、各仕様を独立したサブセクションに保ったまま、機能グループ単位で提示する形に再構成された。</p>
+
+      <p>Version 1.1 の他の変更は、SCORM 策定に関与した多数の組織の協働の結果である。Version 1.0 のテスト・評価フェーズ中、IEEE LTSC<sup>2</sup> および AICC<sup>1</sup> の代表は、IEEE<sup>2</sup> に提出される AICC CMI 仕様<sup>4</sup> を合理化することを決定した。この合理化により、AICC Course Structure Format<sup>4</sup> および AICC CMI Data Model<sup>4</sup>（SCORM Run-Time Environment Data Model が直接基礎としている）の両方から多数のデータ要素が削除された。これらの決定は広範な使用がなく、より堅牢な data model がいくつかの標準化グループで策定中であることを踏まえたものである。</p>
+
+      <p>業界実装の一貫性と調和を維持するため、ADL は SCORM Version 1.1 で AICC/IEEE が削除した要素を deprecated として指定した。IEEE、AICC、IMS Global Learning Consortium, Inc.<sup>3</sup> 内で進行中の作業が、当該バージョンから削除された機能を最終的に置き換えると見込まれている。</p>
+
+      <p>Content Structure Format (CSF) および data model から削除されたデータ要素はすべて元のリリースで「optional」だったため、編者らは影響は最小限と予想した。これらの削除は、特に LMS プロバイダーにとって実装者の作業量と保守負荷を軽減することが期待された。</p>
+
+      <p>Sharable Courseware Object Reference Model から Sharable Content Object Reference Model への変更にあわせて、SCORM Version 1.0 で記述された Course Structure Format も Content Structure Format に変更された。これは、コース全体より小さい単位の学習コンテンツの集約も SCORM で表現できることを反映している。</p>
+
+      <p>Version 1.1 にはまた、Run-Time Environment の API に対する重要な改善・変更が含まれており、コンテンツおよび LMS 双方の実装にコード変更が必要となった。</p>
+
+      <h4 id="sec-1-1-6-2">1.1.6.2 SCORM Version 1.1 から Version 1.2 へ</h4>
+
+      <p>本リリースでは、IMS Content Packaging 仕様から派生した SCORM 固有の Content Packaging アプリケーションプロファイルを追加している。これらのプロファイルは、SCORM Version 1.1 の Content Structure Format (CSF) を一般的な IMS 仕様にマッピングする。</p>
+
+      <p>本バージョンでは meta-data セクションも更新し、IMS Global Learning Consortium, Inc.<sup>3</sup> および IEEE LTSC<sup>21</sup> による最新の作業を参照する。更新内容には情報モデルおよび XML バインディングの変更が含まれる。また、Content Aggregation Model の変更および IMS Content Packaging の命名法と整合させるため、meta-data アプリケーションプロファイル名も変更した。</p>
+
+      <p>Version 1.2 は引き続き、Version 1.1 のスコープを変更・拡張せずに、早期参加者からの教訓に基づく修正と改善を反映している。</p>
+
+      <p>SCORM への技術的変更の詳細は付録 C にまとめている。</p>
+
+      <h3 id="sec-1-1-7">1.1.7 付属サンプルソフトウェア</h3>
+
+      <p>SCORM Version 1.2 のリリースには、SCORM の各側面を実装するコード例が含まれる。これらの基礎的な例はより高度な実装を加速する目的で提供される。コード例を参照・利用する者は、その経験について ADL イニシアチブにフィードバックを提供することが推奨される。また、他者と共有しうる追加・代替のコード例を作成することも歓迎する。これにより SCORM はより完全かつ正確になり、テスト開発ソフトウェアもより堅牢になる。すべての付属サンプルは ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）で公開している。</p>
+    </section>
+
+    <!-- ═══════════ 1.2 ═══════════ -->
+    <section id="sec-1-2">
+      <h2><span class="section-num">SECTION 1.2</span>ADL イニシアチブ</h2>
+
+      <h3 id="sec-1-2-1">1.2.1 ADL イニシアチブについて</h3>
+
+      <p>米国国防総省 (DoD) およびホワイトハウス科学技術政策局 (Office of Science and Technology Policy; OSTP) は、1997 年 11 月に Advanced Distributed Learning (ADL) イニシアチブを発足させた。ADL の目的は、個々の学習者のニーズに合わせて最適化され、必要なときに必要な場所で利用可能な高品質の教育・訓練・意思決定支援（メンタリング）教材へのアクセスを保証することである。</p>
+
+      <p>本イニシアチブは、21 世紀の防衛・産業の教育訓練ニーズを満たすため、動的かつ費用対効果の高い学習ソフトウェアの大規模開発を加速し、その活発な市場を喚起することを目的として設計された。ADL は、再利用可能な学習コンテンツを「instructional object」として作成することを促進する、コンピュータ・Web ベース学習の共通技術フレームワークを開発している。</p>
+
+      <p><strong>ADL の戦略：</strong></p>
+      <ul>
+        <li>技術水準の向上</li>
+        <li>人員の生産性と有効性の強化</li>
+        <li>教育と意思決定支援の連携</li>
+        <li>新興のネットワークベース技術の追求</li>
+        <li>共通標準の策定促進</li>
+        <li>開発コストの低減</li>
+        <li>共通ニーズを満たす広範な協働の推進</li>
+        <li>次世代学習技術によるパフォーマンス向上</li>
+        <li>商用既製品 (commercial off-the-shelf; COTS) の開発に影響を及ぼすための産業との連携</li>
+      </ul>
+
+      <h3 id="sec-1-2-2">1.2.2 ADL のミッション</h3>
+
+      <p>ADL イニシアチブのミッションは、いつでも・どこでも・各学習者のニーズに合わせて高品質の教育と意思決定支援を提供することである。技術を活用して sharable なコンテンツを統合・配信することはこの目標達成のための最善の手段でありうるが、それは目的への手段であって、目的そのものではない。</p>
+
+      <p>本書もまた目的への手段である。すなわち、ADL ミッションが目指す機能を実現するための技術的方法論を規定する。SCORM は ADL イニシアチブの成功に必要な要素ではあるが、それだけで十分というものではない。</p>
+
+      <p>ADL のミッションは、いつでも・どこでも利用可能な高品質の教育と意思決定支援の提供によって初めて達成される。高品質の教育とは、すべての学習者・利用者に対して目的を確実に達成し、最小コストで最大の有効性を発揮するものである。</p>
+
+      <p>ADL イニシアチブは、信頼性が高く効率的な教育・意思決定支援が、各学習者の独自のニーズ、能力、背景、関心、認知スタイルに適応することを前提とする。それは、特定の個人に対して特定の時点で必要に応じて、内容、ペース、詳細度、難易度などを最適化する。</p>
+
+      <p>さらに、提供される教育はいつでも・どこでもアクセス可能でなければならない。インターネットと World Wide Web はこの水準のアクセシビリティを可能にする。ADL イニシアチブの前提として、Web 配信向けに作成された教材は他の教育技術でも容易に配信できると想定する。</p>
+
+      <h3 id="sec-1-2-3">1.2.3 ADL のビジョン</h3>
+
+      <p>ADL イニシアチブは、通信ネットワークと個人用配信デバイスが普及し低価格化し、利用容易性・帯域・可搬性において利用者から透明である世界を見据えている。ADL のミッション達成における課題は技術インフラそのものではなく、いつでも・どこでも学習に活用できる次世代インフラをどのように最大限活用するかにある。</p>
+
+      <p>ADL の開発は、learning object を蓄積・分類して広範囲に配信・利用できる学習「ナレッジ」ライブラリ、すなわちリポジトリの構築を構想している。これらのオブジェクトは、World Wide Web またはこれに代わる将来のグローバル情報ネットワーク上で容易にアクセス可能でなければならない。</p>
+
+      <p>このようなリポジトリの整備は、高品質な learning object の作成を奨励するインセンティブを与える新たな instructional object 経済の基盤を形成し、学習者にアクセス可能・共有可能・適応可能な学習体験を提供する全く新しいクラスの製品・サービスの開発を促進する。</p>
+
+      <p>再利用可能で sharable な learning object の開発は ADL の長期ビジョンの中心である。図 1.2.3a に示すように、sharable な learning object が広く存在するようになれば、それらをリアルタイムにオンデマンドで組み立て、必要に応じて学習者に配信できる。したがって ADL イニシアチブは、sharable な learning content object の設計と instructional object 経済の発展に注力している。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="376" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+
+          <!-- Cloud / repository -->
+          <ellipse cx="150" cy="140" rx="110" ry="60" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="150" y="120" text-anchor="middle" font-size="11" font-weight="700" fill="#1c1e2a">World Wide Web</text>
+          <text x="150" y="140" text-anchor="middle" font-size="11" fill="#444759">に分散する</text>
+          <text x="150" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#6b2c39">Sharable Content Objects</text>
+          <circle cx="100" cy="170" r="6" fill="#6b2c39"/>
+          <circle cx="130" cy="180" r="6" fill="#6b2c39"/>
+          <circle cx="170" cy="180" r="6" fill="#6b2c39"/>
+          <circle cx="200" cy="170" r="6" fill="#6b2c39"/>
+
+          <!-- Server -->
+          <rect x="320" y="100" width="140" height="100" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="390" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Server</text>
+          <text x="390" y="155" text-anchor="middle" font-size="11" fill="#444759">リアルタイムで</text>
+          <text x="390" y="175" text-anchor="middle" font-size="11" fill="#444759">オンデマンドに</text>
+          <text x="390" y="195" text-anchor="middle" font-size="11" fill="#444759">組み立て</text>
+
+          <!-- Learner -->
+          <circle cx="610" cy="150" r="50" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="610" y="145" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">学習者</text>
+          <text x="610" y="165" text-anchor="middle" font-size="10" fill="#444759">いつでも</text>
+          <text x="610" y="180" text-anchor="middle" font-size="10" fill="#444759">どこでも</text>
+
+          <!-- Arrows -->
+          <line x1="262" y1="140" x2="318" y2="140" stroke="#1c1e2a" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="462" y1="150" x2="558" y2="150" stroke="#1c1e2a" stroke-width="2" marker-end="url(#arr)"/>
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c1e2a"/></marker></defs>
+
+          <!-- Bottom note -->
+          <text x="380" y="280" text-anchor="middle" font-size="13" font-weight="700" fill="#6b2c39">"A" in ADL</text>
+          <text x="380" y="305" text-anchor="middle" font-size="11" fill="#444759">＝ いつでも・どこでも学習・支援を提供する</text>
+          <text x="380" y="325" text-anchor="middle" font-size="11" fill="#444759">Anytime / Anywhere の理念</text>
+        </svg></div>
+        <div class="figure-caption">図 1.2.3a: Advanced Distributed Learning イニシアチブの長期ビジョン</div>
+      </div>
+
+      <h3 id="sec-1-2-4">1.2.4 ADL ビジョン実現における SCORM の役割</h3>
+
+      <p>SCORM は、learning content object をローカル実装の制約から解放する重要な第一歩を構成する。コンテンツオブジェクトを複数の学習配信環境間で容易に共有できるようにするための技術的手段を提供することを意図している。</p>
+
+      <p>ただし、SCORM は堅牢な instructional object 経済を実現するために克服すべきすべての技術的課題を解決するわけではない。SCORM の基盤の上に、より直接的に教育に関わる他の取り組みが必要となる。SCORM 自体も進化を続け、ADL の長期ビジョン達成を阻む技術的問題と制約を克服していく。</p>
+
+      <h3 id="sec-1-2-5">1.2.5 ADL Co-Laboratory</h3>
+
+      <p>1999 年、米国国防総省は ADL Co-Laboratory<sup>5</sup> (Co-Lab) を、当初は バージニア州アレクサンドリアの Institute for Defense Analyses (IDA)<sup>6</sup> に設置した。これは、ADL イニシアチブのための共通ツール、標準、コンテンツ、ガイドラインの協働的な研究・開発・評価を促進することを目的とする。Executive Order 13111<sup>7</sup> は、国家の教育・訓練ニーズの支援に活用できる技術ベース学習に関する共通仕様と標準の策定において、DoD が他の連邦機関、学術界、産業界と協力するよう指示した。SCORM の中心拠点として、ADL Co-Lab は SCORM が参照する新興の仕様を遵守するプロトタイプツールおよび学習コンテンツの開発・評価のための協働交流と技術支援の場を提供する。</p>
+
+      <p>ADL Co-Lab のコンセプトは、合同サービスおよび省庁間の協働とデモンストレーションに基づく。ADL Co-Lab は複数の DoD サービス活動を内包し、省庁スポンサーおよびプロジェクトマネージャーのための組織ホストとして機能する。これらの活動は、関係機関の取り組みの調整を通じて、サービス・省庁を横断する学習・パフォーマンス強化のための知識管理システムと技術の進歩を促進する。</p>
+
+      <p>ADL Co-Lab の設立以降、米国労働省 (DOL) および National Guard Bureau (NGB) が「contributing sponsor」として参加した。これらの組織は ADL Co-Lab とリソース・プロジェクトを連携させ、コンテンツの SCORM 準拠への移行を進めている。</p>
+
+      <p>特定の ADL コミュニティを支援するため、ADL Co-Lab のノードがフロリダ州オーランドおよびウィスコンシン州マディソンに設立された。1999 年 10 月設立の Joint ADL Co-Laboratory<sup>5</sup>（オーランド）は、主に DoD の構成機関と軍事サービス間で ADL プロトタイプおよびシステム調達の協働開発を促進する。2000 年 1 月設立の Academic ADL Co-Laboratory<sup>5</sup>（University of Wisconsin および Wisconsin Technical College System とのパートナーシップ）は、学術機関を中心に分散学習を可能にする次世代学習技術の協働開発・実証・評価を促進する。3 つの ADL Co-Lab は仮想 ADL Co-Lab Network を通じて研究・専門知識・共通ツール・コースコンテンツを共有する。</p>
+
+      <p>ADL Co-Lab は、可能な限り広範な教育環境において、特定の教育成果を確実にもたらす学習技術の設計方法を解明する役割を担う。他の研究領域には、次に挙げる最も効果的な手法の解明が含まれる。</p>
+      <ul>
+        <li>個々の学習者のニーズに合わせて教育のペース、内容、順序、スタイルを最適化する（学習者の強みを活かし、支援が必要な領域に集中する）。</li>
+        <li>既存の教育機関への技術統合と、技術投資の収益最大化のために必要な変革の特定。</li>
+        <li>知的指導 (intelligent tutoring)、チュートリアル・シミュレーション、ネットワーク化シミュレーションなど、技術がもたらす能力を最大限活用する新たな教育技法の開発。</li>
+        <li>教育プログラムのコストと有効性の評価。</li>
+        <li>学習者の能力とパフォーマンスの測定・検証。</li>
+      </ul>
+
+      <p>ADL Co-Lab はまた、分散学習に関連する学習技術とコンテンツのテスト・評価を行う開かれた環境を提供する。これは DoD および他の連邦機関を支援するためのガイドラインの策定・普及・維持を促進する。これらのガイドラインには、教育開発ツール、設計・開発戦略、評価技法の利用が含まれる。ADL Co-Lab は政府・学術・産業を横断するリソース共有を促進する。</p>
+
+      <p>ADL Co-Lab は、再利用性、アクセシビリティ、耐久性、相互運用性、費用対効果に関するユーザー要件を満たすかどうかを判断するため、プロジェクトのテスト・評価を行う。ADL Co-Lab の対象候補となるプロジェクトは、次の能力を実証するものである。</p>
+      <ul>
+        <li>Web ベースのコンテンツをある学習環境（LMS）から別の学習環境へ移行する能力</li>
+        <li>異なるプラットフォーム・学習環境にまたがる learning content「object」の再利用</li>
+        <li>異なる学習環境・メディアリポジトリ間で検索可能な学習コンテンツの提供</li>
+        <li>SCORM オブジェクトを生成するオーサリングツールの提供</li>
+        <li>個々の学習者のニーズに合わせて動的に最適化できる学習ツール・コンテンツの提供</li>
+        <li>知的システム、知的指導、パフォーマンス支援機能の支援</li>
+      </ul>
+
+      <p>ADL Co-Lab は、ベンダーおよび開発者が ADL プロトタイプの相互運用性と再利用能力を実証し、SCORM を改良・更新する機会を提供する ADL Plugfest イベントへ、政府・学術・企業の参加を呼びかけている。ADL Co-Lab は、SCORM 基準を満たす ADL のデモンストレーションと製品のためのハンズオン・ショーケースとなり、分散学習技術、プロトタイプ、プロジェクトのクリアリングハウスとしても機能する。詳細は ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）を参照のこと。</p>
+    </section>
+
+    <!-- ═══════════ 1.3 ═══════════ -->
+    <section id="sec-1-3">
+      <h2><span class="section-num">SECTION 1.3</span>共通リファレンスモデルの根拠</h2>
+
+      <p>ADL の学習コンテンツに対する重要な要件のひとつは、構築に用いたツールに関わらず、教育構成要素を複数のアプリケーション・環境で再利用できる能力である。これには、コンテンツが文脈固有の run-time 制約や独自システムから分離され、他のアプリケーションへ取り込めることが必要である。さらに、再利用を可能にするためには、コンテンツが共通のインターフェイスとデータを持たねばならない。本書は、再利用可能なコンテンツのための共通インターフェイスとデータスキームを定義し、run-time 制約を抽象化するリファレンスモデルを規定する。</p>
+
+      <h3 id="sec-1-3-1">1.3.1 能力の必要性</h3>
+
+      <p>政府、学術、産業は、科学技術における前例のない変革を経験している。この変革と進歩は、重大な課題と機会の双方をもたらす。21 世紀に成功を収めるためには、組織はこれらの進歩を採用・活用しなければならない。しかし日常業務に技術を組み込むことは、それを巧みに使い保守できる人材への需要を高める。技術の浸透にも関わらず、有能な人的能力は依然として不可欠であり、その容易な利用可能性は経済のあらゆる領域で最重要事項である。</p>
+
+      <p>幸いにも、技術はそれが提示する課題に対処する手段も提供する。新たな教育技術が登場するにつれて、普遍的にアクセス可能で効果的な生涯学習の機会が広がっていく。これらの技術は、学習を伝統的な教室や校舎の枠を超えて、家庭、博物館・図書館などの地域資源、職場へと拡張する。そして従来の学齢期人口を超えて生涯学習者の国家を支える。</p>
+
+      <p>これらの課題が、ADL イニシアチブの作業を導くビジョンを生み出した。</p>
+
+      <h3 id="sec-1-3-2">1.3.2 個別最適化された教育の価値</h3>
+
+      <p>実証研究は、コンピュータおよびネットワーク技術の能力・アクセス可能性・経済性の向上に基づく教育・訓練技術の活用への国家的関心を高めてきた。これらの研究は、コンピュータベース教育、対話型マルチメディア教育、知的指導システムなどの教育技術による学習効率向上の実現が、それら技術が個々のニーズに合わせて教育を最適化する能力に依存することを示唆する。教室学習と対照的に、これらのアプローチは、各学習者の学習スタイル・目的・目標により適合するように、教育のペース、順序、内容、方法を調整できる。</p>
+
+      <p>研究は技術ベース教育の直感的な訴求力を裏付ける。教育を進む速度は、慎重に選抜されたクラスでも、個人によって 3〜7 倍の差がある。<sup>8</sup> 教室教育では学習者は 1 時間あたり平均 0.1 問の質問しかしない。<sup>9</sup> 個別チュートリアルでは、学習者は 1 時間に最大 120 問質問するか、答える必要があるかもしれない。個別指導された学習者の達成度は、教室の学習者を最大 2 標準偏差上回る場合がある — これは 50 パーセンタイルの学生を 98 パーセンタイルの水準まで引き上げるのとほぼ同等の改善である。<sup>10</sup></p>
+
+      <p>個別最適化された教育のジレンマは、教育上の必須要件と経済的不可能性が同居することにある。利点があるとはいえ、ごく少数の例外を除き、すべての学習者に教師を 1 人ずつ充てることは経済的に不可能である。教育技術は、個別教育の利点の大部分を、一貫した・測定可能な・高品質のコンテンツを維持しつつ、手頃なコストで提供することを約束する。</p>
+
+      <h3 id="sec-1-3-3">1.3.3 技術ベース教育の有効性</h3>
+
+      <p>研究によれば、技術ベース教育はさまざまな教育目標達成のコストを 30〜60% 削減しうる。これらの研究はまた、所定の教育目標を達成する時間の短縮（30%）または学習者のスキル・知識の増加（30%）を示している（達成度・時間のいずれを固定するかによる）。<sup>11</sup></p>
+
+      <p>これらの能力が直接的な訓練コストを削減する価値は明らかである。生産性や離業時間など間接コストの管理改善による節約は定量化が難しいが、教育技術投資の総合的 ROI を判断するうえで同等に重要である。</p>
+
+      <p>たとえば、特殊技能訓練を受ける全 DoD 受講者の 40% について訓練時間を 30% 短縮するだけでも（新兵訓練、パイロット訓練、部隊訓練、野外演習などは除外）、DoD は年間 5 億ドル以上を節約しうる。<sup>11</sup></p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="376" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#1c1e2a">Effect Size（教室教育との差、標準偏差単位）</text>
+
+          <!-- Y axis -->
+          <line x1="120" y1="80" x2="120" y2="320" stroke="#1c1e2a" stroke-width="1.5"/>
+          <line x1="120" y1="320" x2="720" y2="320" stroke="#1c1e2a" stroke-width="1.5"/>
+          <!-- gridlines -->
+          <line x1="120" y1="80" x2="720" y2="80" stroke="#d4ccb8" stroke-dasharray="3,3"/>
+          <line x1="120" y1="140" x2="720" y2="140" stroke="#d4ccb8" stroke-dasharray="3,3"/>
+          <line x1="120" y1="200" x2="720" y2="200" stroke="#d4ccb8" stroke-dasharray="3,3"/>
+          <line x1="120" y1="260" x2="720" y2="260" stroke="#d4ccb8" stroke-dasharray="3,3"/>
+          <text x="110" y="84" text-anchor="end" font-size="11" fill="#7a7565">1.20</text>
+          <text x="110" y="144" text-anchor="end" font-size="11" fill="#7a7565">0.80</text>
+          <text x="110" y="204" text-anchor="end" font-size="11" fill="#7a7565">0.40</text>
+          <text x="110" y="264" text-anchor="end" font-size="11" fill="#7a7565">0.00</text>
+
+          <!-- Bars: 0.39, 0.50, 0.84, 1.05 -->
+          <!-- scale: 0..1.2 maps to 320..80 (240px) -->
+          <!-- 0.39 -> 320 - (0.39/1.2)*240 = 320-78=242 -->
+          <rect x="160" y="242" width="100" height="78" fill="#8eb4c9" stroke="#1c1e2a"/>
+          <text x="210" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">0.39</text>
+
+          <!-- 0.50 -> 320-100=220 -->
+          <rect x="295" y="220" width="100" height="100" fill="#8eb4c9" stroke="#1c1e2a"/>
+          <text x="345" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">0.50</text>
+
+          <!-- 0.84 -> 320-168=152 -->
+          <rect x="430" y="152" width="100" height="168" fill="#a84452" stroke="#1c1e2a"/>
+          <text x="480" y="144" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">0.84</text>
+
+          <!-- 1.05 -> 320-210=110 -->
+          <rect x="565" y="110" width="100" height="210" fill="#a84452" stroke="#1c1e2a"/>
+          <text x="615" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">1.05</text>
+
+          <!-- X labels -->
+          <text x="210" y="338" text-anchor="middle" font-size="10" fill="#444759">CBI</text>
+          <text x="210" y="352" text-anchor="middle" font-size="9" fill="#7a7565">(233 件の研究)</text>
+          <text x="345" y="338" text-anchor="middle" font-size="10" fill="#444759">対話型マルチメディア</text>
+          <text x="345" y="352" text-anchor="middle" font-size="9" fill="#7a7565">(47 件の研究)</text>
+          <text x="480" y="338" text-anchor="middle" font-size="10" fill="#444759">ITS（従来）</text>
+          <text x="480" y="352" text-anchor="middle" font-size="9" fill="#7a7565">(11 件の研究)</text>
+          <text x="615" y="338" text-anchor="middle" font-size="10" fill="#444759">ITS（最近）</text>
+          <text x="615" y="352" text-anchor="middle" font-size="9" fill="#7a7565">(5 件の研究)</text>
+        </svg></div>
+        <div class="figure-caption">図 1.3.3a: 技術ベース教育の Effect Size（標準偏差単位）<sup>11</sup></div>
+      </div>
+
+      <p>これらの潜在的なコスト削減を踏まえると、訓練の有効性が損なわれるかどうかが当然の疑問となる。図 1.3.3a は、技術ベース訓練と従来の教室教育を比較した実証研究の集計結果を示す。図に示すとおり、従来の CBI に関する 233 件の研究では、平均で約 0.39 標準偏差の学習効果向上があった。マルチメディア機能を加えると 0.50 標準偏差まで向上する。教師 1 人と学習者 1 人の対話を直接エミュレートし、学習者・コンピュータ双方が質問できるようにした ITS では、向上は 0.84 標準偏差に達する。最近の ITS の評価では平均約 1.05 標準偏差の改善が得られている。我々はまだ 2.00 標準偏差の壁には到達していないが、傾向は有望である。</p>
+
+      <h3 id="sec-1-3-4">1.3.4 Distance Learning と Advanced Distributed Learning</h3>
+
+      <p>ADL イニシアチブは複数の学習技術に基づく。これらの技術の例は、同期型 (synchronous) と非同期型 (asynchronous) の 2 つに分類される。</p>
+
+      <p>従来の Distance Learning プログラムは、学習者が指導者と物理的に分離された状況での教育・訓練に有用な同期型技術を強調する。同期型技術は仮想教室の取り組みに見られ、その多くはビデオ会議・ビデオテレトレーニングに基づく。これらの技術は一般に、指導者から物理的に離れていても、特定の場所に学習者を一斉に集合させることを必要とする。多くの人々はこのタイプの同期型技術を「Distance Learning」と呼ぶ。</p>
+
+      <p>ADL は、特定の場所・特定の時間に学習者を集合させる必要なしに教育とメンタリングを配信できる非同期型技術を強調する。これは「いつでも・どこでも」教育と意思決定支援（メンタリング）を提供することを目的とし、コンピュータ技術を配信・提示の手段とする。例：</p>
+      <ul>
+        <li>Computer-Based Instruction (CBI)</li>
+        <li>対話型マルチメディア教育</li>
+        <li>Intelligent Tutoring Systems (ITS)</li>
+        <li>ネットワーク・チュートリアルシミュレーション</li>
+        <li>Web ベース訓練</li>
+      </ul>
+      <p>ADL は一般にこれらを「Distributed Learning」技術と呼ぶ。従来の CBI と対話型マルチメディア技術を、Web 対応の知的指導・シミュレーション機能と組み合わせたものを「Advanced Distributed Learning」技術と呼ぶ。</p>
+
+      <h3 id="sec-1-3-5">1.3.5 技術ベース教育の利用促進</h3>
+
+      <p>技術ベース教育は訓練コストを下げ、同時にさまざまな訓練目標・プログラムに対する教育有効性を高めうるという証拠は存在する。しかし、その活用は始まったばかりである。たとえば、収集データによれば、対話型訓練技術を日常的に活用する DoD 訓練プログラムは 5% 未満である。<sup>11</sup> 新規アプリケーションでよくあるとおり、技術導入は技術的というより構造的・組織的な課題に依存することがある。新しい訓練能力を最大限活用するために、会計区分、現場のインセンティブ、人事方針、訓練手順の変更が必要である。</p>
+
+      <p>これらの困難にもかかわらず、技術ベース教育の利点はますます認識されており、特に ADL イニシアチブを含む、利用拡大の取り組みが進んでいる。</p>
+
+      <h3 id="sec-1-3-6">1.3.6 リファレンスモデルの必要性</h3>
+
+      <p>ADL の成功的な実装には、教育技術教材の開発・利用に関わる組織が共有・遵守するガイドラインの発行が必要である。これらのガイドラインの最終的な形態と地位はまだ定まっていない。国際標準・国家標準、合意された慣行、推奨事項、または事実上の慣行となる可能性がある。</p>
+
+      <p>これらのガイドラインを成功裏に明文化・実装するためには、共通の「リファレンスモデル」に基づかなければならない。本モデルは、特定の組織（教育開発者、ツール開発者、特定の業界や DoD に関連する顧客など）が考案・採用してきた教育システム設計や実践の詳細モデルを置き換えるものではない。むしろ、リファレンスモデルの目的は、sharable なコンテンツオブジェクトの生成のためのガイドラインを許容するに足る詳細さで、教育教材の開発アプローチを記述することである。</p>
+
+      <h3 id="sec-1-3-7">1.3.7 リファレンスモデルの要件</h3>
+
+      <p>sharable なコンテンツオブジェクトのリファレンスモデルには 3 つの主要要件がある。第一に、上記のとおり、sharable なコンテンツオブジェクトの生成のために理解・実装可能なガイドラインの明文化を完全に支援できなければならない。第二に、可能な限り広範な利害関係者、特にコースウェア・コースウェアツールの開発者とその顧客に、採用・理解・利用される必要がある。第三に、いかなる利害関係者の特定の教育システム設計・開発モデルもこのモデルに写像できなければならない。利害関係者は、共通に保持するリファレンスモデルに自らの教育システム設計モデルがどのように反映されているかを把握できる必要がある。</p>
+
+      <p>技術ベース提示のための訓練教材の開発・変換には、初期投資が必要である。これらの投資コストは、次のような sharable なコンテンツオブジェクトの利用により 50〜80% 削減しうると推定される。</p>
+      <ul>
+        <li><strong>耐久性 (Durable)</strong> — システムソフトウェアのバージョン変更によって修正を要しない。</li>
+        <li><strong>相互運用性 (Interoperable)</strong> — 多様なハードウェア、OS、Web ブラウザで動作する。</li>
+        <li><strong>アクセス可能性 (Accessible)</strong> — 必要に応じて索引付け・発見が可能である。</li>
+        <li><strong>再利用可能性 (Reusable)</strong> — 多様な開発ツールで修正・利用できる。</li>
+      </ul>
+      <p>このようなコンテンツオブジェクトを開発する手順は最先端技術の範囲内にあるが、開発者および顧客にとってのガイドラインとして明文化・受容され、広く利用されることが必要である。これらの目標は協働的な開発によってのみ達成しうる。協働はまた、提供されるコンテンツオブジェクトの数、品質、単位あたり価値を高める。このような協働は共通リファレンスモデルへの合意を必要とする。Sharable Content Object Reference Model (SCORM) は、まさにそのようなモデルとなることを意図する。</p>
+    </section>
+
+    <!-- ═══════════ 1.4 ═══════════ -->
+    <section id="sec-1-4">
+      <h2><span class="section-num">SECTION 1.4</span>変革を推進する諸力</h2>
+
+      <p>分散・高度適応型学習インフラへの ADL のビジョンは、単なる理想ではない。コンピューティングと通信インフラの大きな変化が収斂し、学習システム技術に変革的な変化をもたらしつつある。図 1.4a に示すように、この収斂は、複数の発展経路に沿った 50 年近くの実験と研究の上に築かれている。<sup>13</sup> 多様な学習方法論と技術能力の収斂を形成する歴史的要因が、ADL と SCORM の近接要件を定義するうえで参考となる。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="356" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1e2a">Computer-Based Instruction と Intelligent Tutoring Systems の発展</text>
+
+          <!-- Time axis -->
+          <line x1="60" y1="320" x2="700" y2="320" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="80" y="338" text-anchor="middle" font-size="10" fill="#7a7565">1960年代</text>
+          <text x="240" y="338" text-anchor="middle" font-size="10" fill="#7a7565">1970-80年代</text>
+          <text x="420" y="338" text-anchor="middle" font-size="10" fill="#7a7565">1990年代</text>
+          <text x="600" y="338" text-anchor="middle" font-size="10" fill="#7a7565">2000年〜（Web 時代）</text>
+
+          <!-- CBI track -->
+          <path d="M 80 200 L 240 200 L 420 200 L 580 130" stroke="#3d5d80" stroke-width="3" fill="none"/>
+          <rect x="60" y="180" width="50" height="40" fill="#fdfcf7" stroke="#3d5d80"/>
+          <text x="85" y="195" text-anchor="middle" font-size="10" fill="#1c1e2a">初期</text>
+          <text x="85" y="210" text-anchor="middle" font-size="10" fill="#1c1e2a">CBI</text>
+          <rect x="200" y="180" width="80" height="40" fill="#fdfcf7" stroke="#3d5d80"/>
+          <text x="240" y="195" text-anchor="middle" font-size="10" fill="#1c1e2a">教育用言語</text>
+          <text x="240" y="210" text-anchor="middle" font-size="10" fill="#1c1e2a">著作ツール</text>
+          <rect x="380" y="180" width="80" height="40" fill="#fdfcf7" stroke="#3d5d80"/>
+          <text x="420" y="195" text-anchor="middle" font-size="10" fill="#1c1e2a">マルチメディア</text>
+          <text x="420" y="210" text-anchor="middle" font-size="10" fill="#1c1e2a">CBT/WBT</text>
+
+          <!-- ITS track -->
+          <path d="M 80 100 L 240 100 L 420 100 L 580 130" stroke="#a84452" stroke-width="3" fill="none"/>
+          <rect x="60" y="80" width="50" height="40" fill="#fdfcf7" stroke="#a84452"/>
+          <text x="85" y="95" text-anchor="middle" font-size="10" fill="#1c1e2a">AI 研究</text>
+          <text x="85" y="110" text-anchor="middle" font-size="10" fill="#1c1e2a">認知科学</text>
+          <rect x="200" y="80" width="80" height="40" fill="#fdfcf7" stroke="#a84452"/>
+          <text x="240" y="95" text-anchor="middle" font-size="10" fill="#1c1e2a">ITS 初期</text>
+          <text x="240" y="110" text-anchor="middle" font-size="10" fill="#1c1e2a">プロトタイプ</text>
+          <rect x="380" y="80" width="80" height="40" fill="#fdfcf7" stroke="#a84452"/>
+          <text x="420" y="95" text-anchor="middle" font-size="10" fill="#1c1e2a">学習者モデル</text>
+          <text x="420" y="110" text-anchor="middle" font-size="10" fill="#1c1e2a">適応的指導</text>
+
+          <!-- Convergence -->
+          <rect x="540" y="100" width="120" height="60" fill="#f0ebd8" stroke="#6b2c39" stroke-width="2"/>
+          <text x="600" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#6b2c39">SCORM</text>
+          <text x="600" y="145" text-anchor="middle" font-size="10" fill="#444759">CBI と ITS の収斂</text>
+
+          <!-- Track labels -->
+          <text x="40" y="100" text-anchor="middle" font-size="10" font-weight="700" fill="#a84452" transform="rotate(-90 40 100)">ITS 系</text>
+          <text x="40" y="200" text-anchor="middle" font-size="10" font-weight="700" fill="#3d5d80" transform="rotate(-90 40 200)">CBI 系</text>
+        </svg></div>
+        <div class="figure-caption">図 1.4a: Computer-Based Instruction と Intelligent Tutoring Systems 技術の発展</div>
+      </div>
+
+      <h3 id="sec-1-4-1">1.4.1 CBI の初期段階</h3>
+
+      <p>心理学者と教育者は、コンピュータが発明されてまもなく、その教育的可能性に注目した。ソフトウェアプログラムはプロセスと手順を秩序立てて反復可能な形で体系化する。学習・教育の理論（あるいは単なる「アプローチ」）の妥当性を評価するために、ソフトウェアは 2 つの方法で利用できる。第一に、学習・教育の理論がアルゴリズムで表現できるならば、その理論は少なくとも妥当でテスト可能である。第二に、ソフトウェアで表現された理論は、コンピュータのマイクロ秒単位のデータ記録機能により、その理論が「機能する」か（学習・教育の現実を表現するか）を判断できる。初期の CBI 開発は、比較的単純な学習・教育の概念を自動化することに焦点を当て、効果的と判明した手法を発展させた。<sup>14</sup> これは、CBI コンテンツ設計方法論に影響を与える長い派生作業の連鎖の始まりとなった。</p>
+
+      <p>コンピュータ科学に倣い、初期の CBI コミュニティは成功した「サブルーチン」プログラムをコード化する省略表現を開発した。それらは進化し、訓練コンテンツ開発者にとって理解可能な教育上の語彙をコンピュータ科学に刻み込む教育用言語となった。しかし、これらの言語は依然として初期コンピューティングの非常に手続き的な性質と構造に強く結びついていた。</p>
+
+      <p>CBI の広範な利用には、コストが大きな障害だった。多くは基盤技術の進化に依存していた。当初は、アセンブラ言語または Coursewriter や初期の Tutor などの原始的な高水準言語でプログラムされたメインフレームに基づき、CBI のミニコンピュータ・ワークステーションへ、後にパーソナルコンピュータへの移行と適応が、研究者・開発者の労力の大部分を占めた。コンピューティング能力の世代が進むたびに、教育設計を自動化しプログラミングの複雑さを隠蔽する新たな能力・機能が利用可能となった。</p>
+
+      <h3 id="sec-1-4-2">1.4.2 ITS の出現</h3>
+
+      <p>図 1.4a に示すように、1960 年代後半から、CBI「エンジニア」と並行して、研究者グループが人間の認知と学習を表現するための「information structure-oriented（情報構造志向）」アプローチの大きな可能性を探求し始めた。<sup>15</sup> 初期の人工知能研究に根ざし、我々がいかに学習し、技能を習得し、主題領域を定義するかについての研究は、最終的に Intelligent Tutoring Systems (ITS) と呼ばれる新たなアプローチの開発につながった。</p>
+
+      <p>ITS の文脈における「Intelligent」は、ITS 開発の目標である特定の機能性を指す。これらの機能性は、より従来的な CBI のアプローチに見られるものとは異なり、ITS には次が要求される。</p>
+      <ul>
+        <li>個々の学習者の必要に応じて、リアルタイムでオンデマンドに教育を生成すること</li>
+        <li>技術と学習者・利用者の間で自由形式の対話を可能とする mixed initiative dialogue の支援</li>
+      </ul>
+      <p>この生成的アプローチは、Advanced Distributed Learning イニシアチブの目標でもある。すなわち、オブジェクト指向開発と Web 配信の利点を、技術ベース教育の利点と組み合わせて目的を達成するものである。</p>
+
+      <p>これまで ITS 技術の開発を妨げてきた要因がいくつかある。<sup>16</sup> 第一に、初期のコンピューティング時代には人間の認知科学が比較的未成熟だった（特にコンピュータモデリングの面で）。第二に、複雑なモデリングおよびルールベースのシステムは、当時も現在も、相当の計算能力を必要とする。コンピュータ技術と認知科学の双方の進歩が、ITS 技術の開発に不可欠な支援を提供してきた。<sup>17</sup></p>
+
+      <p>ITS 開発はさらに、World Wide Web またはこれに代わる将来のグローバル情報ネットワーク上で容易にアクセス可能な instructional object 形式のコンテンツによって支援される。これらのオブジェクトが存在すれば、図 1.2.3a に示すように、リアルタイムでオンデマンドに識別・選択・組み立てができる。この生成作業は、図中央のブラックボックスとして表されるサーバの役割である。「ロジック」または教育戦略オブジェクトをインポートすることで、サーバは知的指導・意思決定支援システムの能力を獲得し、これらのタスクを実行できる。</p>
+
+      <p>ADL イニシアチブと ITS の開発には、いくつかの重要な共通目標がある。</p>
+      <ul>
+        <li>双方ともリアルタイムでオンデマンドの提示を生成する点で生成的である</li>
+        <li>双方とも、利用者の意図、背景、ニーズに合わせて、内容、順序、難易度、抽象度、スタイルなどを調整することを意図する</li>
+        <li>双方とも、そのような個別最適化を実現する研究に利害を持つ</li>
+        <li>双方とも、学習・意思決定支援に同等に有効に活用できる</li>
+        <li>双方とも、技術または利用者のいずれかが自然言語で問いかけ・応答できる mixed initiative dialogue に対応することを意図する</li>
+        <li>双方とも、教育（または意思決定支援）の提示生成のために容易に利用可能な sharable な instructional object の供給から大きな恩恵を受ける</li>
+      </ul>
+
+      <h3 id="sec-1-4-3">1.4.3 発展経路の分岐</h3>
+
+      <p>初期から、CBI 技術者は 2 つの「自然な」グループに分かれた。第一は応用科学者（エンジニア）、第二は先端研究者である。エンジニアはコンピュータ開発の発展経路に従い、その進歩を活用した。この概念は図 1.4a に示している。比較的粗い初期段階の教育用言語は、より理解しやすい学習構成要素に基盤実装を抽象化する、より複雑な開発ツールへと進化した。開発コストは削減され、有効性の改善が実証され、製品・サービスの持続可能な産業が確立された。<sup>18</sup></p>
+
+      <p>第一グループの CBI 技術者・エンジニアは、教育テンプレートやフレームの形で複雑な教育構成要素を含むようツールを洗練させ続けた。これらのテンプレートは、より単純なプログラミング技法から直接派生したものであり、設計者をコンピュータコーディングの複雑さから守る。とはいえ、それらは依然として手続き的な構造と性質を持つ。</p>
+
+      <p>CBI ツールが成熟し、パーソナルコンピュータが普及するにつれて、コストは劇的に削減された。教育コンテンツは豊富なマルチメディア機能を取り入れ、オーサリングシステムは洗練された機能セットを提供した。しかし、これら主にクライアントベースのシステムは、オーサリングツール環境に縛られたモノリシックで比較的剛直な教育コンテンツを生み出した。教育コンテンツとロジックは強固に結合していた。</p>
+
+      <p>一方、第二グループの先端研究者はプロトタイプ ITS の開発を続けた。教育コンテンツと設計に関する彼らの概念は、CBI ツール設計者のものとは根本的に異なっていた。学習者・主題・指導手法の洗練されたモデルを用いて、個々の学習者のニーズに合わせた教育体験と提示を生成しようとした。このようなアプローチは、制御ロジックを教育コンテンツから分離する傾向にあった。特定の学習目標を満たすために learning object を動的に組み立てるという概念が根付き始めた。</p>
+
+      <h3 id="sec-1-4-4">1.4.4 インターネットと WWW の影響</h3>
+
+      <p>インターネットと World Wide Web の成長は、CBI と ITS の発展経路を予期せぬ形で中断させた。インターネットは発展するにつれて、共通標準に基づき、情報と知識への容易なアクセスを提供する、広くアクセス可能な通信構造を提供した。</p>
+
+      <p>アーキテクチャ的に、Web は大半の CBI オーサリングシステム設計と相反する。Web コンテンツはプラットフォーム中立で、リモートサーバによって保存・管理される。一方、大半の CBI コンテンツは、独自スクリプト言語で記述され、独自 run-time エンジンによって処理されるローカル保存・実行のものだった。それでも、CBI コミュニティは分散環境の長期的利点を素早く認識した。</p>
+
+      <p>スタンドアロン CBI から Web ベース学習コンテンツへの最初の段階は、既存製品を CD-ROM からインターネット配信へ直接適応させたものだった。インターネットは当初、配信媒体の代替手段として用いられた。コンテンツは依然としてモノリシックで、開発環境に拘束されていた。コンテンツを描画するため、利用者は独自フォーマットを処理する独自ブラウザプラグインをダウンロードする必要があった。スタンドアロン CBI コンテンツの脆さは継続した。<sup>19</sup></p>
+
+      <p>第 2 世代の Web ベースオーサリングシステムは、堅牢なサーバベースの学習管理システムの可能性とともに、コンテンツと制御の分離をより全面的に取り入れ始めた。主流の CBI オーサリングツール開発者が、ITS コミュニティの考え方に類似する概念を初めて取り入れ始めた。再利用可能・sharable な learning object と適応学習戦略が、CBI と ITS のコミュニティ間の共通基盤となった。</p>
+
+      <h3 id="sec-1-4-5">1.4.5 新たな技術要件</h3>
+
+      <p>World Wide Web は、CBI と ITS 双方の開発課題を本質的にリセットした。今や、知識へのアクセスのための継続的に改善される通信・配信プラットフォームが存在する。インターネットを支える技術標準は、ローカル、地域、グローバルのいずれでも同等に機能することが判明している。最新の技術プラットフォームに適応するために必要だった開発作業の多くが不要になった。Web は普遍的な配信プラットフォームとなった。既存のインターネット・Web 標準とインフラの上に構築することで、システム開発者は次世代学習アーキテクチャに集中できるようになった。</p>
+
+      <p>CBI と ITS 双方のコミュニティの研究者は、類似する課題に注意を集中している。</p>
+      <ul>
+        <li>再利用可能な learning object の定義</li>
+        <li>新たな content model の開発</li>
+        <li>学習者評価モデルの開発</li>
+        <li>コンテンツのシーケンシングのための新たなモデルの作成</li>
+        <li>学習「ナレッジ」リポジトリの作成</li>
+      </ul>
+      <p>これらの各トピックは、SCORM などの既存作業の上に構築・拡張する新たな標準化作業の要件を定める。</p>
+    </section>
+
+    <!-- ═══════════ 1.5 ═══════════ -->
+    <section id="sec-1-5">
+      <h2><span class="section-num">SECTION 1.5</span>SCORM 序論</h2>
+
+      <p>本節は、Sharable Content Object Reference Model (SCORM) のスコープと目的の上位概観を提供する。続く第 2、第 3 巻はモデルのさらなる技術詳細を定義する。</p>
+
+      <h3 id="sec-1-5-1">1.5.1 上位要件</h3>
+
+      <p>本書は ADL の上位要件を頻繁に参照する。これらの要件は、SCORM が将来的に実現することを期待されるものである。</p>
+
+      <ul>
+        <li><strong>Accessibility（アクセシビリティ）</strong>：あるリモート拠点から教育構成要素を発見・取得し、他の多数の拠点へ配信できる能力。</li>
+        <li><strong>Interoperability（相互運用性）</strong>：あるツール・プラットフォームで開発された教育構成要素を、別のツール・プラットフォーム上で利用できる能力。<span style="color:var(--muted); font-size:13px;">※ 訳注: 相互運用性には複数のレベルがある。</span></li>
+        <li><strong>Durability（耐久性）</strong>：再設計、再構成、再コーディングを伴わずに技術変更に耐える能力。</li>
+        <li><strong>Reusability（再利用性）</strong>：複数のアプリケーション・文脈で教育構成要素を取り込む柔軟性。</li>
+      </ul>
+
+      <p>これらは次のように言い換えられる。</p>
+      <ul>
+        <li>異なるベンダーのツールでオーサリングされたコンテンツを起動し、そのコンテンツとデータ交換できる Web ベース LMS の能力</li>
+        <li>異なるベンダーの Web ベース LMS 製品が同じコンテンツを起動し、実行中にそのコンテンツとデータ交換できる能力</li>
+        <li>複数の Web ベース LMS 製品・環境が、共通のリポジトリ内の実行可能コンテンツにアクセスし、それを起動できる能力</li>
+      </ul>
+      <p>したがって、ADL の文脈における LMS の主要機能は、コンテンツオブジェクトを管理することである。</p>
+
+      <h3 id="sec-1-5-2">1.5.2 Web ベースの設計前提</h3>
+
+      <p>SCORM は技術実装の基盤として Web ベースインフラを前提とする。ADL がこの前提を採用した理由は次のとおり。</p>
+      <ul>
+        <li>Web ベース技術・インフラは急速に拡大しており、学習技術の主流基盤を提供する。</li>
+        <li>Web ベース学習技術の標準は、まだ広範な形で存在しない。</li>
+        <li>Web ベースコンテンツは、ほぼあらゆる媒体（CD-ROM、スタンドアロンシステム、ネットワーク化環境など）で配信できる。</li>
+      </ul>
+      <p>このアプローチは、業界の共通コンテンツ・配信フォーマットへの移行を取り入れたものである。コンピュータ OS は今や Web コンテンツフォーマットをネイティブにサポートする。傾向は、ローカル・ローカルイントラネット・インターネット上で利用できる共通フォーマットの利用に向かっている。SCORM はこの傾向を学習技術にも拡張する。</p>
+
+      <h3 id="sec-1-5-3">1.5.3 LMS の説明</h3>
+
+      <p>本書を通じて、Learning Management System (LMS) は包括的な用語として使用される。これは、学習コンテンツ、学習者進捗、学習者インタラクションの配信・追跡・報告・管理のために設計された一連の機能を指す。LMS という用語は、非常に単純なコース管理システムから、高度に複雑なエンタープライズ規模の分散環境まで適用できる。LMS の構成要素・サービスの可能性を示した高度に汎化したモデルを図 1.5.3a に示す。</p>
+
+      <p>学習技術標準の策定参加者の多くは、CMI システムには歴史的に関連付けられなかった新たな機能・能力を含めるために、「Computer Managed Instruction (CMI)」の代わりに LMS という用語を用いるようになっている。これらには、他の情報システムへのバックエンド接続、複雑な追跡・報告、集中型登録、オンライン協働、適応型コンテンツ配信などのサービスが含まれ、すべて学習者進捗管理に必要なサービスである。</p>
+
+      <div class="figure">
+        <div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="'Noto Sans JP', sans-serif">
+          <rect x="2" y="2" width="756" height="456" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#1c1e2a">汎用化された Learning Management System モデル</text>
+
+          <!-- LMS box -->
+          <rect x="160" y="60" width="440" height="240" fill="#f0ebd8" stroke="#1c1e2a" stroke-width="2"/>
+          <text x="380" y="86" text-anchor="middle" font-size="13" font-weight="700" font-style="italic" fill="#1c1e2a">LMS（サービス群）</text>
+
+          <!-- service boxes -->
+          <rect x="180" y="100" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="118" text-anchor="middle" font-size="10" fill="#1c1e2a">Selection</text>
+          <text x="240" y="132" text-anchor="middle" font-size="10" fill="#7a7565">（選択）</text>
+          <rect x="320" y="100" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="380" y="118" text-anchor="middle" font-size="10" fill="#1c1e2a">Delivery</text>
+          <text x="380" y="132" text-anchor="middle" font-size="10" fill="#7a7565">（配信）</text>
+          <rect x="460" y="100" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="520" y="118" text-anchor="middle" font-size="10" fill="#1c1e2a">Tracking</text>
+          <text x="520" y="132" text-anchor="middle" font-size="10" fill="#7a7565">（追跡）</text>
+
+          <rect x="180" y="155" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="173" text-anchor="middle" font-size="10" fill="#1c1e2a">Sequencing</text>
+          <text x="240" y="187" text-anchor="middle" font-size="10" fill="#7a7565">（シーケンシング）</text>
+          <rect x="320" y="155" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="380" y="173" text-anchor="middle" font-size="10" fill="#1c1e2a">Testing / Assessment</text>
+          <text x="380" y="187" text-anchor="middle" font-size="10" fill="#7a7565">（テスト・評価）</text>
+          <rect x="460" y="155" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="520" y="173" text-anchor="middle" font-size="10" fill="#1c1e2a">Learner Profiles</text>
+          <text x="520" y="187" text-anchor="middle" font-size="10" fill="#7a7565">（学習者プロファイル）</text>
+
+          <rect x="180" y="210" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="240" y="228" text-anchor="middle" font-size="10" fill="#1c1e2a">Content Management</text>
+          <text x="240" y="242" text-anchor="middle" font-size="10" fill="#7a7565">（コンテンツ管理）</text>
+          <rect x="320" y="210" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="380" y="228" text-anchor="middle" font-size="10" fill="#1c1e2a">Course Administration</text>
+          <text x="380" y="242" text-anchor="middle" font-size="10" fill="#7a7565">（コース管理）</text>
+          <rect x="460" y="210" width="120" height="40" fill="#fdfcf7" stroke="#1c1e2a"/>
+          <text x="520" y="228" text-anchor="middle" font-size="10" fill="#1c1e2a">API Adapter</text>
+          <text x="520" y="242" text-anchor="middle" font-size="10" fill="#7a7565">(SCORM API)</text>
+
+          <!-- Browser -->
+          <rect x="60" y="350" width="180" height="80" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="150" y="378" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">Browser（提示）</text>
+          <text x="150" y="402" text-anchor="middle" font-size="10" fill="#444759">SCORM Content</text>
+          <text x="150" y="418" text-anchor="middle" font-size="10" fill="#444759">(SCO &amp; Asset)</text>
+
+          <!-- Repositories -->
+          <rect x="280" y="350" width="200" height="80" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="380" y="378" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">Content Repositories</text>
+          <text x="380" y="402" text-anchor="middle" font-size="10" fill="#444759">SCORM Content</text>
+          <text x="380" y="418" text-anchor="middle" font-size="10" fill="#444759">Packages（Local / Remote）</text>
+
+          <!-- Tracking data -->
+          <rect x="520" y="350" width="180" height="80" fill="#fdfcf7" stroke="#1c1e2a" stroke-width="1.5"/>
+          <text x="610" y="378" text-anchor="middle" font-size="12" font-weight="700" fill="#1c1e2a">Tracking Data</text>
+          <text x="610" y="402" text-anchor="middle" font-size="10" fill="#444759">学習者進捗</text>
+          <text x="610" y="418" text-anchor="middle" font-size="10" fill="#444759">セッション情報</text>
+
+          <!-- connectors -->
+          <line x1="150" y1="349" x2="200" y2="301" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <line x1="380" y1="349" x2="380" y2="301" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+          <line x1="610" y1="349" x2="560" y2="301" stroke="#1c1e2a" stroke-dasharray="3,3"/>
+        </svg></div>
+        <div class="figure-caption">図 1.5.3a: 学習コンテンツの配信・追跡を管理するサービス群としての LMS の汎用モデル。SCORM は LMS 内の機能を規定しない。</div>
+      </div>
+
+      <p>LMS という用語は今や、多くの可能性を包含する上位記述として用いられる。SCORM の文脈では、実装は広範に異なることが想定される。SCORM はコンテンツと LMS 環境間の主要な接続点に焦点を当て、特定の LMS が提供する固有の機能・能力については規定しない。</p>
+
+      <p>SCORM では、LMS という用語は、学習者への学習コンテンツ配信を制御するインテリジェンスが存在するサーバベース環境を含意する。すなわち、SCORM では、LMS は何をいつ配信するかを判断する能力を持ち、学習コンテンツを通じた学習者進捗を追跡する。</p>
+
+      <p>SCORM は、コース、モジュール、章、課題などの教育単位を構成するために集約される、比較的小さな再利用可能な学習リソースから学習コンテンツが構成されるという考え方を支援する。学習リソースそれ単体には特定の文脈はない。他の学習リソースと組み合わせると、集約が文脈を提供し、LMS が学習体験を管理できるようになる。リソースは複数の文脈で再利用できる。</p>
+
+      <p>これは、学習リソースが単独で、教育単位を表す集約をいかにシーケンス・ナビゲートするかを決定しないことを意味する。そうするには、学習リソースが集約内の他の学習リソースに関する情報を含む必要があるが、代わりに、シーケンシング・ナビゲーションは集約内で定義され LMS によって解釈されるルールによって決定される。LMS は外部で定義されたルールを処理するだけであり、それ自体としては content package で定義されたルールのインポートを通じてしかコンテンツの構成を知らない。これにより、コンテンツ設計者・開発者は、シーケンシング属性・ルールおよびナビゲーション動作を規定しつつ、複数の集約文脈における学習リソースの再利用の可能性を維持できる。</p>
+
+      <h3 id="sec-1-5-4">1.5.4 学習者の追跡</h3>
+
+      <p>従来の Computer-Based Training (CBT) および Web-Based Training (WBT) システムの学習者追跡機能は、適応型学習環境を構築するための教育的基盤を提供する。歴史的に、CMI は CBT システムに、独自で閉鎖的・ツール固有の方式ながら、学習者と教育内容のインタラクションを追跡する能力を提供してきた。Web ベース学習システムは、CMI の能力を基礎に、独自・ツール固有の制約を排除しつつ学習者インタラクションの追跡を行う。</p>
+
+      <p>Web ベース学習システムは、ほとんどの Web サイトアーキテクチャと一点で重要な違いがある。多くの Web サイトはコンテンツを基本的に一方向に配信する：サーバから利用者へ。たまに、オンライン注文時のように、利用者が情報を入力してサーバに送信し返すことはある。しかし大半の場合、Web サーバは特定の要求があるまで利用者がコンテンツ内で何をしているかを追跡しない。</p>
+
+      <p>一方、LMS は学習者の進捗を追跡し習熟度を評価しなければならない。これには、学習者プロファイル情報の収集、コンテンツの学習者への配信、コンテンツ内の主要なインタラクション・パフォーマンスの監視、そして学習者が次に何を体験すべきかの判断が含まれる。</p>
+
+      <p>単純な Web サイトには、学習者進捗を一貫して追跡する手段がない。追跡可能な Sharable Content Object を作成するには、追跡される情報の標準モデルが必要である。第 3 巻の Run-Time Environment は、この種の学習追跡を標準化された方法で通信するメカニズムを提供する。</p>
+
+      <h3 id="sec-1-5-5">1.5.5 適応型・知的指導への展望</h3>
+
+      <p>小さな・再利用可能な・相互運用可能な学習コンテンツの開発、および制御フローを学習リソースから外部表現へ移行し LMS が処理できるようにすることが、まったく新しい学習技術の基盤を確立する。</p>
+
+      <p>共有性と再利用の最も明白な利点は、大規模なコンテンツリポジトリの実現可能性と、Sharable Content Object が広く取引される新たな「コンテンツ経済」の発展である。</p>
+
+      <p>さらに興味深い見通しは、学習者のリアルタイムなニーズに応じて学習コンテンツを組み立て・並べ替え・再定義できる複雑な学習管理システムの開発である。残念ながら、再利用可能・再シーケンス可能なコンテンツの不足が、このビジョンの実現を遅らせてきた。SCORM の特定の目的は、学習者個々のニーズに高度に適応できる次世代の高度学習技術の出発点を提供することである。</p>
+
+      <h3 id="sec-1-5-6">1.5.6 SCORM の概要</h3>
+
+      <p>以下では SCORM の簡潔な上位概要を述べる。本節では SCORM Content Aggregation Model および Run-Time Environment の概観も示す。</p>
+
+      <h4 id="sec-1-5-6-1">1.5.6.1 SCORM Content Aggregation Model の概要</h4>
+
+      <p>SCORM Content Aggregation Model の目的は、発見可能・再利用可能・sharable・相互運用可能なソースから学習コンテンツを構成する共通の手段を提供することである。さらに、学習コンテンツの識別・記述、コースまたはコース構成要素への集約、および LMS やリポジトリを含むシステム間の移動の方法を定義する。SCORM Content Aggregation Model はこれらのプロセスを実現する技術手法を定義する。本モデルにはコンテンツ集約および meta-data 定義の仕様が含まれる。詳細は第 2 巻に示す。</p>
+
+      <h4 id="sec-1-5-6-2">1.5.6.2 SCORM Run-Time Environment の概要</h4>
+
+      <p>SCORM Run-Time Environment の目的は、Sharable Content Object に基づく学習コンテンツと Learning Management System の間の相互運用性のための手段を提供することである。SCORM の要件は、学習コンテンツがコンテンツ作成に用いたツールに関わらず複数の LMS で相互運用可能であることである。これを実現するためには、コンテンツを起動する共通の方法、コンテンツが LMS と通信する共通の仕組み、および実行中に LMS とコンテンツの間で交換される事前定義されたデータ要素が必要である。SCORM Run-Time Environment の 3 つの構成要素は、本書では Launch、Application Program Interface (API)、Data Model として定義される。詳細は第 3 巻に示す。</p>
+
+      <h3 id="sec-1-5-7">1.5.7 SCORM の将来スコープ</h3>
+
+      <p>多数の標準化組織で「次世代」Web ベース学習アーキテクチャに関する議論が進行中である。これらの議論は、最終的には実装可能な仕様に結実すると見込まれる。</p>
+
+      <p>SCORM Version 2.0 およびそれ以降の候補となる新機能の例：</p>
+      <ul>
+        <li>新しい run-time およびコースデータモデル・アーキテクチャの設計</li>
+        <li>シミュレーションオブジェクトの取り込み</li>
+        <li>電子的パフォーマンス支援オブジェクトの取り込み</li>
+        <li>SCORM ベースの知的指導機能の実装</li>
+        <li>新しい content model の設計</li>
+        <li>ゲーミング技術の取り込み</li>
+      </ul>
+      <p>SCORM Version 2.x の正確なスコープ・スケジュールはまだ定まっていない。これらは今後 1 年以上にわたって議論される候補事項である。最新情報は ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）を参照。</p>
+    </section>
+
+    <!-- ═══════════ 1.6 ═══════════ -->
+    <section id="sec-1-6">
+      <h2><span class="section-num">SECTION 1.6</span>準拠性テスト</h2>
+
+      <p>ADL Co-Laboratory<sup>5</sup> は SCORM 準拠性テストソフトウェア、手順、関連文書を策定した。テストソフトウェアは ADLNet（<a href="http://www.adlnet.org/">http://www.adlnet.org/</a>）からダウンロードできる。</p>
+
+      <p>さらに ADL は、関心コミュニティに対してテストサービスを提供したい組織のための認証プロセスを開発中である。認証プロセスの進捗状況は ADLNet で確認できる。</p>
+    </section>
+
+    <!-- ═══════════ Appendix A ═══════════ -->
+    <section id="sec-appendix-a">
+      <h2><span class="section-num">APPENDIX A</span>略語一覧</h2>
+
+      <table class="spec-table acronym">
+        <thead>
+          <tr><th style="width: 130px;">略語</th><th>原語</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ADL</td><td>Advanced Distributed Learning</td></tr>
+          <tr><td>AICC</td><td>Aviation Industry CBT Committee</td></tr>
+          <tr><td>API</td><td>Application Program Interface</td></tr>
+          <tr><td>ARIADNE</td><td>Alliance of Remote Instructional Authoring &amp; Distribution Networks for Europe</td></tr>
+          <tr><td>ASCII</td><td>American Standard Code for Information Interchange</td></tr>
+          <tr><td>AU</td><td>Assignable Unit</td></tr>
+          <tr><td>AWT</td><td>Abstract Window Toolkit</td></tr>
+          <tr><td>CBI</td><td>Computer-Based Instruction</td></tr>
+          <tr><td>CBT</td><td>Computer-Based Training</td></tr>
+          <tr><td>CDATA</td><td>Character Data</td></tr>
+          <tr><td>CMI</td><td>Computer Managed Instruction</td></tr>
+          <tr><td>COTS</td><td>Commercial Off-The-Shelf</td></tr>
+          <tr><td>CSF</td><td>Content Structure Format</td></tr>
+          <tr><td>DC</td><td>Dublin Core</td></tr>
+          <tr><td>DoD</td><td>Department of Defense</td></tr>
+          <tr><td>DOL</td><td>Department of Labor</td></tr>
+          <tr><td>DTD</td><td>Document Type Definition</td></tr>
+          <tr><td>HTML</td><td>HyperText Markup Language</td></tr>
+          <tr><td>HTTP</td><td>Hypertext Transfer Protocol</td></tr>
+          <tr><td>IDA</td><td>Institute for Defense Analyses</td></tr>
+          <tr><td>IEEE</td><td>Institute of Electrical and Electronics Engineers</td></tr>
+          <tr><td>ISO</td><td>International Organization for Standardization</td></tr>
+          <tr><td>ITS</td><td>Intelligent Tutoring Systems</td></tr>
+          <tr><td>LMS</td><td>Learning Management System</td></tr>
+          <tr><td>LOM</td><td>Learning Objects Metadata</td></tr>
+          <tr><td>LTSC</td><td>Learning Technology Standards Committee</td></tr>
+          <tr><td>MIME</td><td>Multipurpose Internet Mail Extensions</td></tr>
+          <tr><td>NGB</td><td>National Guard Bureau</td></tr>
+          <tr><td>OSTP</td><td>Office of Science and Technology Policy</td></tr>
+          <tr><td>PCDATA</td><td>Parsable Character Data</td></tr>
+          <tr><td>SCO</td><td>Sharable Content Object</td></tr>
+          <tr><td>SCORM</td><td>Sharable Content Object Reference Model</td></tr>
+          <tr><td>URI</td><td>Universal Resource Identifier</td></tr>
+          <tr><td>URL</td><td>Universal Resource Locator</td></tr>
+          <tr><td>W3C</td><td>World Wide Web Consortium</td></tr>
+          <tr><td>WWW</td><td>World Wide Web</td></tr>
+          <tr><td>XML</td><td>eXtensible Markup Language</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════ Appendix B ═══════════ -->
+    <section id="sec-appendix-b">
+      <h2><span class="section-num">APPENDIX B</span>参考文献</h2>
+
+      <ol style="font-size: 14px; line-height: 1.85;">
+        <li>Aviation Industry CBT (Computer-Based Training) Committee. <a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>Institute of Electrical and Electronics Engineers (IEEE) Learning Technology Standards Committee (LTSC). <a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS Global Learning Consortium, Inc. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>AICC/CMI <em>CMI001 Guidelines for Interoperability Version 3.4</em>. October 23, 2000. AICC Course Structure Format、AICC CMI Data Model を含む。<a href="http://www.aicc.org/">http://www.aicc.org/</a></li>
+        <li>ADL Co-Laboratories. <a href="http://www.adlnet.org/">http://www.adlnet.org/</a></li>
+        <li>Institute for Defense Analyses (IDA). <a href="http://www.ida.org/">http://www.ida.org/</a></li>
+        <li>Executive Order 13111: <em>Using Technology To Improve Training Opportunities for Federal Government Employees</em>. 1999 年 1 月 12 日。</li>
+        <li>Gettinger, M. (1984) "Individual differences in time needed for learning: A review of the literature." <em>Educational Psychologist</em>, 19, 15-29.</li>
+        <li>Graesser, A. C., &amp; Person, N. K. (1994). "Question asking during tutoring." <em>American Educational Research Journal</em>, 31, 104-137.</li>
+        <li>Bloom, B.S. (1984). "The 2 sigma problem: The search for methods of group instruction as effective as one-to-one tutoring." <em>Educational Researcher</em>, 13, 4-16.</li>
+        <li>Fletcher, J. D. (in press) "Evidence for Learning from Technology-Assisted Instruction." In H. F. O'Neil Jr. and R. Perez (Eds.) <em>Technology Applications in Education: A Learning View</em>. Hillsdale, NJ: Lawrence Erlbaum Associates.</li>
+        <li>Alliance of Remote Instructional Authoring and Distribution Networks for Europe (ARIADNE). <a href="http://www.ariadne-eu.org/">http://www.ariadne-eu.org/</a></li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. "Computer-based Instruction." (2000) In, S. Tobias and J.D. Fletcher (Eds.), <em>Training and Retraining: A Handbook for Business, Industry, Government, and the Military</em>. New York: Macmillan Gale Group.</li>
+        <li>Suppes, P. (1964) "Modern learning theory and the elementary-school curriculum." <em>American Educational Research Journal</em>, 1, 79-93.</li>
+        <li>Carbonell, J. R. (1970) "AI in CAI: An Artificial Intelligence Approach to Computer-Assisted Instruction." <em>IEEE Transactions on Man-Machine Systems</em>, Vol. 11, pp. 190-202.</li>
+        <li>Sleeman, D, &amp; Brown, J. S. (Eds.) (1982) <em>Intelligent Tutoring Systems</em>. New York, NY: Academic Press.</li>
+        <li>Woolf, B.P., &amp; Regian, J.W. (2000). "Knowledge-based training systems and the engineering of instruction." In S. Tobias and J. D. Fletcher (Eds.), <em>Training and retraining: A handbook for business, industry, government, and the military</em> (339-356). New York: Macmillan Reference.</li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. (1998) <em>Computer-based Instruction: Design and Development</em>. Englewood-Cliffs, NJ: Educational Technology Publications.</li>
+        <li>Gibbons, A.S. &amp; Fairweather, P.G. (2000) op. cit.</li>
+        <li>IMS <em>Content Packaging Specification Version 1.1.2</em>. <a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>IEEE <em>Information Technology — Learning Technology — Learning Objects Metadata LOM: Working Draft 6.1</em> (2001-04-18). IMS Learning Resource Meta-data Specification Version 1.2 から参照。<a href="http://ltsc.ieee.org/">http://ltsc.ieee.org/</a></li>
+        <li>IMS <em>Learning Resource Meta-data Specification Version 1.2</em>. Information Model、XML Binding、Best Practice and Implementation Guide を含む。<a href="http://www.imsglobal.org/">http://www.imsglobal.org/</a></li>
+        <li>ISO 639：言語表記の国際標準。Version 1 は 2 文字言語コード（例：'en'=英語、'fr'=フランス語、'nl'=オランダ語）を使用。これらは IETF の RFC 1766: "Tags for the identification of languages" の言語タグレジストリの基礎となっている。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>ISO 3166：国名表記の国際標準（例：'BE'=ベルギー、'CA'=カナダ、'FR'=フランス、'GB'=英国、'US'=米国 など）。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>vCard：個人・組織の連絡先情報の表現方法を定める標準。<a href="http://www.imc.org/pdi/">http://www.imc.org/pdi/</a></li>
+        <li>ISO 8601：日付と時刻の数値表現を規定する国際標準。<a href="http://www.iso.ch/">http://www.iso.ch/</a></li>
+        <li>World Wide Web Consortium (W3C). <a href="http://www.w3c.org/">http://www.w3c.org/</a><br>URL、URI、XML 1.0、DOM 仕様などを含む。</li>
+        <li>Dublin Core Metadata Initiative. <a href="http://www.dublincore.org/">http://www.dublincore.org/</a></li>
+      </ol>
+    </section>
+
+    <!-- ═══════════ Appendix C ═══════════ -->
+    <section id="sec-appendix-c">
+      <h2><span class="section-num">APPENDIX C</span>改訂履歴</h2>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 110px;">SCORM Version</th>
+            <th style="width: 150px;">リリース日</th>
+            <th>変更箇所と内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>1.1.2 本書のステータス</strong>：SCORM Version 1.2 の最新ステータスを反映するよう更新。IMS Content Packaging 仕様および IMS Learning Resource Meta-data 仕様を含む形に変更。</p></td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>図 1.1.3a</strong>：Content Packaging のブックを追加し、Content Structure Format のブックを除去。Meta-data XML Binding ブックの名称を変更。1.1.3 では SCORM が独立した複数のブックに分割されたことを反映。</p></td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>1.4.2 ITS の出現</strong>：ITS の出現と ADL との関係を説明する記述を追加。</p></td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>1.1.6.2 SCORM 1.1 から 1.2 へ</strong>：変更概要セクションを追加。</p></td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>図 1.5.3a</strong>：Generalized Learning Management System Model を更新。</p></td>
+          </tr>
+          <tr>
+            <td>1.2</td>
+            <td>2001 年 10 月 1 日</td>
+            <td><p><strong>全般</strong>：文法・スタイルの調整。</p></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="doc-footer">
+      <p>
+        <span class="brand">SCORM 1.2 The SCORM Overview</span> ／ 日本語訳<br>
+        Original document © 2001 Advanced Distributed Learning Initiative — All Rights Reserved.<br>
+        翻訳: 株式会社エレファンキューブ ／ 翻訳支援: Anthropic Claude<br>
+        Translation © 2026 Elephancube Inc. — Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br>
+        本翻訳は規格仕様書を技術者向けに参照しやすくする目的で作成された非公式の日本語訳である。実装にあたっては必ず Original を参照すること。
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>
